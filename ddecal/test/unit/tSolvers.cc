@@ -16,6 +16,9 @@
 #ifdef HAVE_LIBDIRAC
 #include "../../gain_solvers/LBFGSSolver.h"
 #endif
+#if defined(HAVE_HALIDE)
+#include "../../gain_solvers/HalideSolver.h"
+#endif
 
 #include <boost/test/unit_test.hpp>
 #include <boost/test/data/test_case.hpp>
@@ -173,6 +176,63 @@ BOOST_FIXTURE_TEST_CASE(iterative_diagonal, SolverTester,
   dp3::ddecal::IterativeDiagonalSolver solver;
   TestIterativeDiagonal(*this, solver);
 }
+
+#if defined(HAVE_HALIDE)
+void test_result(int result){
+  if(result != 0){
+    BOOST_TEST_MESSAGE( "Testing initialization failed :" );
+    BOOST_TEST_MESSAGE( "result :" << result );
+    std::cout << "Result : " << result << std::endl;
+  }
+  assert(result == 0);
+}
+
+BOOST_FIXTURE_TEST_CASE(iterative_diagonal_halide_parts, SolverTester,
+                        *boost::unit_test::label("slow")) {
+  SetDiagonalSolutions(false);
+  dp3::ddecal::IterativeDiagonalSolverHalide solver;
+  InitializeSolver(solver);
+  dp3::ddecal::IterativeDiagonalSolver solver_check;
+  InitializeSolver(solver_check);
+
+  const dp3::ddecal::BdaSolverBuffer& solver_buffer = FillBDAData();
+  const SolveData data(solver_buffer, kNChannelBlocks, kNDirections, kNAntennas,
+                      Antennas1(), Antennas2());
+  
+  BOOST_TEST_MESSAGE( "Testing initialization :" );
+  dp3::ddecal::HalideTester tester(solver_check, solver, data, GetSolverSolutions());
+
+  int result = tester.IdTest();
+  test_result(result);
+
+  result = tester.AddTest();
+  test_result(result);
+
+  result = tester.NumeratorTest();
+  test_result(result);
+
+  result = tester.SubDirectionTest();
+  test_result(result);
+
+  result = tester.SolveDirectionTest();
+  test_result(result);
+
+  result = tester.PerformIterationTest();
+  test_result(result);
+
+  result = tester.PerformIterationAllBlocksTest();
+  test_result(result);
+
+  result = tester.MultipleIterationsTest();
+  test_result(result);
+}
+
+BOOST_FIXTURE_TEST_CASE(iterative_diagonal_halide, SolverTester,
+                        *boost::unit_test::label("slow")) {
+  dp3::ddecal::IterativeDiagonalSolverHalide solver;
+  TestIterativeDiagonal(*this, solver);
+}
+#endif
 
 #if defined(HAVE_CUDA_SOLVER)
 BOOST_FIXTURE_TEST_CASE(iterative_diagonal_cuda, SolverTester,

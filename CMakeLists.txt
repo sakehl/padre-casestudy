@@ -48,6 +48,11 @@ else()
   project(DP3 VERSION ${DP3_VERSION})
 endif()
 
+option(BUILD_WITH_HALIDE "Build with Halide support" FALSE)
+if(BUILD_WITH_HALIDE)
+  add_definitions(-DHAVE_HALIDE)
+endif()
+
 include(CheckCXXCompilerFlag)
 include(FetchContent)
 
@@ -416,6 +421,49 @@ add_library(
   ${DDE_ARMADILLO_FILES})
 target_link_libraries(DDECal xsimd xtensor)
 
+# START Halide things
+if(BUILD_WITH_HALIDE)
+  # set(CMAKE_PREFIX_PATH /home/lars/data/halide-master/halide-install/)
+  # set(Halide_ROOT /home/lars/data/halide-master/halide-install/)
+  find_package(Halide 17.0.0 EXACT REQUIRED PATHS /home/lars/data/halide-master/halide-install/ NO_DEFAULT_PATH)
+
+  add_executable(GenerateHalideDiagonal ddecal/gain_solvers/GenerateHalideDiagonal.cc)
+  target_link_libraries(GenerateHalideDiagonal PRIVATE Halide::Halide)
+
+  add_custom_command(
+    OUTPUT Test.cc Test.h MatrixHalide.cc MatrixHalide.h MatrixHalide.a SubDirectionHalide.cc SubDirectionHalide.h SubDirectionHalide.a SolveDirectionHalide.cc SolveDirectionHalide.h SolveDirectionHalide.a HalideRuntime.o
+    COMMAND ./GenerateHalideDiagonal
+    DEPENDS GenerateHalideDiagonal
+  )
+
+  add_custom_target(
+    GenerateHalideDiagonal_output ALL
+    DEPENDS Test.cc Test.h MatrixHalide.cc MatrixHalide.h MatrixHalide.a SubDirectionHalide.cc SubDirectionHalide.h SubDirectionHalide.a SolveDirectionHalide.cc SolveDirectionHalide.h SolveDirectionHalide.a HalideRuntime.o
+  )
+
+  add_library(DDCALHalide OBJECT
+    ddecal/gain_solvers/HalideSolver.cc
+    # ddecal/gain_solvers/SolverBase.cc 
+    # ddecal/linear_solvers/LLSSolver.cc
+    ${CMAKE_BINARY_DIR}/SubDirectionHalide.cc
+    ${CMAKE_BINARY_DIR}/SolveDirectionHalide.cc
+    ${CMAKE_BINARY_DIR}/MatrixHalide.cc
+    ${CMAKE_BINARY_DIR}/Test.cc
+  )
+
+  # target_link_libraries(DDCALHalide ${CMAKE_BINARY_DIR}/iterativeDiagionalHalide.a Halide::Halide)
+  target_link_libraries(DDCALHalide ${CMAKE_BINARY_DIR}/HalideRuntime.o Halide::Halide)
+  # target_link_libraries(DDCALHalide Halide::Halide)
+  add_dependencies(DDCALHalide GenerateHalideDiagonal_output)
+
+  set_target_properties(
+    DDCALHalide
+    PROPERTIES POSITION_INDEPENDENT_CODE ON
+               RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build")
+  install(TARGETS DDCALHalide)
+endif()
+# End Halide things
+
 if(BUILD_WITH_CUDA)
   target_link_libraries(DDECal cudawrappers::cu)
   # The cudasolvers library is built as static for two reasons
@@ -600,6 +648,10 @@ set(DP3_LIBRARIES
 if(BUILD_WITH_CUDA)
   list(APPEND DP3_LIBRARIES CudaSolvers)
 endif()
+if(BUILD_WITH_HALIDE)
+  list(APPEND DP3_LIBRARIES DDCALHalide)
+ENDIF()
+
 
 # If libdirac is found, use it
 if(LIBDIRAC_FOUND)
@@ -857,6 +909,9 @@ if(BUILD_TESTING)
   set_tests_properties(
     unittests PROPERTIES LABELS unit FIXTURES_REQUIRED
                          "unittests;extract_resources" COST 1)
+
+  add_test(NAME halideTest COMMAND unittests -t solvers/iterative_diagonal_halide -f JUNIT -k
+    halideTest.xml --catch_system_error=yes)
 
   # Long running tests are labeled 'slow' and use a separate add_test call, so
   # ctest can run them in parallel. Unfortunately there is no easy means of

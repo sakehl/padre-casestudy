@@ -23,3 +23,17 @@ make install
 Issues can be filed either at [gitlab](https://git.astron.nl/RD/DP3) or [github](https://github.com/lofar-astron/DP3).
 
 Want to contribute some code, or improve documentation? You can start by cloning our code from the [DP3 development repository](https://git.astron.nl/RD/DP3).
+
+# Standard build command
+```
+CUDACXX=/usr/local/cuda-12/bin/nvcc cmake -B build -S . -DBUILD_TESTING=ON -DBUILD_WITH_HALIDE=ON -D BUILD_WITH_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES=native
+```
+```
+cmake --build build -- -j8
+```
+
+## Testing
+```
+./build/unittests "-t" "solvers/iterative_diagonal_dd_intervals"
+./build/unittests "-t" "solvers/iterative_diagonal_halide"
+```
