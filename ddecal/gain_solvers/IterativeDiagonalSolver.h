@@ -9,9 +9,12 @@
 
 namespace dp3 {
 namespace ddecal {
+class HalideTester;
 
 class IterativeDiagonalSolver final : public SolverBase {
  public:
+  friend class HalideTester;
+
   SolveResult Solve(const SolveData& data,
                     std::vector<std::vector<DComplex>>& solutions, double time,
                     std::ostream* stat_stream) override;
