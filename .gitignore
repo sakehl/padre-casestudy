@@ -6,3 +6,7 @@ __pycache__/
 cmakestrap.sh
 *~
 .vscode
+
+CMakeFiles/
+
+_deps/
