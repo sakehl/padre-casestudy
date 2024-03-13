@@ -92,11 +92,6 @@ int IterativeDiagonalSolverHalide::PerformIteration(
   int nsol = NSolutions();
   int n_ant = NAntennas();
 
-  std::copy(cb_data.DataBegin(), cb_data.DataEnd(), v_residual.begin());
-  aocommon::MC2x2F* v_res_in_host = v_residual.data();
-  Halide::Runtime::Buffer<float, 4> v_residual_in =
-      Halide::Runtime::Buffer<float, 4>((float*)v_res_in_host, 2, 2, 2, nvis);
-
   // Subtract all directions with their current solutions
   const DComplex* solution_data = solutions.data();
       Halide::Runtime::Buffer<double, 4> solution_b =
@@ -104,18 +99,33 @@ int IterativeDiagonalSolverHalide::PerformIteration(
               (double*)solution_data, 2, 2,
               NSolutions(),
               NAntennas());
+  solution_b.set_host_dirty();
+
+  std::vector<MC2x2F> v_res_in(nvis);
+  std::copy(cb_data.DataBegin(), cb_data.DataEnd(), v_res_in.begin());
+  aocommon::MC2x2F* v_res_in_host = v_res_in.data();
+  Halide::Runtime::Buffer<float, 4> v_res_in_b =
+      Halide::Runtime::Buffer<float, 4>((float*)v_res_in_host, 2, 2, 2, nvis);
+  v_res_in_b.set_host_dirty();
+
+  aocommon::MC2x2F* v_res_result_host = v_residual.data();
+  Halide::Runtime::Buffer<float, 4> v_res_result_b =
+      Halide::Runtime::Buffer<float, 4>((float*)v_res_result_host, 2, 2, 2, nvis);
 
   int solution_index0 = 0;
   for (size_t direction = 0; direction != NDirections(); ++direction) {
     int n_sol_for_dir = cb_data.NSolutionsForDirection(direction);
 
-    
+    if(direction>0){
+      // Copy the result of the previous iteration as input for the next
+      v_res_in_b.copy_from(v_res_result_b);
+    }
 
     result = SubDirection(
         solution_b,
         buffers_.solution_map[ch_block][direction], buffers_.antenna1[ch_block],
         buffers_.antenna2[ch_block], buffers_.model[ch_block][direction],
-        v_residual_in, solution_index0, n_sol_for_dir, nvis, nsol, n_ant, v_residual_in);
+        v_res_in_b, solution_index0, n_sol_for_dir, nvis, nsol, n_ant, v_res_result_b);
     solution_index0 += n_sol_for_dir;
     if(result != 0){
       printf("SubDirection: ch_block: %lu dir: %lu\n", ch_block, direction);
@@ -123,37 +133,27 @@ int IterativeDiagonalSolverHalide::PerformIteration(
     }
   }
 
-  const std::vector<aocommon::MC2x2F> v_copy = v_residual;
-
   solution_index0 = 0;
   for (size_t direction = 0; direction != NDirections(); ++direction) {
-    // Be aware that we purposely still use the subtraction with 'old'
-    // solutions, because the new solutions have not been constrained yet. Add
-    // this direction back before solving
-    if (direction != 0) v_residual = v_copy;
     int n_sol_for_dir = cb_data.NSolutionsForDirection(direction);
 
     double* n_s_raw = ((double *) next_solutions.data()) + ch_block * n_ant * nsol * 2 * 2 + solution_index0*2*2;
-    Halide::Runtime::Buffer<double, 4> next_solutions_b; 
+    Halide::Runtime::Buffer<double, 4> next_solutions_b;
     next_solutions_b = Halide::Runtime::Buffer<double, 4>(n_s_raw, 
       {halide_dimension_t(0, 2, 1),
        halide_dimension_t(0, 2, 2),
        halide_dimension_t(solution_index0, n_sol_for_dir, 2*2),
        halide_dimension_t(0, n_ant, 2*2*nsol)});
-
-    const DComplex* solution_data = solutions.data();
-    Halide::Runtime::Buffer<double, 4> solution_b =
-        Halide::Runtime::Buffer<double, 4>(
-            (double*)solution_data, 2, 2,
-            NSolutions(),
-            NAntennas());
+    next_solutions_b.set_host_dirty();
 
     result = SolveDirection(
         solution_b,
         buffers_.solution_map[ch_block][direction], buffers_.antenna1[ch_block],
         buffers_.antenna2[ch_block], buffers_.model[ch_block][direction],
-        v_residual_in, solution_index0, n_sol_for_dir, nvis, nsol, n_ant, next_solutions_b);
+        v_res_result_b, solution_index0, n_sol_for_dir, nvis, nsol, n_ant, next_solutions_b);
     solution_index0 += n_sol_for_dir;
+
+    next_solutions_b.copy_to_host();
     if(result != 0){
       printf("SolveDirection: ch_block: %lu dir: %lu\n", ch_block, direction);
       assert(result == 0);
@@ -626,11 +626,6 @@ int HalideTester::PerformIterationTest(){
     {data.NChannelBlocks(), solver.NAntennas(), solver.NSolutions(), solver.NSolutionPolarizations()});
   SolutionTensor next_solutions_check(
     {data.NChannelBlocks(), solver.NAntennas(), solver.NSolutions(), solver.NSolutionPolarizations()});
-
-  double* n_s_raw = (double *) next_solutions.data();
-  Halide::Runtime::Buffer<double, 4> next_solutions_b =
-    Halide::Runtime::Buffer<double, 4>(n_s_raw, 2, 2, solver.NSolutions(), solver.NAntennas());
-  
   std::vector<std::vector<DComplex>> solutions_check = solutions;
 
   const clock_t begin_time_1 = clock();
@@ -703,9 +698,7 @@ int HalideTester::PerformIterationAllBlocksTest(){
                                     solutions_check[cb], next_solutions_check);
   }
   std::cout << "Std impl: " << float( clock () - begin_time_2 ) /  CLOCKS_PER_SEC << std::endl;
-
   
-
   for (size_t cb = 0; cb < data.NChannelBlocks(); cb++) {
     int solution_offset = 0;
     for (size_t direction = 0; direction != solver.NDirections(); ++direction) {
@@ -723,7 +716,7 @@ int HalideTester::PerformIterationAllBlocksTest(){
   return result;
 }
 int HalideTester::MultipleIterationsTest(){
-  std::cout << "Testing PerformIterationAllBlocks" << std::endl;
+  std::cout << "Testing MultipleIterationsTest" << std::endl;
 
   int check = 0;
 

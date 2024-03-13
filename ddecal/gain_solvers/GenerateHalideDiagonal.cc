@@ -6,7 +6,7 @@ using namespace Halide;
 
 void set_bounds(std::vector<std::tuple<Expr, Expr>> dims, Halide::OutputImageParam p){
     Expr stride = 1;
-    for(int i = 0; i < dims.size(); i++){
+    for(size_t i = 0; i < dims.size(); i++){
         p.dim(i).set_bounds(std::get<0>(dims[i]), std::get<1>(dims[i]));
         p.dim(i).set_stride(stride);
         stride *= std::get<1>(dims[i]);
@@ -256,11 +256,13 @@ public:
         return diagMatrixToDimensions(numerator, {si,a});
     }
 
-    Func SolveDirection(Func v_res_in_local){
+    Func SolveDirection(Func v_res_in){
+        Func v_res_in_local = AddOrSubtractDirection(true, v_res_in);
+
         Func numerator("numerator"), denominator("denominator");
         numerator(si,a) = MatrixDiag({0.0f, 0.0f, 0.0f, 0.0f});
         denominator(i,si,a) = 0.0f;
-        v_res_in_local.compute_root();
+        
 
         RDom rv2(0, 2, 0, n_vis, "rv2");
 
@@ -393,17 +395,10 @@ public:
             
             Func v_sub_out = AddOrSubtractDirection(false, v_res_in);
             Func v_sub_out_matrix = matrixToDimensions(v_sub_out, {vis});
-            v_sub_out_matrix.unroll(c).unroll(i).unroll(j);
-            Var vis_i("vis_i"), vis_o("vis_o");
-            // v_sub_out_matrix.split(vis, vis_o, vis_i, 128, TailStrategy::GuardWithIf).gpu(vis_o, vis_i);
-
             Func idFunc = matrixId(v_res_in);
-            // idFunc.gpu_tile(vis, vis_i, 128, TailStrategy::GuardWithIf);
-
-            Func v_add_out = AddOrSubtractDirection(true, v_res_in);
-            Func solve_out = SolveDirection(v_add_out);
-
             Func testNumerator = TestNumerator(v_res0);
+            Func solve_out = SolveDirection(v_res_in);
+            
 
             idFunc.compile_to_c("IdHalide.cc", args, "IdHalide", target);
             idFunc.compile_to_static_library("IdHalide", args, "IdHalide", target);
@@ -431,7 +426,7 @@ public:
 
 
 int main(int argc, char **argv){
-    bool complete = false;
+    // bool complete = false;
     // if(complete){
     //     return HalideDiagonalComplete();
     // } else {
