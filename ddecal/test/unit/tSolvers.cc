@@ -171,10 +171,46 @@ inline void TestIterativeDiagonal(SolverTester& solver_tester,
   BOOST_CHECK_LE(result.iterations, SolverTester::kMaxIterations + 1);
 }
 
+inline void TimeIterativeDiagonal(SolverTester& solver_tester,
+                                  dp3::ddecal::SolverBase& solver, int repetitions) {
+  solver_tester.SetDiagonalSolutions(false);
+  solver_tester.InitializeSolver(solver);
+
+  BOOST_CHECK_EQUAL(solver.NSolutionPolarizations(), 2u);
+  BOOST_REQUIRE_EQUAL(solver.ConstraintSolvers().size(), 1u);
+  BOOST_CHECK_EQUAL(solver.ConstraintSolvers()[0], &solver);
+
+  
+  const dp3::ddecal::BdaSolverBuffer& solver_buffer =
+      solver_tester.FillBDAData();
+  const SolveData data(solver_buffer, SolverTester::kNChannelBlocks,
+                       SolverTester::kNDirections, SolverTester::kNAntennas,
+                       solver_tester.Antennas1(), solver_tester.Antennas2());
+
+  const clock_t begin_time_1 = clock();
+  for(int i=0; i<repetitions; i++){
+    dp3::ddecal::SolverBase::SolveResult result =
+        solver.Solve(data, solver_tester.GetSolverSolutions(), 0.0, nullptr);
+  }
+  std::cout << "Avr Time (" << repetitions << " repetitions) : "
+    << float( clock () - begin_time_1 ) /  (CLOCKS_PER_SEC * repetitions) << std::endl;
+
+  solver_tester.CheckDiagonalResults(1.0E-2);
+  // The iterative solver solves the requested accuracy within the max
+  // iterations so just check if the nr of iterations is <= max+1.
+  // BOOST_CHECK_LE(result.iterations, SolverTester::kMaxIterations + 1);
+}
+
 BOOST_FIXTURE_TEST_CASE(iterative_diagonal, SolverTester,
                         *boost::unit_test::label("slow")) {
   dp3::ddecal::IterativeDiagonalSolver solver;
   TestIterativeDiagonal(*this, solver);
+}
+
+BOOST_FIXTURE_TEST_CASE(iterative_diagonal_time, SolverTester,
+                        *boost::unit_test::label("slow")) {
+  dp3::ddecal::IterativeDiagonalSolver solver;
+  TimeIterativeDiagonal(*this, solver, 5);
 }
 
 #if defined(HAVE_HALIDE)
@@ -231,6 +267,12 @@ BOOST_FIXTURE_TEST_CASE(iterative_diagonal_halide, SolverTester,
                         *boost::unit_test::label("slow")) {
   dp3::ddecal::IterativeDiagonalSolverHalide solver;
   TestIterativeDiagonal(*this, solver);
+}
+
+BOOST_FIXTURE_TEST_CASE(iterative_diagonal_halide_time, SolverTester,
+                        *boost::unit_test::label("slow")) {
+  dp3::ddecal::IterativeDiagonalSolverHalide solver;
+  TimeIterativeDiagonal(*this, solver, 5);
 }
 #endif
 

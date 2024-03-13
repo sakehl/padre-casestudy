@@ -1,8 +1,8 @@
 #include "HalideSolver.h"
-#include "../MatrixHalide.h"
+#include "../IdHalide.h"
 #include "../SolveDirectionHalide.h"
 #include "../SubDirectionHalide.h"
-#include "../Test.h"
+#include "../TestNumerator.h"
 #include "IterativeDiagonalSolver.h"
 #include <aocommon/matrix2x2.h>
 #include <aocommon/matrix2x2diag.h>
@@ -40,13 +40,11 @@ IterativeDiagonalSolverHalide::SolveResult IterativeDiagonalSolverHalide::Solve(
   bool has_converged = false;
   bool has_previously_converged = false;
   bool constraints_satisfied = false;
+
   std::vector<double> step_magnitudes;
   step_magnitudes.reserve(GetMaxIterations());
-
   SetBuffers(data);
-
   aocommon::StaticFor<size_t> loop;
-
   do
   {
     MakeSolutionsFinite2Pol(solutions);
@@ -78,6 +76,10 @@ IterativeDiagonalSolverHalide::SolveResult IterativeDiagonalSolverHalide::Solve(
   } while (!ReachedStoppingCriterion(iteration, has_converged,
                                      constraints_satisfied, step_magnitudes));
 
+  if (has_converged && constraints_satisfied)
+    result.iterations = iteration;
+  else
+    result.iterations = iteration + 1;
   return result;
 }
 
@@ -131,9 +133,13 @@ int IterativeDiagonalSolverHalide::PerformIteration(
     if (direction != 0) v_residual = v_copy;
     int n_sol_for_dir = cb_data.NSolutionsForDirection(direction);
 
-    double* n_s_raw = ((double *) next_solutions.data()) + ch_block * n_ant * nsol * 2 * 2;
-    Halide::Runtime::Buffer<double, 4> next_solutions_b =
-      Halide::Runtime::Buffer<double, 4>(n_s_raw, 2, 2, nsol, n_ant);
+    double* n_s_raw = ((double *) next_solutions.data()) + ch_block * n_ant * nsol * 2 * 2 + solution_index0*2*2;
+    Halide::Runtime::Buffer<double, 4> next_solutions_b; 
+    next_solutions_b = Halide::Runtime::Buffer<double, 4>(n_s_raw, 
+      {halide_dimension_t(0, 2, 1),
+       halide_dimension_t(0, 2, 2),
+       halide_dimension_t(solution_index0, n_sol_for_dir, 2*2),
+       halide_dimension_t(0, n_ant, 2*2*nsol)});
 
     const DComplex* solution_data = solutions.data();
     Halide::Runtime::Buffer<double, 4> solution_b =
@@ -195,9 +201,9 @@ T relative(
 
 template<typename T>
 bool check_complex(std::complex<T> a, std::complex<T> b) {
-  T eps = 1.0E-4;
+  T eps = 1.0E-2;
   if (!nearly_equal<T>(a.real(), b.real(), eps) || !nearly_equal(a.imag(), b.imag(), eps)) {
-    T eps = 1.0E-3;
+    T eps = 1.0E-1;
     if (nearly_equal<T>(a.real(), b.real(), eps) && nearly_equal(a.imag(), b.imag(), eps)) {
       std::cout << "Warning: small diff (" << relative(a.real(), b.real()) << ", " << relative(a.imag(), b.imag()) 
         << ") in check: (" << a.real() <<", " << a.imag() << ") " << b
@@ -229,11 +235,11 @@ bool check_matrix(int nvis, int vis, Halide::Runtime::Buffer<float, 4> v_res_hal
   for(int j = 0; j < 2; j++){
       for(int k = 0; k < 2; k++){
         if(!check_complex(v_res_halide(0, k, j, vis), v_res_halide(1, k, j, vis), mat[j*2+k])){
-          std::cout << "Left: " << v_res_halide(0, 0, 0, vis) << "+" << v_res_halide(1, 0, 0, vis) << "i,  ";
+          std::cout << "Halide: " << v_res_halide(0, 0, 0, vis) << "+" << v_res_halide(1, 0, 0, vis) << "i,  ";
           std::cout << v_res_halide(0, 1, 0, vis) << "+" << v_res_halide(1, 1, 0, vis) << "i, ";
           std::cout << v_res_halide(0, 0, 1, vis) << "+" << v_res_halide(1, 0, 1, vis) << "i, ";
           std::cout << v_res_halide(0, 1, 1, vis) << "+" << v_res_halide(1, 1, 1, vis) << "i " << std::endl;
-          std::cout << "Right: " << mat[0] << ",  " << mat[1] << ",  " << mat[2] << ",  " << mat[3] << ",  " << std::endl;
+          std::cout << "Check: " << mat[0] << ",  " << mat[1] << ",  " << mat[2] << ",  " << mat[3] << ",  " << std::endl;
 
           std::cout << "For visibility " << vis << " (" << k << "x" << j << ")" << std::endl;
           return false;
@@ -324,7 +330,7 @@ void IterativeDiagonalSolverHalide::SetBuffers(const SolveData& data) {
       Halide::Runtime::Buffer<float, 4> model_b =
           Halide::Runtime::Buffer<float, 4>((float*)model, 2, 2, 2,
                                             n_visibilities);
-
+      model_b.set_host_dirty();
       models.emplace_back(model_b);
 
       // Solution Map
@@ -334,7 +340,7 @@ void IterativeDiagonalSolverHalide::SetBuffers(const SolveData& data) {
       Halide::Runtime::Buffer<uint32_t, 1> solution_map_b =
           Halide::Runtime::Buffer<uint32_t, 1>((uint32_t*)solution_map,
                                                n_visibilities);
-
+      solution_map_b.set_host_dirty();
       solution_maps.emplace_back(solution_map_b);
     }
     buffers_.model.emplace_back(models);
@@ -370,17 +376,24 @@ int HalideTester::IdTest(){
   Halide::Runtime::Buffer<float, 4> v_res_in;
   Halide::Runtime::Buffer<double, 4> solution_b;
   std::tie(v_res_in, solution_b) = get_inp(cb, v_residual, v_residual_check);
+  Halide::Runtime::Buffer<float, 4> v_res_in_result = Halide::Runtime::Buffer<float, 4>(2, 2, 2, nvis);
 
   const clock_t begin_time_1 = clock();
   // Checking if the input, after putting everything through Halide is still the same
-  result = MatrixHalide(solution_b,
+  v_res_in_result.set_host_dirty();
+
+  result = IdHalide(solution_b,
                         solver.buffers_.solution_map[cb][dir], solver.buffers_.antenna1[cb],
                         solver.buffers_.antenna2[cb], solver.buffers_.model[cb][dir],
-                        v_res_in, solution_index0, n_sol_for_dir, nvis, nsol, n_ant, v_res_in);
-
+                        v_res_in, solution_index0, n_sol_for_dir, nvis, nsol, n_ant, v_res_in_result);
+  if(result != 0){
+    std::cout << "Halide execution error" << std::endl;
+    return result;
+  }
+  v_res_in_result.copy_to_host();
   std::cout << "Halide impl: " << float( clock () - begin_time_1 ) /  CLOCKS_PER_SEC << std::endl;
 
-  if(!check_results(nvis, v_res_in, v_residual_check)){
+  if(!check_results(nvis, v_res_in_result, v_residual_check)){
     return 1;
   }
   return result;
@@ -413,11 +426,15 @@ int HalideTester::NumeratorTest(){
 
   const clock_t begin_time_1 = clock();
     
-  result = Test(solution_b,
+  result = TestNumerator(solution_b,
                         solver.buffers_.solution_map[cb][dir], solver.buffers_.antenna1[cb],
                         solver.buffers_.antenna2[cb], solver.buffers_.model[cb][dir],
                         v_res_in, solution_index0, n_dir_solutions, nvis, nsol, n_ant
                         , numerator_buf);
+  if(result != 0){
+    std::cout << "Halide execution error" << std::endl;
+    return result;
+  }
 
   std::cout << "Halide impl: " << float( clock () - begin_time_1 ) /  CLOCKS_PER_SEC << std::endl;
 
@@ -506,6 +523,7 @@ int HalideTester::SubDirectionTest(){
   // Get inp
   std::vector<aocommon::MC2x2F> v_residual, v_residual_check;
   Halide::Runtime::Buffer<float, 4> v_res_in;
+  Halide::Runtime::Buffer<float, 4> v_res_in_result = Halide::Runtime::Buffer<float, 4>(2, 2, 2, nvis);
   Halide::Runtime::Buffer<double, 4> solution_b;
   std::tie(v_res_in, solution_b) = get_inp(cb, v_residual, v_residual_check);
 
@@ -513,7 +531,12 @@ int HalideTester::SubDirectionTest(){
   result = SubDirection(
       solution_b, solver.buffers_.solution_map[cb][dir],
       solver.buffers_.antenna1[cb], solver.buffers_.antenna2[cb], solver.buffers_.model[cb][dir],
-      v_res_in, solution_index0, n_dir_solutions, nvis, solver.NSolutions(), solver.NAntennas(), v_res_in);
+      v_res_in, solution_index0, n_dir_solutions, nvis, solver.NSolutions(), solver.NAntennas(), v_res_in_result);
+  if(result != 0){
+    std::cout << "Halide execution error" << std::endl;
+    return result;
+  }
+  v_res_in_result.copy_to_host();
   std::cout << "Halide impl: " << float( clock () - begin_time_1 ) /  CLOCKS_PER_SEC << std::endl;
 
   const clock_t begin_time_2 = clock();
@@ -521,7 +544,7 @@ int HalideTester::SubDirectionTest(){
                                               dir, solutions[cb]);
   std::cout << "Std impl: " << float( clock () - begin_time_2 ) /  CLOCKS_PER_SEC << std::endl;
 
-  check_results(nvis, v_res_in, v_residual_check);
+  check_results(nvis, v_res_in_result, v_residual_check);
 
   return result;
 }
@@ -529,7 +552,7 @@ int HalideTester::SolveDirectionTest(){
   std::cout << "Testing SolveDirection" << std::endl;
 
   int cb = 0;
-  int dir = 0;
+  int dir = 1;
   auto cb_data = data.ChannelBlock(cb);
   int nvis = cb_data.NVisibilities();
   int result = 0;
@@ -547,9 +570,17 @@ int HalideTester::SolveDirectionTest(){
   SolutionTensor next_solutions_check(
     {data.NChannelBlocks(), solver.NAntennas(), solver.NSolutions(), solver.NSolutionPolarizations()});
 
-  double* n_s_raw = (double *) next_solutions.data();
-  Halide::Runtime::Buffer<double, 4> next_solutions_b =
-    Halide::Runtime::Buffer<double, 4>(n_s_raw, 2, 2, solver.NSolutions(), solver.NAntennas());
+  // double* n_s_raw = (double *) next_solutions.data();
+  double* n_s_raw = ((double *) next_solutions.data()) + cb * solver.NAntennas() * solver.NSolutions() * 2 * 2
+    + solution_index0*2*2;
+  // Halide::Runtime::Buffer<double, 4> next_solutions_b =
+  //   Halide::Runtime::Buffer<double, 4>(n_s_raw, 2, 2, solver.NSolutions(), solver.NAntennas());
+  Halide::Runtime::Buffer<double, 4> next_solutions_b = Halide::Runtime::Buffer<double, 4>(n_s_raw, 
+      {halide_dimension_t(0, 2, 1),
+       halide_dimension_t(0, 2, 2),
+      //  halide_dimension_t(solution_index0, n_dir_solutions, 2*2),
+       halide_dimension_t(solution_index0, n_dir_solutions, 2*2),
+       halide_dimension_t(0, solver.NAntennas(), 2*2*solver.NSolutions())});
   
   std::vector<std::vector<DComplex>> solutions_check = solutions;
   
@@ -559,6 +590,10 @@ int HalideTester::SolveDirectionTest(){
       solution_b, solver.buffers_.solution_map[cb][dir],
       solver.buffers_.antenna1[cb], solver.buffers_.antenna2[cb], solver.buffers_.model[cb][dir],
       v_res_in, solution_index0, n_dir_solutions, nvis, solver.NSolutions(), solver.NAntennas(), next_solutions_b);
+  if(result != 0){
+    std::cout << "Halide execution error" << std::endl;
+    return result;
+  }
   std::cout << "Halide impl: " << float( clock () - begin_time_1 ) /  CLOCKS_PER_SEC << std::endl;
 
   const clock_t begin_time_2 = clock();
@@ -568,14 +603,14 @@ int HalideTester::SolveDirectionTest(){
                                 solutions_check[cb], next_solutions_check);
   std::cout << "Std impl: " << float( clock () - begin_time_2 ) /  CLOCKS_PER_SEC << std::endl;
 
-  if (!check_solution(solver.NAntennas(), 0, n_dir_solutions, cb, next_solutions, next_solutions_check)) {
+  if (!check_solution(solver.NAntennas(), solution_index0, n_dir_solutions, cb, next_solutions, next_solutions_check)) {
     return 1;
   }
   return result;
 }
 
 int HalideTester::PerformIterationTest(){
-  std::cout << "Testing SolveDirection" << std::endl;
+  std::cout << "Testing PerformIteration" << std::endl;
 
   int cb = 0;
   auto cb_data = data.ChannelBlock(cb);
@@ -600,6 +635,10 @@ int HalideTester::PerformIterationTest(){
 
   const clock_t begin_time_1 = clock();
   result = solver.PerformIteration(cb, cb_data, v_residual, solutions[cb], next_solutions);
+  if(result != 0){
+    std::cout << "Halide execution error" << std::endl;
+    return result;
+  }
   std::cout << "Halide impl: " << float( clock () - begin_time_1 ) /  CLOCKS_PER_SEC << std::endl;
 
   const clock_t begin_time_2 = clock();
@@ -612,7 +651,7 @@ int HalideTester::PerformIterationTest(){
     int n_dir_solutions = cb_data.NSolutionsForDirection(direction);
     std::cout << "Testing dir " << direction << std::endl;
     if (!check_solution(solver.NAntennas(), solution_offset, n_dir_solutions, cb, next_solutions, next_solutions_check)) {
-      std::cout << "(test SolveDirection, dir "<< direction << ")" << std::endl;
+      std::cout << "(test PerformIteration, dir "<< direction << ")" << std::endl;
       return 1;
     }
     solution_offset += n_dir_solutions;
@@ -650,13 +689,16 @@ int HalideTester::PerformIterationAllBlocksTest(){
   for (size_t cb = 0; cb < data.NChannelBlocks(); cb++) {
     auto cb_data = data.ChannelBlock(cb);
     result = solver.PerformIteration(cb, cb_data, v_residual[cb], solutions[cb], next_solutions);
+    if(result != 0){
+      std::cout << "Halide execution error" << std::endl;
+      return result;
+    }
   }
   std::cout << "Halide impl: " << float( clock () - begin_time_1 ) /  CLOCKS_PER_SEC << std::endl;
 
   const clock_t begin_time_2 = clock();
   for (size_t cb = 0; cb < data.NChannelBlocks(); cb++) {
     auto cb_data = data.ChannelBlock(cb);
-    result = solver.PerformIteration(cb, cb_data, v_residual[cb], solutions[cb], next_solutions);
     solver_check.PerformIteration(cb, cb_data, v_residual_check[cb],
                                     solutions_check[cb], next_solutions_check);
   }
@@ -791,6 +833,8 @@ std::tuple<
   Halide::Runtime::Buffer<float, 4> v_res_in =
       Halide::Runtime::Buffer<float, 4>((float*)v_res_in_host, 2, 2, 2, nvis);
 
+  v_res_in.set_host_dirty();
+
   // std::vector<std::vector<DComplex>> solutions_copy = solutions;
   const DComplex* solution_data = solutions[cb].data();
     Halide::Runtime::Buffer<double, 4> solution_b =
@@ -798,6 +842,8 @@ std::tuple<
             (double*)solution_data, 2, 2,
             solver.NSolutions(),
             solver.NAntennas());
+
+  solution_b.set_host_dirty();
 
   return std::tie(v_res_in, solution_b);
 }

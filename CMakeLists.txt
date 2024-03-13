@@ -53,6 +53,8 @@ if(BUILD_WITH_HALIDE)
   add_definitions(-DHAVE_HALIDE)
 endif()
 
+option(BUILD_HALIDE_LLVM "Build Halide via LLVM instead of direct C files" TRUE)
+
 include(CheckCXXCompilerFlag)
 include(FetchContent)
 
@@ -425,34 +427,48 @@ target_link_libraries(DDECal xsimd xtensor)
 if(BUILD_WITH_HALIDE)
   # set(CMAKE_PREFIX_PATH /home/lars/data/halide-master/halide-install/)
   # set(Halide_ROOT /home/lars/data/halide-master/halide-install/)
-  find_package(Halide 17.0.0 EXACT REQUIRED PATHS /home/lars/data/halide-master/halide-install/ NO_DEFAULT_PATH)
+  # find_package(Halide 17.0.0 EXACT REQUIRED PATHS /home/lars/data/halide-master/halide-install/ NO_DEFAULT_PATH)
+  find_package(Halide 17.0.1 EXACT REQUIRED PATHS /home/lars/data/halide-master/halide-install-17.0.1/ NO_DEFAULT_PATH)
 
   add_executable(GenerateHalideDiagonal ddecal/gain_solvers/GenerateHalideDiagonal.cc)
   target_link_libraries(GenerateHalideDiagonal PRIVATE Halide::Halide)
 
   add_custom_command(
-    OUTPUT Test.cc Test.h MatrixHalide.cc MatrixHalide.h MatrixHalide.a SubDirectionHalide.cc SubDirectionHalide.h SubDirectionHalide.a SolveDirectionHalide.cc SolveDirectionHalide.h SolveDirectionHalide.a HalideRuntime.o
+    OUTPUT TestNumerator.cc TestNumerator.h IdHalide.cc IdHalide.h IdHalide.a SubDirectionHalide.cc SubDirectionHalide.h SubDirectionHalide.a SolveDirectionHalide.cc SolveDirectionHalide.h SolveDirectionHalide.a HalideRuntime.o
     COMMAND ./GenerateHalideDiagonal
     DEPENDS GenerateHalideDiagonal
   )
 
   add_custom_target(
     GenerateHalideDiagonal_output ALL
-    DEPENDS Test.cc Test.h MatrixHalide.cc MatrixHalide.h MatrixHalide.a SubDirectionHalide.cc SubDirectionHalide.h SubDirectionHalide.a SolveDirectionHalide.cc SolveDirectionHalide.h SolveDirectionHalide.a HalideRuntime.o
+    DEPENDS TestNumerator.cc TestNumerator.h IdHalide.cc IdHalide.h IdHalide.a SubDirectionHalide.cc SubDirectionHalide.h SubDirectionHalide.a SolveDirectionHalide.cc SolveDirectionHalide.h SolveDirectionHalide.a HalideRuntime.o
   )
 
-  add_library(DDCALHalide OBJECT
-    ddecal/gain_solvers/HalideSolver.cc
-    # ddecal/gain_solvers/SolverBase.cc 
-    # ddecal/linear_solvers/LLSSolver.cc
-    ${CMAKE_BINARY_DIR}/SubDirectionHalide.cc
-    ${CMAKE_BINARY_DIR}/SolveDirectionHalide.cc
-    ${CMAKE_BINARY_DIR}/MatrixHalide.cc
-    ${CMAKE_BINARY_DIR}/Test.cc
-  )
+  if(BUILD_HALIDE_LLVM)
+    add_library(DDCALHalide OBJECT
+      ddecal/gain_solvers/HalideSolver.cc
+    )
+    target_link_libraries(DDCALHalide 
+      ${CMAKE_BINARY_DIR}/SubDirectionHalide.a
+      ${CMAKE_BINARY_DIR}/SolveDirectionHalide.a
+      ${CMAKE_BINARY_DIR}/IdHalide.a
+      ${CMAKE_BINARY_DIR}/TestNumerator.a
+    )
+  else()
+    add_library(DDCALHalide OBJECT
+      ddecal/gain_solvers/HalideSolver.cc
+      ${CMAKE_BINARY_DIR}/SubDirectionHalide.cc
+      ${CMAKE_BINARY_DIR}/SolveDirectionHalide.cc
+      ${CMAKE_BINARY_DIR}/IdHalide.cc
+      ${CMAKE_BINARY_DIR}/TestNumerator.cc
+    )
+  endif()
+
+  
 
   # target_link_libraries(DDCALHalide ${CMAKE_BINARY_DIR}/iterativeDiagionalHalide.a Halide::Halide)
   target_link_libraries(DDCALHalide ${CMAKE_BINARY_DIR}/HalideRuntime.o Halide::Halide)
+  
   # target_link_libraries(DDCALHalide Halide::Halide)
   add_dependencies(DDCALHalide GenerateHalideDiagonal_output)
 
