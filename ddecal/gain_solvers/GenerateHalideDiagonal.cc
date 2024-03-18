@@ -411,8 +411,8 @@ public:
         try{
             Target target = get_target_from_environment();
             // target.set_feature(Target::CUDA);
-            target.set_feature(Target::OpenCL);
-            target.set_feature(Target::CLDoubles);
+            // target.set_feature(Target::OpenCL);
+            // target.set_feature(Target::CLDoubles);
             target.set_feature(Target::AVX512);
             // target.set_features({Target::NoAsserts, Target::NoBoundsQuery});
             // target.set_feature(Target::Debug);

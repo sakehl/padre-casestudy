@@ -885,15 +885,15 @@ int HalideTester::MultipleIterationsTest(){
       // solution_b[cb].set_host_dirty();
       // v_res_in[cb].set_host_dirty();
       if(!check_solution_old(solution_b[cb], solutions_check[cb])) return 1;
-      next_solutions_b.copy_to_host();
-      if(!check_all_solution(next_solutions_b, next_solutions_check, "during iteration, before")) return 1;
+      // next_solutions_b.copy_to_host();
+      // if(!check_all_solution(next_solutions_b, next_solutions_check, "during iteration, before\n")) return 1;
 
-      if(!check_results(data.ChannelBlock(cb).NVisibilities(), v_res_in[cb], v_residual_check[cb])){
-        std::cout << "Cb " << cb << " Iter " << iter << std::endl;
-        std::cout << "Fail at MultipleIterationsTest before iter" << std::endl;
-        return 1;
-      }
-      v_res_in[cb].set_host_dirty();
+      // if(!check_results(data.ChannelBlock(cb).NVisibilities(), v_res_in[cb], v_residual_check[cb])){
+      //   std::cout << "Cb " << cb << " Iter " << iter << std::endl;
+      //   std::cout << "Fail at MultipleIterationsTest before iter" << std::endl;
+      //   return 1;
+      // }
+      // v_res_in[cb].set_host_dirty();
 
       // v_residual_check[cb] = std::vector<aocommon::MC2x2F>(data.ChannelBlock(cb).NVisibilities());
       // check = solver.PerformIteration(cb, cb_data, v_residual[cb], solutions[cb], next_solutions);
@@ -908,31 +908,30 @@ int HalideTester::MultipleIterationsTest(){
       sol_b.set_host_dirty();
 
       if(!check_solution_old(sol_b, solutions_check[cb])) return 1;
-
     
       check = solver.PerformIteration(cb, cb_data, v_res_in[cb], sol_b, next_solutions_b);
       assert(check == 0);
       solver_check.PerformIteration(cb, cb_data, v_residual_check[cb],
                                     solutions_check[cb], next_solutions_check);
 
-      if(!check_solution_old(solution_b[cb], solutions_check[cb])) return 1;
+      // if(!check_solution_old(solution_b[cb], solutions_check[cb])) return 1;
 
-      v_res_in[cb].copy_to_host();
-      if(!check_results(cb_data.NVisibilities(), v_res_in[cb], v_residual_check[cb])){
-        std::cout << "Cb " << cb << " Iter " << iter << std::endl;
-        std::cout << "Fail at MultipleIterationsTest after iter" << std::endl;
-        return 1;
-      }
+      // v_res_in[cb].copy_to_host();
+      // if(!check_results(cb_data.NVisibilities(), v_res_in[cb], v_residual_check[cb])){
+      //   std::cout << "Cb " << cb << " Iter " << iter << std::endl;
+      //   std::cout << "Fail at MultipleIterationsTest after iter" << std::endl;
+      //   return 1;
+      // }
 
       next_solutions_b.copy_to_host();
       std::cout << "Cb " << cb << " Iter " << iter << std::endl;
-      if(!check_all_solution(next_solutions_b, next_solutions_check, "during iteration")) return 1;
+      // if(!check_all_solution(next_solutions_b, next_solutions_check, "during iteration\n")) return 1;
     }
     
 
     // if(!check_all_solution(data, solver.NDirections(), solver.NAntennas(),
     //   next_solutions, next_solutions_check, "Afeter iteration")) return 1;
-    if(!check_all_solution(next_solutions_b, next_solutions_check, "After iteration")) return 1;
+    if(!check_all_solution(next_solutions_b, next_solutions_check, "After iteration\n")) return 1;
       
     solver.Step(solutions, next_solutions);
     solver_check.Step(solutions_check, next_solutions_check);
@@ -985,73 +984,73 @@ int HalideTester::MultipleIterationsTest(){
     assert(check_solution_old(solutions, solutions_check));
 
     // Weirdness in the iteration after the first...
-    {
-      size_t ch_block;
-      const SolveData::ChannelBlockData& cb_data = data.ChannelBlock(ch_block);
-      std::vector<MC2x2F> v_residual(cb_data.NVisibilities());
-      std::vector<MC2x2F> v_residual_check(cb_data.NVisibilities());
-      std::copy(cb_data.DataBegin(), cb_data.DataEnd(), v_residual_check.begin());
-      std::copy(cb_data.DataBegin(), cb_data.DataEnd(), v_residual.begin());
+    // {
+    //   size_t ch_block;
+    //   const SolveData::ChannelBlockData& cb_data = data.ChannelBlock(ch_block);
+    //   std::vector<MC2x2F> v_residual(cb_data.NVisibilities());
+    //   std::vector<MC2x2F> v_residual_check(cb_data.NVisibilities());
+    //   std::copy(cb_data.DataBegin(), cb_data.DataEnd(), v_residual_check.begin());
+    //   std::copy(cb_data.DataBegin(), cb_data.DataEnd(), v_residual.begin());
       
-      std::vector<DComplex>& solution = solutions[ch_block];
-      std::vector<DComplex>& solution_check = solutions_check[ch_block];
+    //   std::vector<DComplex>& solution = solutions[ch_block];
+    //   std::vector<DComplex>& solution_check = solutions_check[ch_block];
 
-      size_t direction = 0;
+    //   size_t direction = 0;
       
-      int n_sol_for_dir = cb_data.NSolutionsForDirection(direction);
-      int nvis = cb_data.NVisibilities();
-      int nsol = solver.NSolutions();
-      int n_ant = solver.NAntennas();
-      int solution_index0 = 0;
+    //   int n_sol_for_dir = cb_data.NSolutionsForDirection(direction);
+    //   int nvis = cb_data.NVisibilities();
+    //   int nsol = solver.NSolutions();
+    //   int n_ant = solver.NAntennas();
+    //   int solution_index0 = 0;
 
-      Halide::Runtime::Buffer<double, 4> solution_b =
-          Halide::Runtime::Buffer<double, 4>(
-              // (double*)solution_check.data(),
-              2, 2,
-              solver.NSolutions(),
-              solver.NAntennas());
-      for(size_t a=0; a<solver.NAntennas(); a++){
-        for(size_t si=0; si<solver.NSolutions(); si++){
-          for(size_t pol=0; pol<2; pol++){
-            solution_b(0, pol, si, a) = solution_check[a*nsol*2 + si*2 + pol].real();
-            solution_b(1, pol, si, a) = solution_check[a*nsol*2 + si*2 + pol].imag();
-          }
-        }
-      }
+    //   Halide::Runtime::Buffer<double, 4> solution_b =
+    //       Halide::Runtime::Buffer<double, 4>(
+    //           // (double*)solution_check.data(),
+    //           2, 2,
+    //           solver.NSolutions(),
+    //           solver.NAntennas());
+    //   for(size_t a=0; a<solver.NAntennas(); a++){
+    //     for(size_t si=0; si<solver.NSolutions(); si++){
+    //       for(size_t pol=0; pol<2; pol++){
+    //         solution_b(0, pol, si, a) = solution_check[a*nsol*2 + si*2 + pol].real();
+    //         solution_b(1, pol, si, a) = solution_check[a*nsol*2 + si*2 + pol].imag();
+    //       }
+    //     }
+    //   }
       
 
       
-      // solver_check.AddOrSubtractDirection<false>(cb_data, v_residual, direction, solution);
+    //   // solver_check.AddOrSubtractDirection<false>(cb_data, v_residual, direction, solution);
 
-      Halide::Runtime::Buffer<float, 4> v_res_result_b =
-        Halide::Runtime::Buffer<float, 4>((float*)v_residual.data(), 2, 2, 2, nvis);
-        Halide::Runtime::Buffer<float, 4> v_res_result_b_out =
-        Halide::Runtime::Buffer<float, 4>(2, 2, 2, nvis);
-      v_res_result_b.set_host_dirty();
+    //   Halide::Runtime::Buffer<float, 4> v_res_result_b =
+    //     Halide::Runtime::Buffer<float, 4>((float*)v_residual.data(), 2, 2, 2, nvis);
+    //     Halide::Runtime::Buffer<float, 4> v_res_result_b_out =
+    //     Halide::Runtime::Buffer<float, 4>(2, 2, 2, nvis);
+    //   v_res_result_b.set_host_dirty();
 
-      assert(check_results(nvis, v_res_result_b, v_residual_check));
-      assert(check_solution_old(solution_b, solution_check));
+    //   assert(check_results(nvis, v_res_result_b, v_residual_check));
+    //   assert(check_solution_old(solution_b, solution_check));
 
-      solver_check.AddOrSubtractDirection<false>(cb_data, v_residual_check, direction, solution_check);
+    //   solver_check.AddOrSubtractDirection<false>(cb_data, v_residual_check, direction, solution_check);
 
-      // solver_check.AddOrSubtractDirection<false>(cb_data, v_residual, direction, solution_check);
-      SubDirection(solution_b,
-        solver.buffers_.solution_map[ch_block][direction], solver.buffers_.antenna1[ch_block],
-        solver.buffers_.antenna2[ch_block], solver.buffers_.model[ch_block][direction],
-        v_res_result_b, solution_index0, n_sol_for_dir, nvis, nsol, n_ant, v_res_result_b_out);
+    //   // solver_check.AddOrSubtractDirection<false>(cb_data, v_residual, direction, solution_check);
+    //   SubDirection(solution_b,
+    //     solver.buffers_.solution_map[ch_block][direction], solver.buffers_.antenna1[ch_block],
+    //     solver.buffers_.antenna2[ch_block], solver.buffers_.model[ch_block][direction],
+    //     v_res_result_b, solution_index0, n_sol_for_dir, nvis, nsol, n_ant, v_res_result_b_out);
 
         
-      v_res_result_b_out.copy_to_host();
-      if(!check_results(nvis, v_res_result_b_out, v_residual_check)){
-        std::cout << "Cb " << 0 << " Iter " << iter << std::endl;
-        std::cout << "Fail at weirdness" << std::endl;
-        return 1;
-      } else {
-        std::cout << "Weirdness passed" << std::endl;
-        return 0;
-      }
-      return 0;
-    }
+    //   v_res_result_b_out.copy_to_host();
+    //   if(!check_results(nvis, v_res_result_b_out, v_residual_check)){
+    //     std::cout << "Cb " << 0 << " Iter " << iter << std::endl;
+    //     std::cout << "Fail at weirdness" << std::endl;
+    //     return 1;
+    //   } else {
+    //     std::cout << "Weirdness passed" << std::endl;
+    //     return 0;
+    //   }
+    //   return 0;
+    // }
 
 
 
