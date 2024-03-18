@@ -910,10 +910,10 @@ int HalideTester::MultipleIterationsTest(){
       if(!check_solution_old(sol_b, solutions_check[cb])) return 1;
 
     
-      check = solver.PerformIteration(cb, cb_data, v_res_in[cb], sol_b, next_solutions_b, iter!=0);
+      check = solver.PerformIteration(cb, cb_data, v_res_in[cb], sol_b, next_solutions_b);
       assert(check == 0);
       solver_check.PerformIteration(cb, cb_data, v_residual_check[cb],
-                                    solutions_check[cb], next_solutions_check, iter!=0);
+                                    solutions_check[cb], next_solutions_check);
 
       if(!check_solution_old(solution_b[cb], solutions_check[cb])) return 1;
 
