@@ -240,15 +240,29 @@ public:
         
         Expr sol_index = solution_index(rv2.y);
         denominator(i, sol_index, ant_i(rv2.x, rv2.y)) += denominator_inter(rv2.x, i, rv2.y);
-        denominator.update().reorder(i, rv2.x, rv2.y).unroll(i).unroll(rv2.x);
 
         Func numerator_inter("numerator_inter");
         numerator_inter(a, vis)
             = tuple_select(a==0, Diagonal(Matrix(v_res_in_local(vis)) * cor_model_transp_1),
                      Diagonal(HermTranspose(Matrix(v_res_in_local(vis))) * cor_model_2));
-
+    
         numerator(sol_index, ant_i(rv2.x, rv2.y)) += numerator_inter(rv2.x, rv2.y);
+
+        denominator.update().reorder(i, rv2.x, rv2.y).unroll(i).unroll(rv2.x);
         numerator.update().reorder(rv2.x, rv2.y).unroll(rv2.x);
+        RVar rv2_y_i("rv2_y_i"), rv2_y_o("rv2_y_o");
+        // numerator.update()
+        //     .split(rv2.y, rv2_y_o, rv2_y_i, 32, TailStrategy::GuardWithIf)
+        //     .atomic(true)
+        //     .gpu(rv2_y_o, rv2_y_i)
+        //     ;
+
+        // numerator.update().split(rv2.y, rv2_y_o, rv2_y_i, n_vis/8, TailStrategy::GuardWithIf);//.gpu(rv2_y_o, rv2_y_i);
+        // numerator.update().atomic(true);//.parallel(rv2_y_o);
+        // numerator.update().vectorize(rv2_y_i, 8);
+        // Func intermediate = numerator.update().rfactor({{rv2_y_o, y}});
+        // intermediate.compute_root().update().parallel(y);
+        // numerator.parallel(rv2_y_o).atomic();
         
         numerator.compute_root();
         denominator.compute_root();
@@ -286,44 +300,44 @@ public:
         Func ant_i("ant_i");
         ant_i(a, vis) = select(a == 0, antenna_1(vis), antenna_2(vis));
         
-        // denominator_inter(a, i, vis) = undef<float>();
-        // denominator_inter(0, 0, vis) = cor_model_transp_1M.m00.norm() + cor_model_transp_1M.m10.norm();
-        // denominator_inter(0, 1, vis) = cor_model_transp_1M.m01.norm() + cor_model_transp_1M.m11.norm();
-        // denominator_inter(1, 0, vis) = cor_model_2.m00.norm() + cor_model_2.m10.norm();
-        // denominator_inter(1, 1, vis) = cor_model_2.m01.norm() + cor_model_2.m11.norm();
+        denominator_inter(a, i, vis) = undef<float>();
+        denominator_inter(0, 0, vis) = cor_model_transp_1M.m00.norm() + cor_model_transp_1M.m10.norm();
+        denominator_inter(0, 1, vis) = cor_model_transp_1M.m01.norm() + cor_model_transp_1M.m11.norm();
+        denominator_inter(1, 0, vis) = cor_model_2M.m00.norm() + cor_model_2M.m10.norm();
+        denominator_inter(1, 1, vis) = cor_model_2M.m01.norm() + cor_model_2M.m11.norm();
 
         // denominator_inter(a, i, vis) = select(
         //     a==0 && i==0, cor_model_transp_1M.m00.norm() + cor_model_transp_1M.m10.norm(),
         //     a==0 && i==1, cor_model_transp_1M.m01.norm() + cor_model_transp_1M.m11.norm(),
         //     a==1 && i==0, cor_model_2.m00.norm() + cor_model_2.m10.norm(),
         //     cor_model_2.m01.norm() + cor_model_2.m11.norm());
-        Matrix cor_model_transp_1ME = Matrix(cor_model_transp_1(rv2.y));
-        Matrix cor_model_2ME = Matrix(cor_model_2(rv2.y));
+        // Matrix cor_model_transp_1ME = Matrix(cor_model_transp_1(rv2.y));
+        // Matrix cor_model_2ME = Matrix(cor_model_2(rv2.y));
 
-        Expr denominator_inter_expr = select(
-            rv2.x==0 && i==0, cor_model_transp_1ME.m00.norm() + cor_model_transp_1ME.m10.norm(),
-            rv2.x==0 && i==1, cor_model_transp_1ME.m01.norm() + cor_model_transp_1ME.m11.norm(),
-            rv2.x==1 && i==0, cor_model_2ME.m00.norm() + cor_model_2ME.m10.norm(),
-            cor_model_2ME.m01.norm() + cor_model_2ME.m11.norm());
+        // Expr denominator_inter_expr = select(
+        //     rv2.x==0 && i==0, cor_model_transp_1ME.m00.norm() + cor_model_transp_1ME.m10.norm(),
+        //     rv2.x==0 && i==1, cor_model_transp_1ME.m01.norm() + cor_model_transp_1ME.m11.norm(),
+        //     rv2.x==1 && i==0, cor_model_2ME.m00.norm() + cor_model_2ME.m10.norm(),
+        //     cor_model_2ME.m01.norm() + cor_model_2ME.m11.norm());
         
         Expr sol_index = solution_index(rv2.y);
-        // denominator(i, sol_index, ant_i(rv2.x, rv2.y)) += denominator_inter(rv2.x, i, rv2.y);
-        denominator(i, sol_index, ant_i(rv2.x, rv2.y)) += denominator_inter_expr;
+        denominator(i, sol_index, ant_i(rv2.x, rv2.y)) += denominator_inter(rv2.x, i, rv2.y);
+        // denominator(i, sol_index, ant_i(rv2.x, rv2.y)) += denominator_inter_expr;
         denominator.update().reorder(i, rv2.x, rv2.y).unroll(i).unroll(rv2.x);
 
         Func numerator_inter("numerator_inter");
-        // numerator_inter(a, vis) = {undef<float>(), undef<float>(), undef<float>(), undef<float>()};
-        // numerator_inter(0, vis) = Diagonal(Matrix(v_res_in_local(vis)) * cor_model_transp_1);
-        // numerator_inter(1, vis) = Diagonal(HermTranspose(Matrix(v_res_in_local(vis))) * cor_model_2);
-        numerator_inter(a, vis)
-            = tuple_select(a==0, Diagonal(Matrix(v_res_in_local(vis)) * cor_model_transp_1M),
-                     Diagonal(HermTranspose(Matrix(v_res_in_local(vis))) * cor_model_2M));
+        numerator_inter(a, vis) = {undef<float>(), undef<float>(), undef<float>(), undef<float>()};
+        numerator_inter(0, vis) = Diagonal(Matrix(v_res_in_local(vis)) * cor_model_transp_1M);
+        numerator_inter(1, vis) = Diagonal(HermTranspose(Matrix(v_res_in_local(vis))) * cor_model_2M);
+        // numerator_inter(a, vis)
+        //     = tuple_select(a==0, Diagonal(Matrix(v_res_in_local(vis)) * cor_model_transp_1M),
+        //              Diagonal(HermTranspose(Matrix(v_res_in_local(vis))) * cor_model_2M));
         
-        Tuple numerator_interExpr = tuple_select(rv2.x==0, Diagonal(Matrix(v_res_in_local(rv2.y)) * cor_model_transp_1ME),
-                     Diagonal(HermTranspose(Matrix(v_res_in_local(rv2.y))) * cor_model_2ME));
+        // Tuple numerator_interExpr = tuple_select(rv2.x==0, Diagonal(Matrix(v_res_in_local(rv2.y)) * cor_model_transp_1ME),
+        //              Diagonal(HermTranspose(Matrix(v_res_in_local(rv2.y))) * cor_model_2ME));
 
-        // numerator(sol_index, ant_i(rv2.x, rv2.y)) += numerator_inter(rv2.x, rv2.y);
-        numerator(sol_index, ant_i(rv2.x, rv2.y)) += numerator_interExpr;
+        numerator(sol_index, ant_i(rv2.x, rv2.y)) += numerator_inter(rv2.x, rv2.y);
+        // numerator(sol_index, ant_i(rv2.x, rv2.y)) += numerator_interExpr;
         numerator.update().reorder(rv2.x, rv2.y).unroll(rv2.x);
 
         Expr nan = Expr(std::numeric_limits<double>::quiet_NaN());
@@ -334,14 +348,28 @@ public:
 
         numerator.compute_root();
         denominator.compute_root();
-        // numerator.update().compute_with(denominator.update(), rv2.y);
-        denominator.update().compute_with(numerator.update(), rv2.y);
+        numerator.update().compute_with(denominator.update(), rv2.y);
+        // denominator.update().compute_with(numerator.update(), rv2.y);
+
+        // RVar rv2_y_i("rv2_y_i"), rv2_y_o("rv2_y_o");
+        // numerator.update()
+        //     .split(rv2.y, rv2_y_o, rv2_y_i, 32, TailStrategy::GuardWithIf)
+        //     .atomic(true)
+        //     .gpu(rv2_y_o, rv2_y_i)
+        //     ;
+        // // denominator.update().gpu_thread()
+        // denominator.update()
+        //     .split(rv2.y, rv2_y_o, rv2_y_i, 32, TailStrategy::GuardWithIf)
+        //     .atomic(true)
+        //     .gpu(rv2_y_o, rv2_y_i)
+        //     ;
+
         // denominator.update().compute_with(numerator.update(), rv2.y);
         // cor_model_transp_1.compute_at(LoopLevel(denominator, rv2.y, 1));
-        // cor_model_transp_1.compute_at(denominator, rv2.y);
+        cor_model_transp_1.compute_at(denominator, rv2.y);
         // cor_model_transp_1.compute_at(numerator, rv2.y);
-        cor_model_transp_1.compute_root();
-        cor_model_2.compute_root();
+        // cor_model_transp_1.compute_root();
+        cor_model_2.compute_at(denominator, rv2.y);
         cor_model_2.compute_with(cor_model_transp_1, vis);
 
         // cor_model_transp_1.compute_at(denominator, rv2.x);
@@ -349,7 +377,6 @@ public:
         
 
         Func next_solutions("next_solutions");
-
         Func next_solutions_inter("next_solutions_inter");
         // next_solutions_inter(pol ,si,a) = Complex(Expr(0.0),Expr(0.0));
         next_solutions_inter(pol ,si,a) = {undef<double>(), undef<double>()};
@@ -373,7 +400,8 @@ public:
 
         set_bounds({{0, 2}, {0, 2}}, next_solutions_complex.output_buffer());
         next_solutions_complex.output_buffer().dim(2).set_bounds(solution_index0, n_dir_sol);
-        next_solutions_complex.output_buffer().dim(3).set_bounds(0, n_antennas);
+        // next_solutions_complex.output_buffer().dim(2).set_stride(2*2*n_solutions);
+        // next_solutions_complex.output_buffer().dim(3).set_bounds(0, n_antennas);
 
             
         return next_solutions_complex;
@@ -382,10 +410,11 @@ public:
     void compile(){
         try{
             Target target = get_target_from_environment();
-            // target.set_feature(Target::OpenCL);
-            // target.set_feature(Target::CLDoubles);
+            // target.set_feature(Target::CUDA);
+            target.set_feature(Target::OpenCL);
+            target.set_feature(Target::CLDoubles);
             target.set_feature(Target::AVX512);
-            target.set_features({Target::NoAsserts, Target::NoBoundsQuery});
+            // target.set_features({Target::NoAsserts, Target::NoBoundsQuery});
             // target.set_feature(Target::Debug);
             if(!host_supports_target_device(target)){
                 std::cout << "The target " << target.to_string() << " is not supported on this host." << std::endl;

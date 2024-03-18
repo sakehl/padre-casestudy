@@ -24,8 +24,11 @@ class IterativeDiagonalSolverHalide final : public SolverBase {
 
   int PerformIteration(
       size_t ch_block, const SolveData::ChannelBlockData& cb_data,
-      std::vector<aocommon::MC2x2F>& v_residual, const std::vector<DComplex>& solutions,
-      SolutionTensor & next_solutions);
+      Halide::Runtime::Buffer<float, 4>& v_res_result_b,
+      Halide::Runtime::Buffer<double, 4>& solution_b,
+      Halide::Runtime::Buffer<double, 5>& next_solutions_b,
+      bool skip=false
+      );
 
   template <bool Add>
   void AddOrSubtractDirection(size_t channel_block, size_t direction);

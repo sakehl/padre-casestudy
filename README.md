@@ -26,7 +26,7 @@ Want to contribute some code, or improve documentation? You can start by cloning
 
 # Standard build command
 ```
-CUDACXX=/usr/local/cuda-12/bin/nvcc cmake -B build -S . -DBUILD_TESTING=ON -DBUILD_WITH_HALIDE=ON -D BUILD_WITH_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES=native
+CUDACXX=/usr/local/cuda-12/bin/nvcc cmake -B build -S . -DBUILD_TESTING=ON -DBUILD_WITH_HALIDE=ON -D BUILD_WITH_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES=70
 ```
 ```
 cmake --build build -- -j8
@@ -36,4 +36,6 @@ cmake --build build -- -j8
 ```
 ./build/unittests "-t" "solvers/iterative_diagonal_dd_intervals"
 ./build/unittests "-t" "solvers/iterative_diagonal_halide"
+./build/unittests "-t" "solvers/iterative_diagonal_halide_parts"
+./build/unittests "-t" "solvers/iterative_diagonal_halide_time"
 ```

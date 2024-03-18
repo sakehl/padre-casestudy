@@ -288,6 +288,18 @@ BOOST_FIXTURE_TEST_CASE(iterative_diagonal_cuda_keep_buffers, SolverTester,
   TestIterativeDiagonal(*this, solver);
 }
 
+BOOST_FIXTURE_TEST_CASE(iterative_diagonal_cuda_time, SolverTester,
+                        *boost::unit_test::label("slow")) {
+  dp3::ddecal::IterativeDiagonalSolverCuda solver;
+  TimeIterativeDiagonal(*this, solver, 5);
+}
+
+BOOST_FIXTURE_TEST_CASE(iterative_diagonal_cuda_keep_buffers_time, SolverTester,
+                        *boost::unit_test::label("slow")) {
+  dp3::ddecal::IterativeDiagonalSolverCuda solver{true};
+  TimeIterativeDiagonal(*this, solver, 5);
+}
+
 #endif
 
 BOOST_FIXTURE_TEST_CASE(iterative_diagonal_dd_intervals, SolverTester,
