@@ -148,12 +148,22 @@ Matrix HermTranspose(const Matrix& matrix){
     return Matrix(conj(matrix.m00), conj(matrix.m10), conj(matrix.m01), conj(matrix.m11));
 }
 
+MatrixDiag HermTranspose(const MatrixDiag& matrix){
+    return MatrixDiag(conj(matrix.m00), conj(matrix.m11));
+}
+
 /**
  * Diagonal - non-diagonal Matrix multiplication operator
  */
 Matrix operator*(const MatrixDiag& lhs,
                              const Matrix& rhs) {
   return Matrix(lhs.m00 * rhs.m00, lhs.m00 * rhs.m01, lhs.m11 * rhs.m10,
+                            lhs.m11 * rhs.m11);
+}
+
+Matrix operator*(const Matrix& lhs,
+                             const MatrixDiag& rhs) {
+  return Matrix(lhs.m00 * rhs.m00, lhs.m01 * rhs.m11, lhs.m10 * rhs.m00,
                             lhs.m11 * rhs.m11);
 }
 

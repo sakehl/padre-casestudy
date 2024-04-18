@@ -427,21 +427,22 @@ target_link_libraries(DDECal xsimd xtensor)
 if(BUILD_WITH_HALIDE)
   # set(CMAKE_PREFIX_PATH /home/lars/data/halide-master/halide-install/)
   # set(Halide_ROOT /home/lars/data/halide-master/halide-install/)
-  find_package(Halide 18.0.0 EXACT REQUIRED PATHS /home/lars/data/halide-master/halide-install/ NO_DEFAULT_PATH)
+  # find_package(Halide 18.0.0 EXACT REQUIRED PATHS /home/lars/data/halide-master/halide-install/ NO_DEFAULT_PATH)
+  find_package(Halide REQUIRED PATHS /home/lars/data/halide/install NO_DEFAULT_PATH)
   # find_package(Halide 17.0.1 EXACT REQUIRED PATHS /home/lars/data/halide-master/halide-install-17.0.1/ NO_DEFAULT_PATH)
 
   add_executable(GenerateHalideDiagonal ddecal/gain_solvers/GenerateHalideDiagonal.cc)
   target_link_libraries(GenerateHalideDiagonal PRIVATE Halide::Halide)
 
   add_custom_command(
-    OUTPUT TestNumerator.cc TestNumerator.h IdHalide.cc IdHalide.h IdHalide.a SubDirectionHalide.cc SubDirectionHalide.h SubDirectionHalide.a SolveDirectionHalide.cc SolveDirectionHalide.h SolveDirectionHalide.a HalideRuntime.o
+    OUTPUT TestNumerator.c TestNumerator.h IdHalide.c IdHalide.h IdHalide.a SubDirectionHalide.c SubDirectionHalide.h SubDirectionHalide.a SolveDirectionHalide.c SolveDirectionHalide.h SolveDirectionHalide.a HalideRuntime.o
     COMMAND ./GenerateHalideDiagonal
     DEPENDS GenerateHalideDiagonal
   )
 
   add_custom_target(
     GenerateHalideDiagonal_output ALL
-    DEPENDS TestNumerator.cc TestNumerator.h IdHalide.cc IdHalide.h IdHalide.a SubDirectionHalide.cc SubDirectionHalide.h SubDirectionHalide.a SolveDirectionHalide.cc SolveDirectionHalide.h SolveDirectionHalide.a HalideRuntime.o
+    DEPENDS TestNumerator.c TestNumerator.h IdHalide.c IdHalide.h IdHalide.a SubDirectionHalide.c SubDirectionHalide.h SubDirectionHalide.a SolveDirectionHalide.c SolveDirectionHalide.h SolveDirectionHalide.a HalideRuntime.o
   )
 
   if(BUILD_HALIDE_LLVM)
@@ -457,10 +458,10 @@ if(BUILD_WITH_HALIDE)
   else()
     add_library(DDCALHalide OBJECT
       ddecal/gain_solvers/HalideSolver.cc
-      ${CMAKE_BINARY_DIR}/SubDirectionHalide.cc
-      ${CMAKE_BINARY_DIR}/SolveDirectionHalide.cc
-      ${CMAKE_BINARY_DIR}/IdHalide.cc
-      ${CMAKE_BINARY_DIR}/TestNumerator.cc
+      ${CMAKE_BINARY_DIR}/SubDirectionHalide.c
+      ${CMAKE_BINARY_DIR}/SolveDirectionHalide.c
+      ${CMAKE_BINARY_DIR}/IdHalide.c
+      ${CMAKE_BINARY_DIR}/TestNumerator.c
     )
   endif()
 

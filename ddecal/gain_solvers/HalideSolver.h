@@ -44,11 +44,11 @@ class IterativeDiagonalSolverHalide final : public SolverBase {
   struct Buffers {
     std::vector<std::vector<Halide::Runtime::Buffer<float, 4>>>
         model;      // <cb>[ndir][nvis], MC2x2F
-    std::vector<Halide::Runtime::Buffer<uint32_t, 1>>
+    std::vector<Halide::Runtime::Buffer<int32_t, 1>>
         antenna1;      // <cb>[nvis], uin32_t
-    std::vector<Halide::Runtime::Buffer<uint32_t, 1>>
+    std::vector<Halide::Runtime::Buffer<int32_t, 1>>
         antenna2;      // <cb>[nvis], uin32_t
-    std::vector<std::vector<Halide::Runtime::Buffer<uint32_t, 1>>>
+    std::vector<std::vector<Halide::Runtime::Buffer<int32_t, 1>>>
         solution_map;  // <cb>[n_dir][n_vis] uint32_t
   } buffers_;
 };
