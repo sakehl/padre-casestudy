@@ -34,11 +34,11 @@ public:
     Expr n_vis;
     Expr n_antennas;
     
-    Func model, sol;
-    Var x, y, i, j, vis, si, a, pol, c;
+    Func model, sol, solutions;
+    Var x, y, i, j, v, si, a, pol, c;
 
     Func antenna_1, antenna_2, solution_index, v_res0;
-    Func sol_ann;
+    Func sol_ann, sol_ann_;
     std::vector<Argument> args;
 
     int schedule;
@@ -57,10 +57,10 @@ public:
         n_solutions("n_solutions"),
         n_vis("n_vis"),
         n_antennas("n_antennas"),
-        model("model"), sol("sol"),
-        x("x"), y("y"), i("i"), j("j"), vis("vis"), si("si"), a("a"), pol("pol"), c("c"),
+        model("model"), sol("sol"), solutions("solutions"),
+        x("x"), y("y"), i("i"), j("j"), v("v"), si("si"), a("a"), pol("pol"), c("c"),
         antenna_1("antenna_1"), antenna_2("antenna_2"), solution_index("solution_index"),
-        v_res0("v_res0"), sol_ann("sol_ann"){
+        v_res0("v_res0"), sol_ann("sol_ann"), sol_ann_("sol_ann_"){
 
         schedule = 0;
         gpu = false;
@@ -92,16 +92,18 @@ public:
         set_bounds({{0, 2}, {0, 2}, {0, n_solutions}, {0, n_antennas}}, sol_);
         
         
-        model(vis) = toComplexMatrix(model_, {vis});
-        sol(i, si, a) = Tuple(sol_(0, i, si, a), sol_(1, i, si, a));
+        model(v) = toComplexMatrix(model_, {v});
+        sol(i, si, a) = castT<float>(Tuple(sol_(0, i, si, a), sol_(1, i, si, a)));
 
-        antenna_1(vis) = unsafe_promise_clamped(cast<int>(ant1(vis)), 0, n_antennas-1);
-        antenna_2(vis) = unsafe_promise_clamped(cast<int>(ant2(vis)), 0, n_antennas-1);
-        solution_index(vis) = unsafe_promise_clamped(cast<int>(solution_map(vis)), solution_index0, solution_index0+n_dir_sol-1);
+        antenna_1(v) = unsafe_promise_clamped(cast<int>(ant1(v)), 0, n_antennas-1);
+        antenna_2(v) = unsafe_promise_clamped(cast<int>(ant2(v)), 0, n_antennas-1);
+        solution_index(v) = unsafe_promise_clamped(cast<int>(solution_map(v)), solution_index0, solution_index0+n_dir_sol-1);
 
-        sol_ann(i,vis,a) = castc<float>(sol(i,solution_index(vis),a));
+        sol_ann_(i,v,a) = sol(i,solution_index(v),a);
+        sol_ann(v, a) = toDiagMatrix(sol_ann_, {v, a});
+        solutions(si, a) = toDiagMatrix(sol, {si, a});
 
-        v_res0(vis) = toComplexMatrix(v_res_in, {vis});
+        v_res0(v) = toComplexMatrix(v_res_in, {v});
 
         args = {sol_, solution_map, ant1, ant2, model_, v_res_in, _solution_index0, _n_dir_sol, _n_vis, _n_solutions, _n_antennas};
     }
@@ -175,15 +177,15 @@ public:
     Func matrixId(Func in){
         Func v_res0("v_res0");
 
-        v_res0(vis) = Matrix(
-            Complex(in(0,0,0,vis), in(1,0,0,vis)),
-            Complex(in(0,1,0,vis), in(1,1,0,vis)),
-            Complex(in(0,0,1,vis), in(1,0,1,vis)),
-            Complex(in(0,1,1,vis), in(1,1,1,vis))
+        v_res0(v) = Matrix(
+            Complex(in(0,0,0,v), in(1,0,0,v)),
+            Complex(in(0,1,0,v), in(1,1,0,v)),
+            Complex(in(0,0,1,v), in(1,0,1,v)),
+            Complex(in(0,1,1,v), in(1,1,1,v))
         );
         
         Var vis_i, vis_o;
-        Func out = matrixToDimensions(v_res0, {vis});
+        Func out = matrixToDimensions(v_res0, {v});
         return out;
     }
 
@@ -221,34 +223,6 @@ public:
         return v_res_out;
     }
 
-    Func AddOrSubtractDirection(bool add, Func v_res_in_local){
-        Complex sol_ann_1_0 = sol_ann(0,vis,antenna_1(vis));
-        Complex sol_ann_1_1 = sol_ann(1,vis,antenna_1(vis));
-        Complex sol_ann_2_0 = sol_ann(0,vis,antenna_2(vis));
-        Complex sol_ann_2_1 = sol_ann(1,vis,antenna_2(vis));
-        Matrix modelM = Matrix(model(vis));
-
-        Func contribution("contribution");
-        contribution(vis) = 
-        Matrix(
-            sol_ann_1_0 * modelM.m00 * conj(sol_ann_2_0),
-            sol_ann_1_0 * modelM.m01 * conj(sol_ann_2_1),
-            sol_ann_1_1 * modelM.m10 * conj(sol_ann_2_0),
-            sol_ann_1_1 * modelM.m11 * conj(sol_ann_2_1)
-        );
-
-        Func v_res0("v_res0"), v_res1("v_res1");
-        v_res0(vis) = toComplexMatrix(v_res_in_local, {vis});
-
-        if(add){
-            v_res1(vis) = Matrix(v_res0(vis)) + Matrix(contribution(vis));
-        } else {
-            v_res1(vis) = Matrix(v_res0(vis)) - Matrix(contribution(vis));
-        }
-
-        return v_res1;
-    }
-
     Func TestNumerator(Func v_res_in_local){
         Func numerator("numerator"), denominator("denominator");
         numerator(si,a) = MatrixDiag({0.0f, 0.0f, 0.0f, 0.0f});
@@ -257,23 +231,19 @@ public:
         v_res_in_local.compute_root();
         RDom rv2(0, 2, 0, n_vis, "rv2");
 
-        Complex sol_ann_1_0_ = sol_ann(0,vis,antenna_1(vis));
-        Complex sol_ann_1_1_ = sol_ann(1,vis,antenna_1(vis));
-        Complex sol_ann_2_0_ = sol_ann(0,vis,antenna_2(vis));
-        Complex sol_ann_2_1_ = sol_ann(1,vis,antenna_2(vis));
-        Matrix modelM = Matrix(model(vis));
+        Matrix modelM = Matrix(model(v));
 
-        MatrixDiag solution_1 = {sol_ann_2_0_, sol_ann_2_1_};
+        MatrixDiag solution_1 = sol_ann(v ,antenna_2(v));
         Matrix cor_model_transp_1 = solution_1 * HermTranspose(modelM);
         
-        MatrixDiag solution_2 = {sol_ann_1_0_, sol_ann_1_1_};
+        MatrixDiag solution_2 = sol_ann(v ,antenna_1(v));
         Matrix cor_model_2 = solution_2 * modelM;
 
         Func denominator_inter("denominator_inter");
         Func ant_i("ant_i");
-        ant_i(a, vis) = select(a == 0, antenna_1(vis), antenna_2(vis));
+        ant_i(a, v) = select(a == 0, antenna_1(v), antenna_2(v));
         
-        denominator_inter(a, i, vis)
+        denominator_inter(a, i, v)
             = select( a==0 && i==0, cor_model_transp_1.m00.norm() + cor_model_transp_1.m10.norm()
                     , a==0 && i==1, cor_model_transp_1.m01.norm() + cor_model_transp_1.m11.norm()
                     , a==1 && i==0, cor_model_2.m00.norm() + cor_model_2.m10.norm()
@@ -284,9 +254,9 @@ public:
         denominator(i, sol_index, ant_i(rv2.x, rv2.y)) += denominator_inter(rv2.x, i, rv2.y);
 
         Func numerator_inter("numerator_inter");
-        numerator_inter(a, vis)
-            = tuple_select(a==0, Diagonal(Matrix(v_res_in_local(vis)) * cor_model_transp_1),
-                     Diagonal(HermTranspose(Matrix(v_res_in_local(vis))) * cor_model_2));
+        numerator_inter(a, v)
+            = tuple_select(a==0, Diagonal(Matrix(v_res_in_local(v)) * cor_model_transp_1),
+                     Diagonal(HermTranspose(Matrix(v_res_in_local(v))) * cor_model_2));
     
         numerator(sol_index, ant_i(rv2.x, rv2.y)) += numerator_inter(rv2.x, rv2.y);
 
@@ -300,77 +270,80 @@ public:
         return diagMatrixToDimensions(numerator, {si,a});
     }
 
-    Func SolveDirection(Func v_res_in){
-        Func v_res_in_local = AddOrSubtractDirection(true, v_res_in);
+    Func AddOrSubtractDirection(bool add, Func vis_in){
+        Func vis_out("vis_out");
 
-        Func numerator("numerator"), denominator("denominator");
-        numerator(si,a) = MatrixDiag({0.0f, 0.0f, 0.0f, 0.0f});
-        denominator(i,si,a) = 0.0f;
+        MatrixDiag solution_1 = solutions(solution_index(v), antenna_1(v));
+        MatrixDiag solution_2 = solutions(solution_index(v), antenna_2(v));
 
-        RDom rv2(0, 2, 0, n_vis, "rv2");
+        Matrix contribution = solution_1 * Matrix(model(v)) * HermTranspose(solution_2);
 
-        Complex sol_ann_1_0_ = sol_ann(0,vis,antenna_1(vis));
-        Complex sol_ann_1_1_ = sol_ann(1,vis,antenna_1(vis));
-        Complex sol_ann_2_0_ = sol_ann(0,vis,antenna_2(vis));
-        Complex sol_ann_2_1_ = sol_ann(1,vis,antenna_2(vis));
+        if(add){
+            vis_out(v) = Matrix(vis_in(v)) + contribution;
+        } else {
+            vis_out(v) = Matrix(vis_in(v)) - contribution;
+        }
 
-        MatrixDiag solution_1 = {sol_ann_2_0_, sol_ann_2_1_};
-        Func cor_model_transp_1("cor_model_transp_1");
-        cor_model_transp_1(vis) = solution_1 * HermTranspose(Matrix(model(vis)));
-        
-        MatrixDiag solution_2 = {sol_ann_1_0_, sol_ann_1_1_};
-        Func cor_model_2("cor_model_2");
-        cor_model_2(vis) = solution_2 * Matrix(model(vis));
-        Matrix cor_model_2M = Matrix(cor_model_2(vis));
+        return vis_out;
+    }
 
+    Func SolveDirection(Func vis_in){
+        Func cor_model_transp_1("cor_model_transp_1"), cor_model_2("cor_model_2");
         Func ant_i("ant_i");
-        ant_i(a, vis) = select(a == 0, antenna_1(vis), antenna_2(vis));
+        Func denominator_inter("denominator_inter"), numerator_inter("numerator_inter");
+        Func numerator("numerator"), denominator("denominator");
+        Func next_solutions_inter("next_solutions_inter");
+        Func next_solutions("next_solutions");
 
-        Func denominator_inter("denominator_inter");
-        denominator_inter(a, i, vis) = undef<float>();
-        denominator_inter(0, 0, vis) = Matrix(cor_model_transp_1(vis)).m00.norm() + Matrix(cor_model_transp_1(vis)).m10.norm();
-        denominator_inter(0, 1, vis) = Matrix(cor_model_transp_1(vis)).m01.norm() + Matrix(cor_model_transp_1(vis)).m11.norm();
-        denominator_inter(1, 0, vis) = Matrix(cor_model_2(vis)).m00.norm() + Matrix(cor_model_2(vis)).m10.norm();
-        denominator_inter(1, 1, vis) = Matrix(cor_model_2(vis)).m01.norm() + Matrix(cor_model_2(vis)).m11.norm();
+        Func vis_in_add = AddOrSubtractDirection(true, vis_in);
+        
+        MatrixDiag solution_1 = solutions(solution_index(v), antenna_2(v));
+        MatrixDiag solution_2 = solutions(solution_index(v), antenna_1(v));
+        cor_model_transp_1(v) = solution_1 * HermTranspose(Matrix(model(v)));
+        cor_model_2(v) = solution_2 * Matrix(model(v));
+        
+        numerator_inter(a, v) = {undef<float>(), undef<float>(), undef<float>(), undef<float>()};
+        numerator_inter(0, v) = Diagonal(Matrix(vis_in_add(v)) * Matrix(cor_model_transp_1(v)));
+        numerator_inter(1, v) = Diagonal(HermTranspose(Matrix(vis_in_add(v))) * Matrix(cor_model_2(v)));
+
+        denominator_inter(a, i, v) = undef<float>();
+        denominator_inter(0, 0, v) = Matrix(cor_model_transp_1(v)).m00.norm() + Matrix(cor_model_transp_1(v)).m10.norm();
+        denominator_inter(0, 1, v) = Matrix(cor_model_transp_1(v)).m01.norm() + Matrix(cor_model_transp_1(v)).m11.norm();
+        denominator_inter(1, 0, v) = Matrix(cor_model_2(v)).m00.norm() + Matrix(cor_model_2(v)).m10.norm();
+        denominator_inter(1, 1, v) = Matrix(cor_model_2(v)).m01.norm() + Matrix(cor_model_2(v)).m11.norm();
+
+        ant_i(a, v) = select(a == 0, antenna_1(v), antenna_2(v));
+        RDom rv2(0, 2, 0, n_vis, "rv2");
+        numerator(si,a) = MatrixDiag({0.0f, 0.0f, 0.0f, 0.0f});
+        numerator(solution_index(rv2.y), ant_i(rv2.x, rv2.y)) += numerator_inter(rv2.x, rv2.y);
+        denominator(i,si,a) = 0.0f;
         denominator(i, solution_index(rv2.y), ant_i(rv2.x, rv2.y)) += denominator_inter(rv2.x, i, rv2.y);
 
-        Func numerator_inter("numerator_inter");
-        numerator_inter(a, vis) = {undef<float>(), undef<float>(), undef<float>(), undef<float>()};
-        numerator_inter(0, vis) = Diagonal(Matrix(v_res_in_local(vis)) * Matrix(cor_model_transp_1(vis)));
-        numerator_inter(1, vis) = Diagonal(HermTranspose(Matrix(v_res_in_local(vis))) * Matrix(cor_model_2(vis)));
-        numerator(solution_index(rv2.y), ant_i(rv2.x, rv2.y)) += numerator_inter(rv2.x, rv2.y);
-
         Expr nan = Expr(std::numeric_limits<double>::quiet_NaN());
-        Complex czero = Complex(Expr(0.0), Expr(0.0));
         Complex cnan = Complex(nan, nan);
 
-        Func next_solutions("next_solutions");
-        Func next_solutions_inter("next_solutions_inter");
         next_solutions_inter(pol ,si,a) = {undef<double>(), undef<double>()};
         next_solutions_inter(0,si,a) = tuple_select(
             denominator(0,si,a) == 0.0f,
             cnan,
-            castc<double>(MatrixDiag(numerator(si,a)).m00) / cast<double>(denominator(0,si,a))
+            castC<double>(MatrixDiag(numerator(si,a)).m00) / cast<double>(denominator(0,si,a))
         );
         next_solutions_inter(1,si,a) = tuple_select(
             denominator(1,si,a) == 0.0f,
             cnan,
-            castc<double>(MatrixDiag(numerator(si,a)).m11) / cast<double>(denominator(1,si,a))
+            castC<double>(MatrixDiag(numerator(si,a)).m11) / cast<double>(denominator(1,si,a))
         );
- 
-        next_solutions(pol,si,a) = tuple_select(pol==0, next_solutions_inter(0,si,a), next_solutions_inter(1,si,a));
+        next_solutions(c, pol, si, a) = mux(c, 
+            {Complex(next_solutions_inter(pol, si, a)).real, 
+             Complex(next_solutions_inter(pol, si, a)).imag});
 
-        Func next_solutions_complex("next_solutions_complex");
-        next_solutions_complex(c, pol, si, a) = mux(c, {Complex(next_solutions(pol, si, a)).real, Complex(next_solutions(pol, si, a)).imag});
 
-        next_solutions_complex.bound(c,0,2).bound(pol, 0, 2).bound(a, 0, n_antennas).bound(si, solution_index0, n_dir_sol);
-        
-
-        set_bounds({{0, 2}, {0, 2}}, next_solutions_complex.output_buffer());
-        next_solutions_complex.output_buffer().dim(2).set_stride(2*2);
-        next_solutions_complex.output_buffer().dim(2).set_bounds(solution_index0, n_dir_sol);
-        next_solutions_complex.output_buffer().dim(3).set_stride(2*2*n_solutions);
-        next_solutions_complex.output_buffer().dim(3).set_bounds(0, n_antennas);
+        next_solutions.bound(c,0,2).bound(pol, 0, 2).bound(a, 0, n_antennas).bound(si, solution_index0, n_dir_sol);
+        set_bounds({{0, 2}, {0, 2}}, next_solutions.output_buffer());
+        next_solutions.output_buffer().dim(2).set_stride(2*2);
+        next_solutions.output_buffer().dim(2).set_bounds(solution_index0, n_dir_sol);
+        next_solutions.output_buffer().dim(3).set_stride(2*2*n_solutions);
+        next_solutions.output_buffer().dim(3).set_bounds(0, n_antennas);
         if(schedule == 0) {
             numerator.compute_root();
             denominator.compute_root();
@@ -385,13 +358,12 @@ public:
             numerator.update().compute_with(denominator.update(), rv2.y);
             cor_model_transp_1.compute_at(denominator, rv2.y);
             cor_model_2.compute_at(denominator, rv2.y);
-            cor_model_2.compute_with(cor_model_transp_1, vis);
+            cor_model_2.compute_with(cor_model_transp_1, v);
 
-            next_solutions_complex.unroll(c).unroll(pol);
+            next_solutions.unroll(c).unroll(pol);
         }
-
             
-        return next_solutions_complex;
+        return next_solutions;
     }
 
     void compile(){
@@ -411,14 +383,14 @@ public:
                 std::cout << "The target " << target.to_string() << " is supported on this host." << std::endl;
             }
             
-            Func v_sub_out = AddOrSubtractDirection(false, v_res_in);
-            Func v_sub_out_matrix = matrixToDimensions(v_sub_out, {vis});
-            v_sub_out_matrix.bound(vis, 0, n_vis);
+            Func v_sub_out = AddOrSubtractDirection(false, v_res0);
+            Func v_sub_out_matrix = matrixToDimensions(v_sub_out, {v});
+            v_sub_out_matrix.bound(v, 0, n_vis);
             set_bounds({{0, 2}, {0, 2}, {0, 2}, {0, n_vis}}, v_sub_out_matrix.output_buffer());
 
             Func idFunc = matrixId(v_res_in);
             Func testNumerator = TestNumerator(v_res0);
-            Func solve_out = SolveDirection(v_res_in);
+            Func solve_out = SolveDirection(v_res0);
             
             // Bounds on input
             ant1.requires((ant1(_0) >= 0 && ant1(_0) < n_antennas));

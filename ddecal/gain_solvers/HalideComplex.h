@@ -11,6 +11,7 @@ struct Complex {
     // Construct from a Tuple
     Complex(Tuple t)
         : real(t[0]), imag(t[1]) {
+        assert (t.size() == 2);
     }
 
     // Construct from a pair of Exprs
@@ -72,6 +73,7 @@ struct Matrix {
     Matrix(Tuple t)
         : m00(Complex(t[0],t[1])), m01(Complex(t[2],t[3])),
         m10(Complex(t[4],t[5])), m11(Complex(t[6],t[7])) {
+            assert(t.size() == 8);
     }
 
     // Construct from a call to a Func by treating it as a Tuple
@@ -111,6 +113,7 @@ struct MatrixDiag {
 
     MatrixDiag(Tuple t)
         : m00(Complex(t[0],t[1])), m11(Complex(t[2],t[3])) {
+            assert(t.size() == 4);
     }
 
     // Construct from a call to a Func by treating it as a Tuple
@@ -172,9 +175,28 @@ MatrixDiag Diagonal(const Matrix matrix){
 }
 
 template<typename T>
-inline Complex castc(Complex t) {
-    return {cast(type_of<T>(), std::move(t.real)),  cast(type_of<T>(), std::move(t.imag))};
+inline Tuple castT(Tuple t) {
+    std::vector<Expr> result;
+    std::transform(t.as_vector().begin(), t.as_vector().end(), std::back_inserter(result), [](Expr e) {
+        return cast(type_of<T>(), std::move(e));
+    });
+    return Tuple(result);
 }
+
+template<typename T>
+inline Complex castC(Complex t) {
+    return castT<T>(t);
+}
+
+// template<typename T>
+// inline Complex cast(Complex t) {
+//     return {cast(type_of<T>(), std::move(t.real)),  cast(type_of<T>(), std::move(t.imag))};
+// }
+
+// template<typename T>
+// inline Complex cast(MatrixDiag m) {
+//     return {cast(type_of<T>(), std::move(m.m00)),  cast(type_of<T>(), std::move(m.m11))};
+// }
 
 //     // Inputs
 //     ImageParam ant1(type_of<int>(), 2, "ant1"); // <2>[cb][n_ant] int
