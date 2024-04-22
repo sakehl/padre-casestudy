@@ -1,0 +1,219 @@
+  context_everywhere
+    a_extent > 0 && 
+    si_extent > 0 &&
+    i_extent > 0 &&
+    a_stride == si_extent * i_extent &&
+    // i_extent == 2 && si_extent == 3 &&
+    // i_extent == 2 &&
+    data != null && data.length == a_stride*a_extent;
+  requires (\forall* int j; 0 <= j && j < data.length; Perm({:data[j]:}, write));
+  ensures (\forall* int a, int si, int i; a >= 0 && a < a_extent &&
+    si >= 0 && si < si_extent &&
+    i >= 0 && i < i_extent;
+    {:denominator_r(a, 0, a_extent, a_stride, si, 0, si_extent, i_extent, i, 0, i_extent, 1, data):});
+void fold_denominator_r(int a_extent,
+                        int si_extent,
+                        int i_extent,
+                        int a_stride,
+                        rational[] data){
+    loop_invariant a0 >= 0 && a0 <= a_extent;
+    loop_invariant (\forall* int a, int si, int i; 
+      a >= 0 && a < a0 &&
+      si >= 0 && si < si_extent &&
+      i >= 0 && i < i_extent;
+      {:denominator_r(a, 0, a_extent, a_stride, si, 0, si_extent, i_extent, i, 0, i_extent, 1, data):});
+    loop_invariant (\forall* int a, int si, int i; 
+      a >= a0 && a >= 0 && a < a_extent &&
+      si >= 0 && si < si_extent &&
+      i >= 0 && i < i_extent
+      && (a)*a_stride + (si)*i_extent + (i) < data.length;
+      Perm(data[(a)*a_stride + (si)*i_extent + (i)], write));
+    for(int a0 = 0; a0 < a_extent; a0++){
+      loop_invariant si0 >= 0 && si0 <= si_extent;
+      loop_invariant (\forall* int si, int i;
+      si >= 0 && si < si0 &&
+      i >= 0 && i < i_extent;
+      {:denominator_r(a0, 0, a_extent, a_stride, si, 0, si_extent, i_extent, i, 0, i_extent, 1, data):});
+      loop_invariant (\forall* int si, int i;
+      lemma_nonlinear(a0, a_stride, a_extent) &&
+        si >= si0 && si >= si && si < si_extent &&
+        i >= 0 && i < i_extent
+        && (a0)*a_stride + (si)*i_extent + (i) < data.length
+        ;
+        Perm(data[(a0)*a_stride + (si)*i_extent + (i)], write));
+      for(int si0 = 0; si0 < si_extent; si0++){
+        loop_invariant i0 >= 0 && i0 <= i_extent;
+        loop_invariant a0 >= 0 && a0 < a_extent;
+        loop_invariant (\forall* int i;
+          i >= 0 && i < i0 ;
+          {:denominator_r(a0, 0, a_extent, a_stride, si0, 0, si_extent, i_extent, i, 0, i_extent, 1, data):});
+        loop_invariant (\forall* int i;
+          lemma_nonlinear(a0, a_stride, a_extent) &&
+          lemma_nonlinear(si0, i_extent, si_extent) &&
+          i >= i0 && i < i_extent &&
+          (a0)*a_stride + (si0)*i_extent + (i) < data.length
+          ;
+          Perm(data[(a0)*a_stride + (si0)*i_extent + (i)], write));  
+        for(int i0 = 0; i0 < i_extent; i0++){
+        assert i0-0>=0 && i0-0<i_extent;
+        assert lemma_3d_access(
+          i0, 0, 1, i_extent,
+          si0, 0, i_extent, si_extent,
+          a0, 0, a_stride, a_extent
+        );
+        fold denominator_r(a0, 0, a_extent, a_stride, si0, 0, si_extent, i_extent, i0, 0, i_extent, 1, data);
+        }
+      }
+    }
+  }  
+
+  context_everywhere
+    a_extent > 0 && 
+    si_extent > 0 &&
+    i_extent > 0 &&
+    a_stride == si_extent * si_stride &&
+    si_stride == i_extent &&
+    // i_extent == 2 && si_extent == 3 &&
+    data != null && data.length == a_stride*a_extent;
+  context_everywhere 0 <= si0 && si0 < si_extent;
+  context_everywhere 0 <= a0 && a0 < a_extent;
+  // requires (\forall* int i;
+  //   i >= 0 && i < i_extent
+  //   && (a0)*a_stride + (si0)*i_extent + (i) < data.length
+  //   ;
+  //   Perm(data[(a0)*a_stride + (si0)*i_extent + (i)], write));
+  requires (\forall* int si, int i;
+      si >= si0 && si >= si && si < si_extent &&
+      i >= 0 && i < i_extent 
+      && (a0)*a_stride + (si)*si_stride + (i) < data.length
+      //&& lemma_3d_access(i, 0, 1, i_extent,si, 0, i_extent, si_extent,a0, 0, a_stride, a_extent)
+      ;
+      Perm(data[(a0)*a_stride + (si)*si_stride + (i)], write));
+  ensures (\forall* int i;
+    i >= 0 && i < i_extent ;
+    {:denominator_r(a0, 0, a_extent, a_stride, si0, 0, si_extent, si_stride, i, 0, i_extent, 1, data):});
+  ensures (\forall* int si, int i;
+      si >= si0+1 && si >= si && si < si_extent &&
+      i >= 0 && i < i_extent 
+      && (a0)*a_stride + (si)*si_stride + (i) < data.length
+      //&& lemma_3d_access(i, 0, 1, i_extent,si, 0, i_extent, si_extent,a0, 0, a_stride, a_extent)
+      ;
+      Perm(data[(a0)*a_stride + (si)*si_stride + (i)], write));
+void fold_denominator_r_i0(int a_extent,
+                        int si_extent,
+                        int i_extent,
+                        // int i_stride,
+                        int si_stride,
+                        int a_stride,
+                        rational[] data, int si0, int a0){
+    loop_invariant i0 >= 0 && i0 <= i_extent;
+    loop_invariant a0 >= 0 && a0 < a_extent;
+    loop_invariant (\forall* int i;
+      i >= 0 && i < i0
+      ;
+      {:denominator_r(a0, 0, a_extent, a_stride, si0, 0, si_extent, si_stride, i, 0, i_extent, 1, data):});
+    loop_invariant (\forall* int i;
+      lemma_nonlinear(si0, i_extent, si_extent) &&
+      i >= i0 && i < i_extent
+      && (a0)*a_stride + (si0)*si_stride + (i) < data.length
+      ;
+      Perm(data[(a0)*a_stride + (si0)*si_stride + (i)], write));  
+  for(int i0 = 0; i0 < i_extent; i0++){
+    assert i0-0>=0 && i0-0<i_extent;
+    assert lemma_3d_access(
+      i0, 0, 1, i_extent,
+      si0, 0, si_stride, si_extent,
+      a0, 0, a_stride, a_extent
+    );
+    fold denominator_r(a0, 0, a_extent, a_stride, si0, 0, si_extent, si_stride, i0, 0, i_extent, 1, data);
+  }
+}
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////
+
+resource f_r(int x, int x_min, int x_extent, int x_stride,
+                          int y, int y_min, int y_extent, int y_stride,
+                          int[] f) =
+     (f != null && f.length == y_stride*y_stride
+     && x-x_min >= 0  && x-x_min<x_extent
+     && y-y_min >= 0 && y-y_min<y_extent
+     && x_stride > 0 && y_stride >= x_extent*x_stride
+     && lemma_2d_access(x, x_min, x_stride, x_extent,y, y_min, y_stride, y_extent)
+     ) ** 
+     (\let int i = (x-x_min)*x_stride + (y-y_min)*y_stride;
+       (0 <= i && i < f.length) **
+       Perm(f[i], write)
+     );
+
+resource int_r(int[] data) = data != null ** (\forall* int i; 0<=i && i< data.length; Perm(f[i], write) );
+
+resource denominator_r(int a, int a_min, int a_extent, int a_stride,
+                         int si, int si_min, int si_extent, int si_stride,
+                         int i, int i_min, int i_extent, int i_stride,
+                         rational[] data) =
+    (data != null && data.length == a_stride*a_extent &&
+    req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+    lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+    ) ** 
+    (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+      (0 <= i && i < data.length) **
+      Perm(data[i], write)
+    );
+
+ requires a >= 0;
+ requires b > 0;
+ requires a < max_a;
+ ensures a*b >= 0;
+ ensures a*b <= (max_a-1)*b;
+ ensures \result;
+ decreases b;
+pure bool lemma_nonlinear(int a, int b, int max_a) = 
+  b>1 ? lemma_nonlinear(a, b-1, max_a) : true;
+
+ requires a-min_a >= 0  && a-min_a<extent_a;
+ requires b-min_b >= 0 && b-min_b<extent_b;
+ requires stride_a > 0;
+ requires stride_b > 0;
+ requires stride_b >= extent_a*stride_a;
+
+
+ ensures 0 <= (a-min_a)*stride_a + (b-min_b)*stride_b;
+ ensures (a-min_a)*stride_a + (b-min_b)*stride_b < stride_b*extent_b;
+ ensures \result;
+ decreases;
+pure bool lemma_2d_access(
+ int a, int min_a, int stride_a, int extent_a,
+ int b, int min_b, int stride_b, int extent_b) =
+  lemma_nonlinear(a-min_a, stride_a, extent_a) &&
+  lemma_nonlinear(b-min_b, stride_b, extent_b);
+
+inline pure bool req_3d(int a, int min_a, int stride_a, int extent_a,
+  int b, int min_b, int stride_b, int extent_b,
+  int c, int min_c, int stride_c, int extent_c) = 
+    a-min_a >= 0 && a-min_a < extent_a &&
+    b-min_b >= 0 && b-min_b < extent_b && 
+    c-min_c >= 0 && c-min_c < extent_c && 
+    stride_a > 0 && 
+    stride_b > 0 && 
+    stride_c > 0 && 
+    stride_b >= extent_a * stride_a && 
+    stride_c >= extent_b * stride_b;
+
+ requires req_3d(a, min_a, stride_a, extent_a,
+  b, min_b, stride_b, extent_b,
+  c, min_c, stride_c, extent_c);
+ 
+ ensures 0 <= (a-min_a) * stride_a + (b-min_b) * stride_b + (c-min_c) * stride_c;
+ ensures (a-min_a) * stride_a + (b-min_b) * stride_b + (c-min_c) * stride_c < stride_c * extent_c;
+ ensures \result;
+ decreases;
+pure bool lemma_3d_access(
+  int a, int min_a, int stride_a, int extent_a,
+  int b, int min_b, int stride_b, int extent_b,
+  int c, int min_c, int stride_c, int extent_c
+) = lemma_2d_access(a, min_a, stride_a, extent_a, b, min_b, stride_b, extent_b) && 
+  lemma_nonlinear(c-min_c, stride_c, extent_c);

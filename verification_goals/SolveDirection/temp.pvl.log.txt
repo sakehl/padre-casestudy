@@ -1,0 +1,1791 @@
+ma 15 apr 2024 14:07:09 CEST
+[INFO] Starting verification at 14:07:12
+[WARN] Caching is enabled, but results will be discarded, since there were uncommitted changes at compilation time.
+[WARN] Silicon has been working on the same proof goal for over 10 seconds.
+[INFO] Current state of silicon worker:
+[INFO]     At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl:70:3-:130:2:
+[INFO]       method foldDenominatorRI0
+[INFO]   [1] <indeterminate branch 1 of 2>
+[INFO]       conditional edge i0 < iExtent
+[INFO]   [0] i0 < iExtent
+[INFO]     At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl:128:5-:128:107:
+execute fold acc(denominatorR(a0, 0, aExtent, aStride, si0, 0, siExtent, siStride, i0,
+  0, iExtent, 1, data), write)
+[INFO]     At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl:160:5-:163:6:
+[INFO]       consume (let i1 == ((a - aMin) * aStride + (si - siMin) * siStride + (i - iMin) * iStride) in 0 <= i1 && i1 < alen(optGet1(data)) && acc(aloc(optGet1(data), i1).rat, write))
+[INFO]     At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl:161:8-:161:33:
+[INFO]       consume i1 < alen(optGet1(data))
+[INFO]       decider assert a0@18@15 * aStride@15@15 + si0@17@15 * siStride@14@15 + i0@39@15 < alen[Int](optGet1(_, data@16@15))
+[INFO]       prover assert a0@18@15 * aStride@15@15 + si0@17@15 * siStride@14@15 + i0@39@15 < alen[Int](optGet1(_, data@16@15))
+[WARN] Silicon has been working on the same proof goal for over 10 seconds.
+[INFO] Current state of silicon worker:
+[INFO]     At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl:1:3-:68:4:
+[INFO]       method foldDenominatorR
+[INFO]   [3] <indeterminate branch 1 of 2>
+[INFO]       conditional edge a0 < aExtent
+[INFO]   [2] a0 < aExtent
+[INFO]   [1] <indeterminate branch 2 of 2>
+[INFO]       conditional edge !(si0 < siExtent)
+[INFO]   [0] !(si0 < siExtent)
+[INFO]     At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl:25:20-:30:61:
+[INFO]       consume (forall i_si_a: Int :: { aloc(optGet1(data), i_si_a) } 0 <= (i_si_a - aStride * a0) / aStride + a0 && 0 <= i_si_a - aStride * a0 && i_si_a - aStride * a0 < aStride * (aExtent - a0) && i_si_a < alen(optGet1(data)) ==> acc(aloc(optGet1(data), i_si_a).rat, write))
+[INFO]       comment removePermissions
+[INFO]       decider assert QA r :: inv@205@16(r) < alen[Int](optGet1(_, data@12@16)) && inv@205@16(r) - aStride@11@16 * a0@191@16 < aStride@11@16 * aExtent@8@16 - a0@191@16 && 0 <= inv@205@16(r) - aStride@11@16 * a0@191@16 && 0 <= inv@205@16(r) - aStride@11@16 * a0@191@16 / aStride@11@16 + a0@191@16 ==> W - pTaken@206@16(r) - pTaken@207@16(r) == Z
+[INFO]       prover assert QA r :: inv@205@16(r) < alen[Int](optGet1(_, data@12@16)) && inv@205@16(r) - aStride@11@16 * a0@191@16 < aStride@11@16 * aExtent@8@16 - a0@191@16 && 0 <= inv@205@16(r) - aStride@11@16 * a0@191@16 && 0 <= inv@205@16(r) - aStride@11@16 * a0@191@16 / aStride@11@16 + a0@191@16 ==> W - pTaken@206@16(r) - pTaken@207@16(r) == Z
+[WARN] Silicon has been working on the same proof goal for over 10 seconds.
+[INFO] Current state of silicon worker:
+[INFO]     At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl:1:3-:68:4:
+[INFO]       method foldDenominatorR
+[INFO]   [3] <indeterminate branch 1 of 2>
+[INFO]       conditional edge a0 < aExtent
+[INFO]   [2] a0 < aExtent
+[INFO]   [1] <indeterminate branch 2 of 2>
+[INFO]       conditional edge !(si0 < siExtent)
+[INFO]   [0] !(si0 < siExtent)
+[INFO]     At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl:25:20-:30:61:
+[INFO]       consume (forall i_si_a: Int :: { aloc(optGet1(data), i_si_a) } 0 <= (i_si_a - aStride * a0) / aStride + a0 && 0 <= i_si_a - aStride * a0 && i_si_a - aStride * a0 < aStride * (aExtent - a0) && i_si_a < alen(optGet1(data)) ==> acc(aloc(optGet1(data), i_si_a).rat, write))
+[INFO]       comment Retry
+[INFO]     At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl:25:20-:30:61:
+[INFO]       consume (forall i_si_a: Int :: { aloc(optGet1(data), i_si_a) } 0 <= (i_si_a - aStride * a0) / aStride + a0 && 0 <= i_si_a - aStride * a0 && i_si_a - aStride * a0 < aStride * (aExtent - a0) && i_si_a < alen(optGet1(data)) ==> acc(aloc(optGet1(data), i_si_a).rat, write))
+[INFO]       comment removePermissions
+[INFO]       decider assert QA r :: inv@215@16(r) < alen[Int](optGet1(_, data@12@16)) && inv@215@16(r) - aStride@11@16 * a0@191@16 < aStride@11@16 * aExtent@8@16 - a0@191@16 && 0 <= inv@215@16(r) - aStride@11@16 * a0@191@16 && 0 <= inv@215@16(r) - aStride@11@16 * a0@191@16 / aStride@11@16 + a0@191@16 ==> W - pTaken@216@16(r) - pTaken@217@16(r) == Z
+[INFO]       prover assert QA r :: inv@215@16(r) < alen[Int](optGet1(_, data@12@16)) && inv@215@16(r) - aStride@11@16 * a0@191@16 < aStride@11@16 * aExtent@8@16 - a0@191@16 && 0 <= inv@215@16(r) - aStride@11@16 * a0@191@16 && 0 <= inv@215@16(r) - aStride@11@16 * a0@191@16 / aStride@11@16 + a0@191@16 ==> W - pTaken@216@16(r) - pTaken@217@16(r) == Z
+======================================
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+   17                          int a_stride,
+   18                          rational[] data){
+          [-------------------------------------------
+   19      loop_invariant a0 >= 0 && a0 <= a_extent;
+   20      loop_invariant (\forall* int a, int si, int i; 
+   21        a >= 0 && a < a0 &&
+       ... (43 lines omitted)
+   65          }
+   66        }
+   67      }
+       -----]
+   68    }  
+   69
+--------------------------------------
+[1/2] This invariant may not be maintained, since ...
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+   28        i >= 0 && i < i_extent
+   29        && (a)*a_stride + (si)*i_extent + (i) < data.length;
+            [-----------------------------------------------------
+   30        Perm(data[(a)*a_stride + (si)*i_extent + (i)], write));
+             -----------------------------------------------------]
+   31      for(int a0 = 0; a0 < a_extent; a0++){
+   32        loop_invariant si0 >= 0 && si0 <= si_extent;
+--------------------------------------
+[2/2] ... there might not be enough permission to exhale this amount (https://utwente.nl/vercors#notMaintained:perm)
+======================================
+[INFO] Finished verification at 14:08:40 (duration: 00:01:28)
+ma 15 apr 2024 15:15:35 CEST
+[INFO] Starting verification at 15:15:38
+[WARN] Caching is enabled, but results will be discarded, since there were uncommitted changes at compilation time.
+======================================
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  152  resource int_r(int[] data) =
+  153       data != null** 
+                            [-
+  154       (\forall* int i=0; 0<=i && i<f.length
+                             -]
+  155         Perm(f[i], write)
+  156       );
+--------------------------------------
+[1/70] Parsing failed: no viable alternative at input '(\forall*inti=0;'
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  152  resource int_r(int[] data) =
+  153       data != null** 
+                          [-
+  154       (\forall* int i=0; 0<=i && i<f.length
+                           -]
+  155         Perm(f[i], write)
+  156       );
+--------------------------------------
+[2/70] Parsing failed: mismatched input '=' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  152  resource int_r(int[] data) =
+  153       data != null** 
+                                   [--
+  154       (\forall* int i=0; 0<=i && i<f.length
+                                    --]
+  155         Perm(f[i], write)
+  156       );
+--------------------------------------
+[3/70] Parsing failed: extraneous input '&&' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  152  resource int_r(int[] data) =
+  153       data != null** 
+                                         [-
+  154       (\forall* int i=0; 0<=i && i<f.length
+                                          -]
+  155         Perm(f[i], write)
+  156       );
+--------------------------------------
+[4/70] Parsing failed: mismatched input '.' expecting '>'
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  153       data != null** 
+  154       (\forall* int i=0; 0<=i && i<f.length
+             [----
+  155         Perm(f[i], write)
+              ----]
+  156       );
+  157
+--------------------------------------
+[5/70] Parsing failed: mismatched input 'Perm' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  153       data != null** 
+  154       (\forall* int i=0; 0<=i && i<f.length
+                      [-
+  155         Perm(f[i], write)
+                       -]
+  156       );
+  157
+--------------------------------------
+[6/70] Parsing failed: no viable alternative at input 'f[i],'
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  153       data != null** 
+  154       (\forall* int i=0; 0<=i && i<f.length
+                      [-
+  155         Perm(f[i], write)
+                       -]
+  156       );
+  157
+--------------------------------------
+[7/70] Parsing failed: mismatched input ',' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  156       );
+  157  
+                            [-
+  158  resource denominator_r(int a, int a_min, int a_extent, int a_stride,
+                             -]
+  159                           int si, int si_min, int si_extent, int si_stride,
+  160                           int i, int i_min, int i_extent, int i_stride,
+--------------------------------------
+[8/70] Parsing failed: mismatched input '(' expecting ')'
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  156       );
+  157  
+                                  [-
+  158  resource denominator_r(int a, int a_min, int a_extent, int a_stride,
+                                   -]
+  159                           int si, int si_min, int si_extent, int si_stride,
+  160                           int i, int i_min, int i_extent, int i_stride,
+--------------------------------------
+[9/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  156       );
+  157  
+                                             [-
+  158  resource denominator_r(int a, int a_min, int a_extent, int a_stride,
+                                              -]
+  159                           int si, int si_min, int si_extent, int si_stride,
+  160                           int i, int i_min, int i_extent, int i_stride,
+--------------------------------------
+[10/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  156       );
+  157  
+                                                           [-
+  158  resource denominator_r(int a, int a_min, int a_extent, int a_stride,
+                                                            -]
+  159                           int si, int si_min, int si_extent, int si_stride,
+  160                           int i, int i_min, int i_extent, int i_stride,
+--------------------------------------
+[11/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  156       );
+  157  
+                                                                         [-
+  158  resource denominator_r(int a, int a_min, int a_extent, int a_stride,
+                                                                          -]
+  159                           int si, int si_min, int si_extent, int si_stride,
+  160                           int i, int i_min, int i_extent, int i_stride,
+--------------------------------------
+[12/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  157  
+  158  resource denominator_r(int a, int a_min, int a_extent, int a_stride,
+                                     [-
+  159                           int si, int si_min, int si_extent, int si_stride,
+                                      -]
+  160                           int i, int i_min, int i_extent, int i_stride,
+  161                           rational[] data) =
+--------------------------------------
+[13/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  157  
+  158  resource denominator_r(int a, int a_min, int a_extent, int a_stride,
+                                                 [-
+  159                           int si, int si_min, int si_extent, int si_stride,
+                                                  -]
+  160                           int i, int i_min, int i_extent, int i_stride,
+  161                           rational[] data) =
+--------------------------------------
+[14/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  157  
+  158  resource denominator_r(int a, int a_min, int a_extent, int a_stride,
+                                                                [-
+  159                           int si, int si_min, int si_extent, int si_stride,
+                                                                 -]
+  160                           int i, int i_min, int i_extent, int i_stride,
+  161                           rational[] data) =
+--------------------------------------
+[15/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  157  
+  158  resource denominator_r(int a, int a_min, int a_extent, int a_stride,
+                                                                               [-
+  159                           int si, int si_min, int si_extent, int si_stride,
+                                                                                -]
+  160                           int i, int i_min, int i_extent, int i_stride,
+  161                           rational[] data) =
+--------------------------------------
+[16/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  158  resource denominator_r(int a, int a_min, int a_extent, int a_stride,
+  159                           int si, int si_min, int si_extent, int si_stride,
+                                    [-
+  160                           int i, int i_min, int i_extent, int i_stride,
+                                     -]
+  161                           rational[] data) =
+  162      (data != null && data.length == a_stride*a_extent &&
+--------------------------------------
+[17/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  158  resource denominator_r(int a, int a_min, int a_extent, int a_stride,
+  159                           int si, int si_min, int si_extent, int si_stride,
+                                               [-
+  160                           int i, int i_min, int i_extent, int i_stride,
+                                                -]
+  161                           rational[] data) =
+  162      (data != null && data.length == a_stride*a_extent &&
+--------------------------------------
+[18/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  158  resource denominator_r(int a, int a_min, int a_extent, int a_stride,
+  159                           int si, int si_min, int si_extent, int si_stride,
+                                                             [-
+  160                           int i, int i_min, int i_extent, int i_stride,
+                                                              -]
+  161                           rational[] data) =
+  162      (data != null && data.length == a_stride*a_extent &&
+--------------------------------------
+[19/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  158  resource denominator_r(int a, int a_min, int a_extent, int a_stride,
+  159                           int si, int si_min, int si_extent, int si_stride,
+                                                                           [-
+  160                           int i, int i_min, int i_extent, int i_stride,
+                                                                            -]
+  161                           rational[] data) =
+  162      (data != null && data.length == a_stride*a_extent &&
+--------------------------------------
+[20/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  159                           int si, int si_min, int si_extent, int si_stride,
+  160                           int i, int i_min, int i_extent, int i_stride,
+                                              [-
+  161                           rational[] data) =
+                                               -]
+  162      (data != null && data.length == a_stride*a_extent &&
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+--------------------------------------
+[21/70] Parsing failed: mismatched input ')' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  160                           int i, int i_min, int i_extent, int i_stride,
+  161                           rational[] data) =
+                [--
+  162      (data != null && data.length == a_stride*a_extent &&
+                 --]
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+--------------------------------------
+[22/70] Parsing failed: mismatched input '!=' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  160                           int i, int i_min, int i_extent, int i_stride,
+  161                           rational[] data) =
+                               [-
+  162      (data != null && data.length == a_stride*a_extent &&
+                                -]
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+--------------------------------------
+[23/70] Parsing failed: extraneous input '.' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  160                           int i, int i_min, int i_extent, int i_stride,
+  161                           rational[] data) =
+                                       [--
+  162      (data != null && data.length == a_stride*a_extent &&
+                                        --]
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+--------------------------------------
+[24/70] Parsing failed: mismatched input '==' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  160                           int i, int i_min, int i_extent, int i_stride,
+  161                           rational[] data) =
+                                                  [-
+  162      (data != null && data.length == a_stride*a_extent &&
+                                                   -]
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+--------------------------------------
+[25/70] Parsing failed: extraneous input '*' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  160                           int i, int i_min, int i_extent, int i_stride,
+  161                           rational[] data) =
+                                                            [--
+  162      (data != null && data.length == a_stride*a_extent &&
+                                                             --]
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+--------------------------------------
+[26/70] Parsing failed: mismatched input '&&' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  161                           rational[] data) =
+  162      (data != null && data.length == a_stride*a_extent &&
+                [-
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                 -]
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) **
+--------------------------------------
+[27/70] Parsing failed: extraneous input '(' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  161                           rational[] data) =
+  162      (data != null && data.length == a_stride*a_extent &&
+                  [-
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                   -]
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) **
+--------------------------------------
+[28/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  161                           rational[] data) =
+  162      (data != null && data.length == a_stride*a_extent &&
+                         [-
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                          -]
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) **
+--------------------------------------
+[29/70] Parsing failed: extraneous input ',' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  161                           rational[] data) =
+  162      (data != null && data.length == a_stride*a_extent &&
+                                   [-
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                    -]
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) **
+--------------------------------------
+[30/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  161                           rational[] data) =
+  162      (data != null && data.length == a_stride*a_extent &&
+                                             [-
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                              -]
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) **
+--------------------------------------
+[31/70] Parsing failed: extraneous input ',' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  161                           rational[] data) =
+  162      (data != null && data.length == a_stride*a_extent &&
+                                                [-
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                                 -]
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) **
+--------------------------------------
+[32/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  161                           rational[] data) =
+  162      (data != null && data.length == a_stride*a_extent &&
+                                                        [-
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                                         -]
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) **
+--------------------------------------
+[33/70] Parsing failed: extraneous input ',' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  161                           rational[] data) =
+  162      (data != null && data.length == a_stride*a_extent &&
+                                                                   [-
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                                                    -]
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) **
+--------------------------------------
+[34/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  161                           rational[] data) =
+  162      (data != null && data.length == a_stride*a_extent &&
+                                                                              [-
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                                                               -]
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) **
+--------------------------------------
+[35/70] Parsing failed: extraneous input ',' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  161                           rational[] data) =
+  162      (data != null && data.length == a_stride*a_extent &&
+                                                                                [-
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                                                                 -]
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) **
+--------------------------------------
+[36/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  161                           rational[] data) =
+  162      (data != null && data.length == a_stride*a_extent &&
+                                                                                       [-
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                                                                        -]
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) **
+--------------------------------------
+[37/70] Parsing failed: extraneous input ',' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  161                           rational[] data) =
+  162      (data != null && data.length == a_stride*a_extent &&
+                                                                                                 [-
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                                                                                  -]
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) **
+--------------------------------------
+[38/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  161                           rational[] data) =
+  162      (data != null && data.length == a_stride*a_extent &&
+                                                                                                           [-
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                                                                                            -]
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) **
+--------------------------------------
+[39/70] Parsing failed: mismatched input ')' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  162      (data != null && data.length == a_stride*a_extent &&
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                           [-
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+                            -]
+  165      ) ** 
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+--------------------------------------
+[40/70] Parsing failed: no viable alternative at input 'i,'
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  162      (data != null && data.length == a_stride*a_extent &&
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                           [-
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+                            -]
+  165      ) ** 
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+--------------------------------------
+[41/70] Parsing failed: extraneous input ',' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  162      (data != null && data.length == a_stride*a_extent &&
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                  [-
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+                                   -]
+  165      ) ** 
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+--------------------------------------
+[42/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  162      (data != null && data.length == a_stride*a_extent &&
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                            [-
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+                                             -]
+  165      ) ** 
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+--------------------------------------
+[43/70] Parsing failed: extraneous input ',' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  162      (data != null && data.length == a_stride*a_extent &&
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                                      [-
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+                                                       -]
+  165      ) ** 
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+--------------------------------------
+[44/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  162      (data != null && data.length == a_stride*a_extent &&
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                                         [-
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+                                                          -]
+  165      ) ** 
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+--------------------------------------
+[45/70] Parsing failed: extraneous input ',' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  162      (data != null && data.length == a_stride*a_extent &&
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                                                 [-
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+                                                                  -]
+  165      ) ** 
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+--------------------------------------
+[46/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  162      (data != null && data.length == a_stride*a_extent &&
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                                                            [-
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+                                                                             -]
+  165      ) ** 
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+--------------------------------------
+[47/70] Parsing failed: extraneous input ',' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  162      (data != null && data.length == a_stride*a_extent &&
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                                                                       [-
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+                                                                                        -]
+  165      ) ** 
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+--------------------------------------
+[48/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  162      (data != null && data.length == a_stride*a_extent &&
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                                                                         [-
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+                                                                                          -]
+  165      ) ** 
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+--------------------------------------
+[49/70] Parsing failed: extraneous input ',' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  162      (data != null && data.length == a_stride*a_extent &&
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                                                                                [-
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+                                                                                                 -]
+  165      ) ** 
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+--------------------------------------
+[50/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  162      (data != null && data.length == a_stride*a_extent &&
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                                                                                          [-
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+                                                                                                           -]
+  165      ) ** 
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+--------------------------------------
+[51/70] Parsing failed: extraneous input ',' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  162      (data != null && data.length == a_stride*a_extent &&
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                                                                                                    [-
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+                                                                                                                     -]
+  165      ) ** 
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+--------------------------------------
+[52/70] Parsing failed: mismatched input ')' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) ** 
+                      [-
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+                       -]
+  167        (0 <= i && i < data.length) **
+  168        Perm(data[i], write)
+--------------------------------------
+[53/70] Parsing failed: extraneous input '=' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) ** 
+                          [-
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+                           -]
+  167        (0 <= i && i < data.length) **
+  168        Perm(data[i], write)
+--------------------------------------
+[54/70] Parsing failed: no viable alternative at input 'a-'
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) ** 
+                          [-
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+                           -]
+  167        (0 <= i && i < data.length) **
+  168        Perm(data[i], write)
+--------------------------------------
+[55/70] Parsing failed: extraneous input '-' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) ** 
+                                [-
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+                                 -]
+  167        (0 <= i && i < data.length) **
+  168        Perm(data[i], write)
+--------------------------------------
+[56/70] Parsing failed: mismatched input ')' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) ** 
+                                           [-
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+                                            -]
+  167        (0 <= i && i < data.length) **
+  168        Perm(data[i], write)
+--------------------------------------
+[57/70] Parsing failed: mismatched input '+' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) ** 
+                                                [-
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+                                                 -]
+  167        (0 <= i && i < data.length) **
+  168        Perm(data[i], write)
+--------------------------------------
+[58/70] Parsing failed: no viable alternative at input 'si-'
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) ** 
+                                                [-
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+                                                 -]
+  167        (0 <= i && i < data.length) **
+  168        Perm(data[i], write)
+--------------------------------------
+[59/70] Parsing failed: extraneous input '-' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) ** 
+                                                       [-
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+                                                        -]
+  167        (0 <= i && i < data.length) **
+  168        Perm(data[i], write)
+--------------------------------------
+[60/70] Parsing failed: mismatched input ')' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) ** 
+                                                                   [-
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+                                                                    -]
+  167        (0 <= i && i < data.length) **
+  168        Perm(data[i], write)
+--------------------------------------
+[61/70] Parsing failed: mismatched input '+' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) ** 
+                                                                       [-
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+                                                                        -]
+  167        (0 <= i && i < data.length) **
+  168        Perm(data[i], write)
+--------------------------------------
+[62/70] Parsing failed: no viable alternative at input 'i-'
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) ** 
+                                                                       [-
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+                                                                        -]
+  167        (0 <= i && i < data.length) **
+  168        Perm(data[i], write)
+--------------------------------------
+[63/70] Parsing failed: extraneous input '-' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) ** 
+                                                                             [-
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+                                                                              -]
+  167        (0 <= i && i < data.length) **
+  168        Perm(data[i], write)
+--------------------------------------
+[64/70] Parsing failed: mismatched input ')' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) ** 
+                                                                                       [-
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+                                                                                        -]
+  167        (0 <= i && i < data.length) **
+  168        Perm(data[i], write)
+--------------------------------------
+[65/70] Parsing failed: mismatched input ';' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  165      ) ** 
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+             [-
+  167        (0 <= i && i < data.length) **
+              -]
+  168        Perm(data[i], write)
+  169      );
+--------------------------------------
+[66/70] Parsing failed: mismatched input '0' expecting {')', 'boolean', 'void', 'int', 'char', 'float32', 'float64', LANG_ID_ESCAPE, 'resource', 'process', 'frac', 'zfrac', 'bool', 'ref', 'rational', 'seq', 'set', 'bag', 'pointer', 'map', 'option', 'either', 'tuple', 'type', 'any', 'nothing', 'string', Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  165      ) ** 
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+                    [--
+  167        (0 <= i && i < data.length) **
+                     --]
+  168        Perm(data[i], write)
+  169      );
+--------------------------------------
+[67/70] Parsing failed: extraneous input '&&' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  165      ) ** 
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+                               [-
+  167        (0 <= i && i < data.length) **
+                                -]
+  168        Perm(data[i], write)
+  169      );
+--------------------------------------
+[68/70] Parsing failed: mismatched input '.' expecting '>'
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  165      ) ** 
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+                                        [--
+  167        (0 <= i && i < data.length) **
+                                         --]
+  168        Perm(data[i], write)
+  169      );
+--------------------------------------
+[69/70] Parsing failed: mismatched input '**' expecting {'{', ';'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+  167        (0 <= i && i < data.length) **
+                        [-
+  168        Perm(data[i], write)
+                         -]
+  169      );
+  170
+--------------------------------------
+[70/70] Parsing failed: mismatched input ',' expecting {LANG_ID_ESCAPE, Identifier}
+======================================
+[INFO] Finished verification at 15:15:41 (duration: 00:00:03)
+ma 15 apr 2024 15:15:52 CEST
+[INFO] Starting verification at 15:15:56
+[WARN] Caching is enabled, but results will be discarded, since there were uncommitted changes at compilation time.
+======================================
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  152  resource int_r(int[] data) =
+  153       data != null** 
+                            [-
+  154       (\forall* int i=0; 0<=i && i<f.length;
+                             -]
+  155         Perm(f[i], write)
+  156       );
+--------------------------------------
+[1/70] Parsing failed: no viable alternative at input '(\forall*inti=0;'
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  152  resource int_r(int[] data) =
+  153       data != null** 
+                          [-
+  154       (\forall* int i=0; 0<=i && i<f.length;
+                           -]
+  155         Perm(f[i], write)
+  156       );
+--------------------------------------
+[2/70] Parsing failed: mismatched input '=' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  152  resource int_r(int[] data) =
+  153       data != null** 
+                                   [--
+  154       (\forall* int i=0; 0<=i && i<f.length;
+                                    --]
+  155         Perm(f[i], write)
+  156       );
+--------------------------------------
+[3/70] Parsing failed: extraneous input '&&' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  152  resource int_r(int[] data) =
+  153       data != null** 
+                                         [-
+  154       (\forall* int i=0; 0<=i && i<f.length;
+                                          -]
+  155         Perm(f[i], write)
+  156       );
+--------------------------------------
+[4/70] Parsing failed: mismatched input '.' expecting '>'
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  152  resource int_r(int[] data) =
+  153       data != null** 
+                                                [-
+  154       (\forall* int i=0; 0<=i && i<f.length;
+                                                 -]
+  155         Perm(f[i], write)
+  156       );
+--------------------------------------
+[5/70] Parsing failed: mismatched input ';' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  153       data != null** 
+  154       (\forall* int i=0; 0<=i && i<f.length;
+                      [-
+  155         Perm(f[i], write)
+                       -]
+  156       );
+  157
+--------------------------------------
+[6/70] Parsing failed: no viable alternative at input 'f[i],'
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  153       data != null** 
+  154       (\forall* int i=0; 0<=i && i<f.length;
+                      [-
+  155         Perm(f[i], write)
+                       -]
+  156       );
+  157
+--------------------------------------
+[7/70] Parsing failed: mismatched input ',' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  156       );
+  157  
+                            [-
+  158  resource denominator_r(int a, int a_min, int a_extent, int a_stride,
+                             -]
+  159                           int si, int si_min, int si_extent, int si_stride,
+  160                           int i, int i_min, int i_extent, int i_stride,
+--------------------------------------
+[8/70] Parsing failed: mismatched input '(' expecting ')'
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  156       );
+  157  
+                                  [-
+  158  resource denominator_r(int a, int a_min, int a_extent, int a_stride,
+                                   -]
+  159                           int si, int si_min, int si_extent, int si_stride,
+  160                           int i, int i_min, int i_extent, int i_stride,
+--------------------------------------
+[9/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  156       );
+  157  
+                                             [-
+  158  resource denominator_r(int a, int a_min, int a_extent, int a_stride,
+                                              -]
+  159                           int si, int si_min, int si_extent, int si_stride,
+  160                           int i, int i_min, int i_extent, int i_stride,
+--------------------------------------
+[10/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  156       );
+  157  
+                                                           [-
+  158  resource denominator_r(int a, int a_min, int a_extent, int a_stride,
+                                                            -]
+  159                           int si, int si_min, int si_extent, int si_stride,
+  160                           int i, int i_min, int i_extent, int i_stride,
+--------------------------------------
+[11/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  156       );
+  157  
+                                                                         [-
+  158  resource denominator_r(int a, int a_min, int a_extent, int a_stride,
+                                                                          -]
+  159                           int si, int si_min, int si_extent, int si_stride,
+  160                           int i, int i_min, int i_extent, int i_stride,
+--------------------------------------
+[12/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  157  
+  158  resource denominator_r(int a, int a_min, int a_extent, int a_stride,
+                                     [-
+  159                           int si, int si_min, int si_extent, int si_stride,
+                                      -]
+  160                           int i, int i_min, int i_extent, int i_stride,
+  161                           rational[] data) =
+--------------------------------------
+[13/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  157  
+  158  resource denominator_r(int a, int a_min, int a_extent, int a_stride,
+                                                 [-
+  159                           int si, int si_min, int si_extent, int si_stride,
+                                                  -]
+  160                           int i, int i_min, int i_extent, int i_stride,
+  161                           rational[] data) =
+--------------------------------------
+[14/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  157  
+  158  resource denominator_r(int a, int a_min, int a_extent, int a_stride,
+                                                                [-
+  159                           int si, int si_min, int si_extent, int si_stride,
+                                                                 -]
+  160                           int i, int i_min, int i_extent, int i_stride,
+  161                           rational[] data) =
+--------------------------------------
+[15/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  157  
+  158  resource denominator_r(int a, int a_min, int a_extent, int a_stride,
+                                                                               [-
+  159                           int si, int si_min, int si_extent, int si_stride,
+                                                                                -]
+  160                           int i, int i_min, int i_extent, int i_stride,
+  161                           rational[] data) =
+--------------------------------------
+[16/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  158  resource denominator_r(int a, int a_min, int a_extent, int a_stride,
+  159                           int si, int si_min, int si_extent, int si_stride,
+                                    [-
+  160                           int i, int i_min, int i_extent, int i_stride,
+                                     -]
+  161                           rational[] data) =
+  162      (data != null && data.length == a_stride*a_extent &&
+--------------------------------------
+[17/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  158  resource denominator_r(int a, int a_min, int a_extent, int a_stride,
+  159                           int si, int si_min, int si_extent, int si_stride,
+                                               [-
+  160                           int i, int i_min, int i_extent, int i_stride,
+                                                -]
+  161                           rational[] data) =
+  162      (data != null && data.length == a_stride*a_extent &&
+--------------------------------------
+[18/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  158  resource denominator_r(int a, int a_min, int a_extent, int a_stride,
+  159                           int si, int si_min, int si_extent, int si_stride,
+                                                             [-
+  160                           int i, int i_min, int i_extent, int i_stride,
+                                                              -]
+  161                           rational[] data) =
+  162      (data != null && data.length == a_stride*a_extent &&
+--------------------------------------
+[19/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  158  resource denominator_r(int a, int a_min, int a_extent, int a_stride,
+  159                           int si, int si_min, int si_extent, int si_stride,
+                                                                           [-
+  160                           int i, int i_min, int i_extent, int i_stride,
+                                                                            -]
+  161                           rational[] data) =
+  162      (data != null && data.length == a_stride*a_extent &&
+--------------------------------------
+[20/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  159                           int si, int si_min, int si_extent, int si_stride,
+  160                           int i, int i_min, int i_extent, int i_stride,
+                                              [-
+  161                           rational[] data) =
+                                               -]
+  162      (data != null && data.length == a_stride*a_extent &&
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+--------------------------------------
+[21/70] Parsing failed: mismatched input ')' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  160                           int i, int i_min, int i_extent, int i_stride,
+  161                           rational[] data) =
+                [--
+  162      (data != null && data.length == a_stride*a_extent &&
+                 --]
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+--------------------------------------
+[22/70] Parsing failed: mismatched input '!=' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  160                           int i, int i_min, int i_extent, int i_stride,
+  161                           rational[] data) =
+                               [-
+  162      (data != null && data.length == a_stride*a_extent &&
+                                -]
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+--------------------------------------
+[23/70] Parsing failed: extraneous input '.' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  160                           int i, int i_min, int i_extent, int i_stride,
+  161                           rational[] data) =
+                                       [--
+  162      (data != null && data.length == a_stride*a_extent &&
+                                        --]
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+--------------------------------------
+[24/70] Parsing failed: mismatched input '==' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  160                           int i, int i_min, int i_extent, int i_stride,
+  161                           rational[] data) =
+                                                  [-
+  162      (data != null && data.length == a_stride*a_extent &&
+                                                   -]
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+--------------------------------------
+[25/70] Parsing failed: extraneous input '*' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  160                           int i, int i_min, int i_extent, int i_stride,
+  161                           rational[] data) =
+                                                            [--
+  162      (data != null && data.length == a_stride*a_extent &&
+                                                             --]
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+--------------------------------------
+[26/70] Parsing failed: mismatched input '&&' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  161                           rational[] data) =
+  162      (data != null && data.length == a_stride*a_extent &&
+                [-
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                 -]
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) **
+--------------------------------------
+[27/70] Parsing failed: extraneous input '(' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  161                           rational[] data) =
+  162      (data != null && data.length == a_stride*a_extent &&
+                  [-
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                   -]
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) **
+--------------------------------------
+[28/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  161                           rational[] data) =
+  162      (data != null && data.length == a_stride*a_extent &&
+                         [-
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                          -]
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) **
+--------------------------------------
+[29/70] Parsing failed: extraneous input ',' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  161                           rational[] data) =
+  162      (data != null && data.length == a_stride*a_extent &&
+                                   [-
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                    -]
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) **
+--------------------------------------
+[30/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  161                           rational[] data) =
+  162      (data != null && data.length == a_stride*a_extent &&
+                                             [-
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                              -]
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) **
+--------------------------------------
+[31/70] Parsing failed: extraneous input ',' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  161                           rational[] data) =
+  162      (data != null && data.length == a_stride*a_extent &&
+                                                [-
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                                 -]
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) **
+--------------------------------------
+[32/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  161                           rational[] data) =
+  162      (data != null && data.length == a_stride*a_extent &&
+                                                        [-
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                                         -]
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) **
+--------------------------------------
+[33/70] Parsing failed: extraneous input ',' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  161                           rational[] data) =
+  162      (data != null && data.length == a_stride*a_extent &&
+                                                                   [-
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                                                    -]
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) **
+--------------------------------------
+[34/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  161                           rational[] data) =
+  162      (data != null && data.length == a_stride*a_extent &&
+                                                                              [-
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                                                               -]
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) **
+--------------------------------------
+[35/70] Parsing failed: extraneous input ',' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  161                           rational[] data) =
+  162      (data != null && data.length == a_stride*a_extent &&
+                                                                                [-
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                                                                 -]
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) **
+--------------------------------------
+[36/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  161                           rational[] data) =
+  162      (data != null && data.length == a_stride*a_extent &&
+                                                                                       [-
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                                                                        -]
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) **
+--------------------------------------
+[37/70] Parsing failed: extraneous input ',' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  161                           rational[] data) =
+  162      (data != null && data.length == a_stride*a_extent &&
+                                                                                                 [-
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                                                                                  -]
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) **
+--------------------------------------
+[38/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  161                           rational[] data) =
+  162      (data != null && data.length == a_stride*a_extent &&
+                                                                                                           [-
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                                                                                            -]
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) **
+--------------------------------------
+[39/70] Parsing failed: mismatched input ')' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  162      (data != null && data.length == a_stride*a_extent &&
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                           [-
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+                            -]
+  165      ) ** 
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+--------------------------------------
+[40/70] Parsing failed: no viable alternative at input 'i,'
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  162      (data != null && data.length == a_stride*a_extent &&
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                           [-
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+                            -]
+  165      ) ** 
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+--------------------------------------
+[41/70] Parsing failed: extraneous input ',' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  162      (data != null && data.length == a_stride*a_extent &&
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                  [-
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+                                   -]
+  165      ) ** 
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+--------------------------------------
+[42/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  162      (data != null && data.length == a_stride*a_extent &&
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                            [-
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+                                             -]
+  165      ) ** 
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+--------------------------------------
+[43/70] Parsing failed: extraneous input ',' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  162      (data != null && data.length == a_stride*a_extent &&
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                                      [-
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+                                                       -]
+  165      ) ** 
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+--------------------------------------
+[44/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  162      (data != null && data.length == a_stride*a_extent &&
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                                         [-
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+                                                          -]
+  165      ) ** 
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+--------------------------------------
+[45/70] Parsing failed: extraneous input ',' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  162      (data != null && data.length == a_stride*a_extent &&
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                                                 [-
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+                                                                  -]
+  165      ) ** 
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+--------------------------------------
+[46/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  162      (data != null && data.length == a_stride*a_extent &&
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                                                            [-
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+                                                                             -]
+  165      ) ** 
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+--------------------------------------
+[47/70] Parsing failed: extraneous input ',' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  162      (data != null && data.length == a_stride*a_extent &&
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                                                                       [-
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+                                                                                        -]
+  165      ) ** 
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+--------------------------------------
+[48/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  162      (data != null && data.length == a_stride*a_extent &&
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                                                                         [-
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+                                                                                          -]
+  165      ) ** 
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+--------------------------------------
+[49/70] Parsing failed: extraneous input ',' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  162      (data != null && data.length == a_stride*a_extent &&
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                                                                                [-
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+                                                                                                 -]
+  165      ) ** 
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+--------------------------------------
+[50/70] Parsing failed: mismatched input ',' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  162      (data != null && data.length == a_stride*a_extent &&
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                                                                                          [-
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+                                                                                                           -]
+  165      ) ** 
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+--------------------------------------
+[51/70] Parsing failed: extraneous input ',' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  162      (data != null && data.length == a_stride*a_extent &&
+  163      req_3d(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent) &&
+                                                                                                                    [-
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+                                                                                                                     -]
+  165      ) ** 
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+--------------------------------------
+[52/70] Parsing failed: mismatched input ')' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) ** 
+                      [-
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+                       -]
+  167        (0 <= i && i < data.length) **
+  168        Perm(data[i], write)
+--------------------------------------
+[53/70] Parsing failed: extraneous input '=' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) ** 
+                          [-
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+                           -]
+  167        (0 <= i && i < data.length) **
+  168        Perm(data[i], write)
+--------------------------------------
+[54/70] Parsing failed: no viable alternative at input 'a-'
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) ** 
+                          [-
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+                           -]
+  167        (0 <= i && i < data.length) **
+  168        Perm(data[i], write)
+--------------------------------------
+[55/70] Parsing failed: extraneous input '-' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) ** 
+                                [-
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+                                 -]
+  167        (0 <= i && i < data.length) **
+  168        Perm(data[i], write)
+--------------------------------------
+[56/70] Parsing failed: mismatched input ')' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) ** 
+                                           [-
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+                                            -]
+  167        (0 <= i && i < data.length) **
+  168        Perm(data[i], write)
+--------------------------------------
+[57/70] Parsing failed: mismatched input '+' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) ** 
+                                                [-
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+                                                 -]
+  167        (0 <= i && i < data.length) **
+  168        Perm(data[i], write)
+--------------------------------------
+[58/70] Parsing failed: no viable alternative at input 'si-'
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) ** 
+                                                [-
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+                                                 -]
+  167        (0 <= i && i < data.length) **
+  168        Perm(data[i], write)
+--------------------------------------
+[59/70] Parsing failed: extraneous input '-' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) ** 
+                                                       [-
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+                                                        -]
+  167        (0 <= i && i < data.length) **
+  168        Perm(data[i], write)
+--------------------------------------
+[60/70] Parsing failed: mismatched input ')' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) ** 
+                                                                   [-
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+                                                                    -]
+  167        (0 <= i && i < data.length) **
+  168        Perm(data[i], write)
+--------------------------------------
+[61/70] Parsing failed: mismatched input '+' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) ** 
+                                                                       [-
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+                                                                        -]
+  167        (0 <= i && i < data.length) **
+  168        Perm(data[i], write)
+--------------------------------------
+[62/70] Parsing failed: no viable alternative at input 'i-'
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) ** 
+                                                                       [-
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+                                                                        -]
+  167        (0 <= i && i < data.length) **
+  168        Perm(data[i], write)
+--------------------------------------
+[63/70] Parsing failed: extraneous input '-' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) ** 
+                                                                             [-
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+                                                                              -]
+  167        (0 <= i && i < data.length) **
+  168        Perm(data[i], write)
+--------------------------------------
+[64/70] Parsing failed: mismatched input ')' expecting {'(', '<'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  164      lemma_3d_access(i, i_min, i_stride, i_extent,si, si_min, si_stride, si_extent,a, a_min, a_stride, a_extent)
+  165      ) ** 
+                                                                                       [-
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+                                                                                        -]
+  167        (0 <= i && i < data.length) **
+  168        Perm(data[i], write)
+--------------------------------------
+[65/70] Parsing failed: mismatched input ';' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  165      ) ** 
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+             [-
+  167        (0 <= i && i < data.length) **
+              -]
+  168        Perm(data[i], write)
+  169      );
+--------------------------------------
+[66/70] Parsing failed: mismatched input '0' expecting {')', 'boolean', 'void', 'int', 'char', 'float32', 'float64', LANG_ID_ESCAPE, 'resource', 'process', 'frac', 'zfrac', 'bool', 'ref', 'rational', 'seq', 'set', 'bag', 'pointer', 'map', 'option', 'either', 'tuple', 'type', 'any', 'nothing', 'string', Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  165      ) ** 
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+                    [--
+  167        (0 <= i && i < data.length) **
+                     --]
+  168        Perm(data[i], write)
+  169      );
+--------------------------------------
+[67/70] Parsing failed: extraneous input '&&' expecting {LANG_ID_ESCAPE, Identifier}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  165      ) ** 
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+                               [-
+  167        (0 <= i && i < data.length) **
+                                -]
+  168        Perm(data[i], write)
+  169      );
+--------------------------------------
+[68/70] Parsing failed: mismatched input '.' expecting '>'
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  165      ) ** 
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+                                        [--
+  167        (0 <= i && i < data.length) **
+                                         --]
+  168        Perm(data[i], write)
+  169      );
+--------------------------------------
+[69/70] Parsing failed: mismatched input '**' expecting {'{', ';'}
+--------------------------------------
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  166      (\let int i = (a-a_min)*a_stride + (si-si_min)*si_stride + (i-i_min)*i_stride;
+  167        (0 <= i && i < data.length) **
+                        [-
+  168        Perm(data[i], write)
+                         -]
+  169      );
+  170
+--------------------------------------
+[70/70] Parsing failed: mismatched input ',' expecting {LANG_ID_ESCAPE, Identifier}
+======================================
+[INFO] Finished verification at 15:15:59 (duration: 00:00:03)
+ma 15 apr 2024 15:16:42 CEST
+[INFO] Starting verification at 15:16:45
+[WARN] Caching is enabled, but results will be discarded, since there were uncommitted changes at compilation time.
+======================================
+At /home/lars/data/Case_Study_Cheops/padre/DP3-master/verification_goals/SolveDirection/temp.pvl
+--------------------------------------
+  151  
+  152  resource int_r(int[] data) =
+                                                                         [-
+  153       data != null ** (\forall* int i; 0<=i && i< data.length; Perm(f[i], write) );
+                                                                          -]
+  154  
+  155  resource denominator_r(int a, int a_min, int a_extent, int a_stride,
+--------------------------------------
+Could not find local named f.
+======================================
+[INFO] Finished verification at 15:16:49 (duration: 00:00:03)
