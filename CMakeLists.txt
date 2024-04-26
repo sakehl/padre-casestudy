@@ -435,14 +435,24 @@ if(BUILD_WITH_HALIDE)
   target_link_libraries(GenerateHalideDiagonal PRIVATE Halide::Halide)
 
   add_custom_command(
-    OUTPUT TestNumerator.c TestNumerator.h IdHalide.c IdHalide.h IdHalide.a SubDirectionHalide.c SubDirectionHalide.h SubDirectionHalide.a SolveDirectionHalide.c SolveDirectionHalide.h SolveDirectionHalide.a HalideRuntime.o
+    OUTPUT TestNumerator.c TestNumerator.h 
+    IdHalide.c IdHalide.h IdHalide.a 
+    SubDirectionHalide.c SubDirectionHalide.h SubDirectionHalide.a 
+    SolveDirectionHalide.c SolveDirectionHalide.h SolveDirectionHalide.a 
+    StepHalide.c StepHalide.h StepHalide.a
+    HalideRuntime.o
     COMMAND ./GenerateHalideDiagonal
     DEPENDS GenerateHalideDiagonal
   )
 
   add_custom_target(
     GenerateHalideDiagonal_output ALL
-    DEPENDS TestNumerator.c TestNumerator.h IdHalide.c IdHalide.h IdHalide.a SubDirectionHalide.c SubDirectionHalide.h SubDirectionHalide.a SolveDirectionHalide.c SolveDirectionHalide.h SolveDirectionHalide.a HalideRuntime.o
+    DEPENDS TestNumerator.c TestNumerator.h
+    IdHalide.c IdHalide.h IdHalide.a
+    SubDirectionHalide.c SubDirectionHalide.h SubDirectionHalide.a 
+    SolveDirectionHalide.c SolveDirectionHalide.h SolveDirectionHalide.a
+    StepHalide.c StepHalide.h StepHalide.a
+    HalideRuntime.o
   )
 
   if(BUILD_HALIDE_LLVM)
@@ -460,6 +470,7 @@ if(BUILD_WITH_HALIDE)
       ddecal/gain_solvers/HalideSolver.cc
       ${CMAKE_BINARY_DIR}/SubDirectionHalide.c
       ${CMAKE_BINARY_DIR}/SolveDirectionHalide.c
+      ${CMAKE_BINARY_DIR}/StepHalide.c
       ${CMAKE_BINARY_DIR}/IdHalide.c
       ${CMAKE_BINARY_DIR}/TestNumerator.c
     )

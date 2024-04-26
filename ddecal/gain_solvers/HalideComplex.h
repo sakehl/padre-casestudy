@@ -19,6 +19,11 @@ struct Complex {
         : real(r), imag(i) {
     }
 
+    // Construct from a a single Expr (imaginary part is 0)
+    Complex(Expr r)
+        : real(r), imag(Expr(0.0)) {
+    }
+
     // Construct from a call to a Func by treating it as a Tuple
     Complex(FuncRef t)
         : Complex(Tuple(t)) {
@@ -186,6 +191,14 @@ inline Tuple castT(Tuple t) {
 template<typename T>
 inline Complex castC(Complex t) {
     return castT<T>(t);
+}
+
+inline Expr arg(Complex t){
+    return atan2(t.imag, t.real);
+}
+
+inline Complex polar(Expr r, Expr z){
+    return Complex(r*cos(z), r*sin(z));
 }
 
 // template<typename T>

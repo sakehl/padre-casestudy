@@ -2,6 +2,7 @@
 #include "../IdHalide.h"
 #include "../SolveDirectionHalide.h"
 #include "../SubDirectionHalide.h"
+#include "../StepHalide.h"
 #include "../TestNumerator.h"
 #include "IterativeDiagonalSolver.h"
 #include <aocommon/matrix2x2.h>
@@ -148,7 +149,7 @@ IterativeDiagonalSolverHalide::SolveResult IterativeDiagonalSolverHalide::Solve(
         }
       });
 
-    Step(solutions, next_solutions);
+    // Step(solutions, next_solutions);
 
     constraints_satisfied =
         ApplyConstraints(iteration, time, has_previously_converged, result,
@@ -284,7 +285,13 @@ int IterativeDiagonalSolverHalide::PerformIteration(
     }
   }
 
-  return result;
+  Halide::Runtime::Buffer<double, 4> next_solutions_cb =
+     next_solutions_b.sliced(4, ch_block);
+  halide_buffer_double next_solutions_b_hv = to_haliver_buf(next_solutions_cb);
+  
+  StepHalide(nvis, nsol, n_ant, GetPhaseOnly(), GetStepSize(), &solution_b_hv, &next_solutions_b_hv, &next_solutions_b_hv);
+
+  return result;/*@ pure @*/
 }
 
 
@@ -897,6 +904,7 @@ int HalideTester::PerformIterationTest(){
   const clock_t begin_time_2 = clock();
   solver_check.PerformIteration(cb, cb_data, v_residual_check,
                                   solutions_check[cb], next_solutions_check);
+  solver_check.Step(solutions_check, next_solutions_check);
   std::cout << "Std impl: " << float( clock () - begin_time_2 ) /  CLOCKS_PER_SEC << std::endl;
 
   int solution_offset = 0;
@@ -970,6 +978,7 @@ int HalideTester::PerformIterationAllBlocksTest(){
     solver_check.PerformIteration(cb, cb_data, v_residual_check[cb],
                                     solutions_check[cb], next_solutions_check);
   }
+  solver_check.Step(solutions_check, next_solutions_check);
   std::cout << "Std impl: " << float( clock () - begin_time_2 ) /  CLOCKS_PER_SEC << std::endl;
   
   check_all_solution(next_solutions_b, next_solutions_check, "Fail at PerformIterationAllBlocksTest");
@@ -1086,13 +1095,8 @@ int HalideTester::MultipleIterationsTest(){
       std::cout << "Cb " << cb << " Iter " << iter << std::endl;
       // if(!check_all_solution(next_solutions_b, next_solutions_check, "during iteration\n")) return 1;
     }
-    
-
-    // if(!check_all_solution(data, solver.NDirections(), solver.NAntennas(),
-    //   next_solutions, next_solutions_check, "Afeter iteration")) return 1;
-    if(!check_all_solution(next_solutions_b, next_solutions_check, "After iteration\n")) return 1;
       
-    solver.Step(solutions, next_solutions);
+    // solver.Step(solutions, next_solutions);
     solver_check.Step(solutions_check, next_solutions_check);
 
     // if(!check_all_solution(data, solver.NDirections(), solver.NAntennas(),

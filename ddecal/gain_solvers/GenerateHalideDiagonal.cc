@@ -1,5 +1,6 @@
 #include "Halide.h"
 #include "HalideComplex.h"
+#include <math.h>
 
 // using dp3::ddecal;
 using namespace Halide;
@@ -22,19 +23,22 @@ public:
     ImageParam v_res_in;
     ImageParam model_;
     ImageParam sol_;
-    Param<int> _solution_index0;
-    Param<int> _n_dir_sol;
-    Param<int> _n_solutions;
-    Param<int> _n_vis;
-    Param<int> _n_antennas;
+    ImageParam next_sol_;
+    Param<int> solution_index0;
+    Param<int> n_dir_sol;
+    Param<int> n_solutions;
+    Param<int> n_vis;
+    Param<int> n_antennas;
+    Param<double> step_size;
+    Param<bool> phase_only;
 
-    Expr solution_index0;
-    Expr n_dir_sol;
-    Expr n_solutions;
-    Expr n_vis;
-    Expr n_antennas;
+    // Expr solution_index0;
+    // Expr n_dir_sol;
+    // Expr n_solutions;
+    // Expr n_vis;
+    // Expr n_antennas;
     
-    Func model, sol, solutions;
+    Func model, sol, solutions, solD, next_sol;
     Var x, y, i, j, v, si, a, pol, c;
 
     Func antenna_1, antenna_2, solution_index, v_res0;
@@ -52,12 +56,15 @@ public:
         
         model_(type_of<float>(), 4, "model_"), // <4>[n_vis], Complex 2x2 Float (+3)
         sol_(type_of<double>(), 4, "sol_"), // <4> [n_ant][n_dir_sol][2] Complex Double (+1)
+        next_sol_(type_of<double>(), 4, "next_sol_"), // <4> [n_ant][n_dir_sol][2] Complex Double (+1)
         solution_index0("solution_index0"),
         n_dir_sol("n_dir_sol"), 
         n_solutions("n_solutions"),
         n_vis("n_vis"),
         n_antennas("n_antennas"),
-        model("model"), sol("sol"), solutions("solutions"),
+        step_size("step_size"), 
+        phase_only("phase_only"),
+        model("model"), sol("sol"), solutions("solutions"), solD("solD"), next_sol("next_sol"),
         x("x"), y("y"), i("i"), j("j"), v("v"), si("si"), a("a"), pol("pol"), c("c"),
         antenna_1("antenna_1"), antenna_2("antenna_2"), solution_index("solution_index"),
         v_res0("v_res0"), sol_ann("sol_ann"), sol_ann_("sol_ann_"){
@@ -65,11 +72,11 @@ public:
         schedule = 0;
         gpu = false;
 
-        solution_index0 = _solution_index0;
-        n_dir_sol = _n_dir_sol;
-        n_solutions = _n_solutions;
-        n_vis = _n_vis;
-        n_antennas = _n_antennas;
+        // solution_index0 = _solution_index0;
+        // n_dir_sol = _n_dir_sol;
+        // n_solutions = _n_solutions;
+        // n_vis = _n_vis;
+        // n_antennas = _n_antennas;
 
         // solution_index0 = 0;
         // n_dir_sol = 3;
@@ -90,10 +97,13 @@ public:
         set_bounds({{0, 2}, {0, 2}, {0, 2}, {0, n_vis}}, v_res_in);
         set_bounds({{0, 2}, {0, 2}, {0, 2}, {0, n_vis}}, model_);
         set_bounds({{0, 2}, {0, 2}, {0, n_solutions}, {0, n_antennas}}, sol_);
+        set_bounds({{0, 2}, {0, 2}, {0, n_solutions}, {0, n_antennas}}, next_sol_);
         
         
         model(v) = toComplexMatrix(model_, {v});
         sol(i, si, a) = castT<float>(Tuple(sol_(0, i, si, a), sol_(1, i, si, a)));
+        solD(i, si, a) = Tuple(sol_(0, i, si, a), sol_(1, i, si, a));
+        next_sol(i, si, a) = Tuple(next_sol_(0, i, si, a), next_sol_(1, i, si, a));
 
         antenna_1(v) = unsafe_promise_clamped(cast<int>(ant1(v)), 0, n_antennas-1);
         antenna_2(v) = unsafe_promise_clamped(cast<int>(ant2(v)), 0, n_antennas-1);
@@ -105,7 +115,7 @@ public:
 
         v_res0(v) = toComplexMatrix(v_res_in, {v});
 
-        args = {sol_, solution_map, ant1, ant2, model_, v_res_in, _solution_index0, _n_dir_sol, _n_vis, _n_solutions, _n_antennas};
+        args = {sol_, solution_map, ant1, ant2, model_, v_res_in, solution_index0, n_dir_sol, n_vis, n_solutions, n_antennas};
     }
 
     Func toComplex(Func f){
@@ -366,6 +376,30 @@ public:
         return next_solutions;
     }
 
+    Func Step(){
+        Func next_solutions("next_solutions");
+        Func next_solutions_("next_solutions_");
+        Expr pi = Expr(M_PI);
+        Func distance("distance");
+
+        Expr phase_from = arg(solD(i, si, a));
+        distance(i, si, a) = phase_from - arg(next_sol(i, si, a));
+        distance(i, si, a) = select(distance(i, si, a) > pi, distance(i, si, a) - 2*pi, distance(i, si, a) + 2*pi);
+        Complex phase_only_true = polar(Expr(1.0), phase_from + step_size * distance(i, si, a));
+        Complex phase_only_false = Complex(solD(i, si, a)) * (Expr(1.0) - step_size) + Complex(next_sol(i, si, a)) * Complex(step_size);
+        
+        next_solutions_(i, si, a) = tuple_select(phase_only, 
+           phase_only_true,
+           phase_only_false);
+        next_solutions(c, i, si, a) = mux(c, 
+            {Complex(next_solutions_(i, si, a)).real, 
+             Complex(next_solutions_(i, si, a)).imag});
+        next_solutions.bound(c,0,2).bound(i, 0, 2).bound(a, 0, n_antennas).bound(si, 0, n_solutions);
+        set_bounds({{0, 2}, {0, 2}, {0, n_solutions}, {0, n_antennas}}, next_solutions.output_buffer());
+
+        return next_solutions;
+    }
+
     void compile(){
         try{
             Target target = get_target_from_environment();
@@ -391,6 +425,7 @@ public:
             Func idFunc = matrixId(v_res_in);
             Func testNumerator = TestNumerator(v_res0);
             Func solve_out = SolveDirection(v_res0);
+            Func step_out = Step();
             
             // Bounds on input
             ant1.requires((ant1(_0) >= 0 && ant1(_0) < n_antennas));
@@ -416,6 +451,11 @@ public:
             solve_out.compile_to_static_library("SolveDirectionHalide", args, "SolveDirection", target);
             solve_out.compile_to_lowered_stmt("SolveDirectionHalide.html", args, StmtOutputFormat::HTML, target);
             solve_out.print_loop_nest();
+            
+            Annotation step_bounds = context(n_antennas>0 && n_vis>0 && n_solutions>0);
+            std::vector<Argument> step_args = {n_vis, n_solutions, n_antennas, phase_only, step_size, sol_, next_sol_};
+            step_out.compile_to_c("StepHalide.c", step_args, {step_bounds}, "StepHalide", target);
+            step_out.compile_to_static_library("StepHalide", step_args, "StepHalide", target);
 
             compile_standalone_runtime("HalideRuntime.o", target);
         } catch (Halide::Error &e){
