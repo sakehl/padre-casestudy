@@ -427,33 +427,75 @@ target_link_libraries(DDECal xsimd xtensor)
 if(BUILD_WITH_HALIDE)
   # set(CMAKE_PREFIX_PATH /home/lars/data/halide-master/halide-install/)
   # set(Halide_ROOT /home/lars/data/halide-master/halide-install/)
-  # find_package(Halide 18.0.0 EXACT REQUIRED PATHS /home/lars/data/halide-master/halide-install/ NO_DEFAULT_PATH)
-  find_package(Halide REQUIRED PATHS /home/lars/data/halide/install NO_DEFAULT_PATH)
+  find_package(Halide 18.0.0 EXACT REQUIRED PATHS /home/lars/data/halide-master/halide-install/ NO_DEFAULT_PATH)
+  # find_package(Halide REQUIRED PATHS /home/lars/data/halide/install NO_DEFAULT_PATH)
   # find_package(Halide 17.0.1 EXACT REQUIRED PATHS /home/lars/data/halide-master/halide-install-17.0.1/ NO_DEFAULT_PATH)
+  find_package(OpenMP REQUIRED)
 
   add_executable(GenerateHalideDiagonal ddecal/gain_solvers/GenerateHalideDiagonal.cc)
+  add_executable(GenerateHalideFull ddecal/gain_solvers/GenerateHalideFull.cc)
   target_link_libraries(GenerateHalideDiagonal PRIVATE Halide::Halide)
+  target_link_libraries(GenerateHalideFull PRIVATE Halide::Halide)
 
-  add_custom_command(
-    OUTPUT TestNumerator.c TestNumerator.h 
-    IdHalide.c IdHalide.h IdHalide.a 
-    SubDirectionHalide.c SubDirectionHalide.h SubDirectionHalide.a 
-    SolveDirectionHalide.c SolveDirectionHalide.h SolveDirectionHalide.a 
-    StepHalide.c StepHalide.h StepHalide.a
-    HalideRuntime.o
-    COMMAND ./GenerateHalideDiagonal
-    DEPENDS GenerateHalideDiagonal
-  )
+  if(HALIVER)
+    add_custom_command(
+      OUTPUT TestNumerator.c TestNumerator.h 
+      IdHalide.c IdHalide.h IdHalide.a 
+      SubDirectionHalide.c SubDirectionHalide.h SubDirectionHalide.a 
+      SolveDirectionHalide.c SolveDirectionHalide.h SolveDirectionHalide.a 
+      StepHalide.c StepHalide.h StepHalide.a
+      HalideRuntime.o
+      COMMAND ./GenerateHalideDiagonal
+      DEPENDS GenerateHalideDiagonal
+    )
 
-  add_custom_target(
-    GenerateHalideDiagonal_output ALL
-    DEPENDS TestNumerator.c TestNumerator.h
-    IdHalide.c IdHalide.h IdHalide.a
-    SubDirectionHalide.c SubDirectionHalide.h SubDirectionHalide.a 
-    SolveDirectionHalide.c SolveDirectionHalide.h SolveDirectionHalide.a
-    StepHalide.c StepHalide.h StepHalide.a
-    HalideRuntime.o
-  )
+    add_custom_target(
+      GenerateHalideDiagonal_output ALL
+      DEPENDS TestNumerator.c TestNumerator.h
+      IdHalide.c IdHalide.h IdHalide.a
+      SubDirectionHalide.c SubDirectionHalide.h SubDirectionHalide.a 
+      SolveDirectionHalide.c SolveDirectionHalide.h SolveDirectionHalide.a
+      StepHalide.c StepHalide.h StepHalide.a
+      HalideRuntime.o
+    )
+
+    add_custom_command(
+      OUTPUT PerformIterationHalide.c PerformIterationHalide.h PerformIterationHalide.a
+      SubstractFull.c SubstractFull.h SubstractFull.a
+      VResIn.c VResIn.h. VResIn.a
+      COMMAND ./GenerateHalideFull
+      DEPENDS GenerateHalideFull
+    )
+  else()
+    add_custom_command(
+      OUTPUT TestNumerator.cc TestNumerator.h 
+      IdHalide.cc IdHalide.h IdHalide.a 
+      SubDirectionHalide.cc SubDirectionHalide.h SubDirectionHalide.a 
+      SolveDirectionHalide.cc SolveDirectionHalide.h SolveDirectionHalide.a 
+      StepHalide.cc StepHalide.h StepHalide.a
+      HalideRuntime.o
+      COMMAND ./GenerateHalideDiagonal
+      DEPENDS GenerateHalideDiagonal
+    )
+
+    add_custom_target(
+      GenerateHalideDiagonal_output ALL
+      DEPENDS TestNumerator.cc TestNumerator.h
+      IdHalide.cc IdHalide.h IdHalide.a
+      SubDirectionHalide.cc SubDirectionHalide.h SubDirectionHalide.a 
+      SolveDirectionHalide.cc SolveDirectionHalide.h SolveDirectionHalide.a
+      StepHalide.cc StepHalide.h StepHalide.a
+      HalideRuntime.o
+    )
+
+    add_custom_command(
+      OUTPUT PerformIterationHalide.cc PerformIterationHalide.h PerformIterationHalide.a
+      SubstractFull.cc SubstractFull.h SubstractFull.a
+      VResIn.cc VResIn.h. VResIn.a
+      COMMAND ./GenerateHalideFull
+      DEPENDS GenerateHalideFull
+    )
+  endif()
 
   if(BUILD_HALIDE_LLVM)
     add_library(DDCALHalide OBJECT
@@ -466,20 +508,37 @@ if(BUILD_WITH_HALIDE)
       ${CMAKE_BINARY_DIR}/TestNumerator.a
     )
   else()
-    add_library(DDCALHalide OBJECT
-      ddecal/gain_solvers/HalideSolver.cc
-      ${CMAKE_BINARY_DIR}/SubDirectionHalide.c
-      ${CMAKE_BINARY_DIR}/SolveDirectionHalide.c
-      ${CMAKE_BINARY_DIR}/StepHalide.c
-      ${CMAKE_BINARY_DIR}/IdHalide.c
-      ${CMAKE_BINARY_DIR}/TestNumerator.c
-    )
+    if(HALIVER)
+      add_library(DDCALHalide OBJECT
+        ddecal/gain_solvers/HalideSolver.cc
+        ${CMAKE_BINARY_DIR}/SubDirectionHalide.c
+        ${CMAKE_BINARY_DIR}/SolveDirectionHalide.c
+        ${CMAKE_BINARY_DIR}/StepHalide.c
+        ${CMAKE_BINARY_DIR}/IdHalide.c
+        ${CMAKE_BINARY_DIR}/TestNumerator.c
+        ${CMAKE_BINARY_DIR}/PerformIterationHalide.c
+        ${CMAKE_BINARY_DIR}/SubstractFull.c
+        ${CMAKE_BINARY_DIR}/VResIn.c
+      )
+    else()
+      add_library(DDCALHalide OBJECT
+        ddecal/gain_solvers/HalideSolver.cc
+        ${CMAKE_BINARY_DIR}/SubDirectionHalide.cc
+        ${CMAKE_BINARY_DIR}/SolveDirectionHalide.cc
+        ${CMAKE_BINARY_DIR}/StepHalide.cc
+        ${CMAKE_BINARY_DIR}/IdHalide.cc
+        ${CMAKE_BINARY_DIR}/TestNumerator.cc
+        ${CMAKE_BINARY_DIR}/PerformIterationHalide.cc
+        ${CMAKE_BINARY_DIR}/SubstractFull.cc
+        ${CMAKE_BINARY_DIR}/VResIn.cc
+      )
+    endif()
   endif()
 
   
 
   # target_link_libraries(DDCALHalide ${CMAKE_BINARY_DIR}/iterativeDiagionalHalide.a Halide::Halide)
-  target_link_libraries(DDCALHalide ${CMAKE_BINARY_DIR}/HalideRuntime.o Halide::Halide)
+  target_link_libraries(DDCALHalide ${CMAKE_BINARY_DIR}/HalideRuntime.o Halide::Halide OpenMP::OpenMP_CXX)
   
   # target_link_libraries(DDCALHalide Halide::Halide)
   add_dependencies(DDCALHalide GenerateHalideDiagonal_output)
@@ -940,6 +999,9 @@ if(BUILD_TESTING)
 
   add_test(NAME halideTest COMMAND unittests -t solvers/iterative_diagonal_halide -f JUNIT -k
     halideTest.xml --catch_system_error=yes)
+
+  add_test(NAME halidePartTest COMMAND unittests -t solvers/iterative_diagonal_halide_parts -f JUNIT -k
+    halidePartTest.xml --catch_system_error=yes)
 
   # Long running tests are labeled 'slow' and use a separate add_test call, so
   # ctest can run them in parallel. Unfortunately there is no easy means of

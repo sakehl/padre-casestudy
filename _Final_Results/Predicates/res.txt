@@ -1,0 +1,21 @@
+Small Fix Branch:
+
+Name Time(s)
+StepHalide.c  68
+SubDirectionV0.c 241
+SolveDirectionHalideV0.c Fail: After 921s
+
+Fails:
+SolveDirectionHalideV0.c Fail: After 921s
+Line:4223 Not enough permission for "_model_[((_numerator__1_s1_rv2__y * 8) + 1)]"
+
+
+PointerADT branch:
+SolveDirectionHalideV0.c Fail: After 683s
+
+4234   fold [1\2]_ant2_pred_compl(_ant2); @*/
+[1/2] Fold may fail, since ...
+** (\forall* int i; 0<=i && i< \pointer_length(data); Perm(&data[i], write)
+... this expression may be false 
+ 2296   resource _ant2_pred_compl(int* data) = data != NULL ** (\forall* int i; 0<=i && i< \pointer_length(data); Perm(&data[i], write)
+ 2297           ** (0 <= data[i] && data[i] < 50)

@@ -1,0 +1,35 @@
+
+resource hide_perm(int[] data, int i, int n) = data != null ** data.length == n ** (\forall* int i; 0<=i && i< data.length; Perm(data[i], write));
+
+  context_everywhere n > 0;
+  context_everywhere hide_perm(x0, 0, n);
+  context_everywhere hide_perm(x1, 0, n);
+  context_everywhere hide_perm(x2, 0, n);
+  context_everywhere hide_perm(x3, 0, n);
+  context_everywhere hide_perm(x4, 0, n);
+  context_everywhere hide_perm(x5, 0, n);
+int main(int n, int[n] x0, int[n] x1, int[n] x2, int[n] x3, int[n] x4, int[n] x5){
+    loop_invariant 0 <= i && i<= n;
+    loop_invariant (\forall int j=0..i; (\unfolding hide_perm(x0, 0, n) \in x0[j]) == 0+ (\unfolding hide_perm(x1, 0, n) \in x1[j])+ (\unfolding hide_perm(x2, 0, n) \in x2[j])+ (\unfolding hide_perm(x3, 0, n) \in x3[j])+ (\unfolding hide_perm(x4, 0, n) \in x4[j])+ (\unfolding hide_perm(x5, 0, n) \in x5[j]));
+  for(int i=0; i<n;i++){
+    unfold hide_perm(x1, 0, n);
+    int a1 = x1[i];
+    fold hide_perm(x1, 0, n);
+    unfold hide_perm(x2, 0, n);
+    int a2 = x2[i];
+    fold hide_perm(x2, 0, n);
+    unfold hide_perm(x3, 0, n);
+    int a3 = x3[i];
+    fold hide_perm(x3, 0, n);
+    unfold hide_perm(x4, 0, n);
+    int a4 = x4[i];
+    fold hide_perm(x4, 0, n);
+    unfold hide_perm(x5, 0, n);
+    int a5 = x5[i];
+    fold hide_perm(x5, 0, n);
+    
+    unfold hide_perm(x0, 0, n);
+    x0[i] = 0+ a1+ a2+ a3+ a4+ a5;
+    fold hide_perm(x0, 0, n);
+  }
+}

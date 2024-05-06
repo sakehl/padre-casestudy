@@ -174,6 +174,14 @@ public:
         return MatrixDiag(c00, c11);
     }
 
+    MatrixDiag toComplexDiagMatrix(Func f, std::vector<Expr> args){
+        Complex c00, c11;
+        c00 = Complex(f(concat({0,0}, args)), f(concat({1,0}, args)));
+        c11 = Complex(f(concat({0,1}, args)), f(concat({1,1}, args)));
+
+        return MatrixDiag(c00, c11);
+    }
+
     Matrix toComplexMatrix(Func f, std::vector<Expr> args){
         Complex c1, c2, c3, c4;
         c1 = Complex(f(concat({0,0,0}, args)), f(concat({1,0,0}, args)));
@@ -333,14 +341,9 @@ public:
         Complex cnan = Complex(nan, nan);
 
         next_solutions_inter(pol ,si,a) = {undef<double>(), undef<double>()};
-        next_solutions_inter(0,si,a) = tuple_select(
-            denominator(0,si,a) == 0.0f,
-            cnan,
-            castC<double>(MatrixDiag(numerator(si,a)).m00) / cast<double>(denominator(0,si,a))
-        );
-        next_solutions_inter(1,si,a) = tuple_select(
-            denominator(1,si,a) == 0.0f,
-            cnan,
+        next_solutions_inter(pol,si,a) = tuple_select(
+            denominator(pol,si,a) == 0.0f, cnan,
+            pol == 0, Tuple(castC<double>(MatrixDiag(numerator(si,a)).m00) / cast<double>(denominator(0,si,a))),
             castC<double>(MatrixDiag(numerator(si,a)).m11) / cast<double>(denominator(1,si,a))
         );
         next_solutions(c, pol, si, a) = mux(c, 
@@ -396,6 +399,8 @@ public:
              Complex(next_solutions_(i, si, a)).imag});
         next_solutions.bound(c,0,2).bound(i, 0, 2).bound(a, 0, n_antennas).bound(si, 0, n_solutions);
         set_bounds({{0, 2}, {0, 2}, {0, n_solutions}, {0, n_antennas}}, next_solutions.output_buffer());
+        
+        next_solutions.specialize(phase_only).unroll(c);
 
         return next_solutions;
     }
@@ -403,10 +408,15 @@ public:
     void compile(){
         try{
             Target target = get_target_from_environment();
+#ifdef Haliver
             if(gpu){
                 target.set_feature(Target::OpenCL);
                 target.set_feature(Target::CLDoubles);
             }
+#else
+            target.set_feature(Target::CUDA);
+            target.set_feature(Target::CLDoubles);
+#endif
             
             target.set_feature(Target::AVX512);
             target.set_features({Target::NoAsserts, Target::NoBoundsQuery});
@@ -426,8 +436,10 @@ public:
             Func testNumerator = TestNumerator(v_res0);
             Func solve_out = SolveDirection(v_res0);
             Func step_out = Step();
+            std::vector<Argument> step_args = {n_vis, n_solutions, n_antennas, phase_only, step_size, sol_, next_sol_};
             
             // Bounds on input
+            #ifdef Haliver
             ant1.requires((ant1(_0) >= 0 && ant1(_0) < n_antennas));
             ant2.requires((ant2(_0) >= 0 && ant2(_0) < n_antennas));
             solution_map.requires((solution_map(_0) >= solution_index0 
@@ -435,26 +447,27 @@ public:
             Annotation bounds = context(solution_index0 >= 0 && n_dir_sol > 0 
                 && solution_index0 + n_dir_sol <= n_solutions
                 && n_antennas>0 && n_vis>0 && n_solutions>0);
-        
+            
+
             idFunc.compile_to_c("IdHalide.c", args, {bounds}, "IdHalide", target);
-            idFunc.compile_to_static_library("IdHalide", args, "IdHalide", target);
-
             testNumerator.compile_to_c("TestNumerator.c", args, {bounds}, "TestNumerator", target);
-            testNumerator.compile_to_static_library("TestNumerator", args, "TestNumerator", target);
-
             v_sub_out_matrix.compile_to_c("SubDirectionHalide.c", args, {bounds}, "SubDirection", target);
-            v_sub_out_matrix.compile_to_static_library("SubDirectionHalide", args, "SubDirection", target);
-            v_sub_out_matrix.compile_to_lowered_stmt("SubDirectionHalide.html", args, StmtOutputFormat::HTML, target);
-            v_sub_out_matrix.print_loop_nest();
-
             solve_out.compile_to_c("SolveDirectionHalide.c", args, {bounds}, "SolveDirection", target);
-            solve_out.compile_to_static_library("SolveDirectionHalide", args, "SolveDirection", target);
-            solve_out.compile_to_lowered_stmt("SolveDirectionHalide.html", args, StmtOutputFormat::HTML, target);
-            solve_out.print_loop_nest();
             
             Annotation step_bounds = context(n_antennas>0 && n_vis>0 && n_solutions>0);
-            std::vector<Argument> step_args = {n_vis, n_solutions, n_antennas, phase_only, step_size, sol_, next_sol_};
             step_out.compile_to_c("StepHalide.c", step_args, {step_bounds}, "StepHalide", target);
+            #else
+            idFunc.compile_to_c("IdHalide.cc", args, "IdHalide", target);
+            testNumerator.compile_to_c("TestNumerator.cc", args, "TestNumerator", target);
+            v_sub_out_matrix.compile_to_c("SubDirectionHalide.cc", args, "SubDirection", target);
+            solve_out.compile_to_c("SolveDirectionHalide.cc", args, "SolveDirection", target);
+            step_out.compile_to_c("StepHalide.cc", step_args, "StepHalide", target);
+            #endif
+
+            idFunc.compile_to_static_library("IdHalide", args, "IdHalide", target);
+            testNumerator.compile_to_static_library("TestNumerator", args, "TestNumerator", target);
+            v_sub_out_matrix.compile_to_static_library("SubDirectionHalide", args, "SubDirection", target);
+            solve_out.compile_to_static_library("SolveDirectionHalide", args, "SolveDirection", target);
             step_out.compile_to_static_library("StepHalide", step_args, "StepHalide", target);
 
             compile_standalone_runtime("HalideRuntime.o", target);

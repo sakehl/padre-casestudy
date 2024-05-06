@@ -1,6 +1,9 @@
 // Copyright (C) 2021 ASTRON (Netherlands Institute for Radio Astronomy)
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+#include <chrono>
+using namespace std::chrono;
+
 #include "SolverTester.h"
 
 #include "../../gain_solvers/DiagonalSolver.h"
@@ -187,13 +190,17 @@ inline void TimeIterativeDiagonal(SolverTester& solver_tester,
                        SolverTester::kNDirections, SolverTester::kNAntennas,
                        solver_tester.Antennas1(), solver_tester.Antennas2());
 
-  const clock_t begin_time_1 = clock();
+  auto start = high_resolution_clock::now();
   for(int i=0; i<repetitions; i++){
     dp3::ddecal::SolverBase::SolveResult result =
         solver.Solve(data, solver_tester.GetSolverSolutions(), 0.0, nullptr);
   }
+  auto stop = high_resolution_clock::now();
+  auto duration = duration_cast<microseconds>(stop - start);
   std::cout << "Avr Time (" << repetitions << " repetitions) : "
-    << float( clock () - begin_time_1 ) /  (CLOCKS_PER_SEC * repetitions) << std::endl;
+    << float( duration.count() ) / (1e6 * repetitions) << std::endl
+    << "Total time : "
+    << float( duration.count()) / (1e6) << std::endl;
 
   solver_tester.CheckDiagonalResults(1.0E-2);
   // The iterative solver solves the requested accuracy within the max
