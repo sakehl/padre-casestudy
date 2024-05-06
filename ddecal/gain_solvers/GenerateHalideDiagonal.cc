@@ -25,18 +25,20 @@ public:
     ImageParam sol_;
     ImageParam next_sol_;
     Param<int> solution_index0;
+#define CONCRETE_BOUNDS 
+#ifdef CONCRETE_BOUNDS
+    Expr n_dir_sol;
+    Expr n_solutions;
+    Expr n_vis;
+    Expr n_antennas;
+#else
     Param<int> n_dir_sol;
     Param<int> n_solutions;
     Param<int> n_vis;
     Param<int> n_antennas;
+#endif
     Param<double> step_size;
     Param<bool> phase_only;
-
-    // Expr solution_index0;
-    // Expr n_dir_sol;
-    // Expr n_solutions;
-    // Expr n_vis;
-    // Expr n_antennas;
     
     Func model, sol, solutions, solD, next_sol;
     Var x, y, i, j, v, si, a, pol, c;
@@ -46,7 +48,6 @@ public:
     std::vector<Argument> args;
 
     int schedule;
-    bool gpu;
 
     HalideDiagionalSolver() :
         ant1(type_of<int32_t>(), 1, "ant1"), // <1>[n_ant] uint32_t
@@ -58,10 +59,14 @@ public:
         sol_(type_of<double>(), 4, "sol_"), // <4> [n_ant][n_dir_sol][2] Complex Double (+1)
         next_sol_(type_of<double>(), 4, "next_sol_"), // <4> [n_ant][n_dir_sol][2] Complex Double (+1)
         solution_index0("solution_index0"),
+        #ifdef CONCRETE_BOUNDS
+        
+        #else 
         n_dir_sol("n_dir_sol"), 
         n_solutions("n_solutions"),
         n_vis("n_vis"),
         n_antennas("n_antennas"),
+        #endif
         step_size("step_size"), 
         phase_only("phase_only"),
         model("model"), sol("sol"), solutions("solutions"), solD("solD"), next_sol("next_sol"),
@@ -70,7 +75,6 @@ public:
         v_res0("v_res0"), sol_ann("sol_ann"), sol_ann_("sol_ann_"){
 
         schedule = 0;
-        gpu = false;
 
         // solution_index0 = _solution_index0;
         // n_dir_sol = _n_dir_sol;
@@ -78,11 +82,13 @@ public:
         // n_vis = _n_vis;
         // n_antennas = _n_antennas;
 
+#ifdef CONCRETE_BOUNDS
         // solution_index0 = 0;
-        // n_dir_sol = 3;
-        // n_solutions = 8;
-        // n_vis = 230930;
-        // n_antennas = 50;
+        n_dir_sol = 3;
+        n_solutions = 8;
+        n_vis = 230930;
+        n_antennas = 50;
+#endif
 
         // ImageParam ant1;
         // ImageParam ant2;
@@ -114,8 +120,11 @@ public:
         solutions(si, a) = toDiagMatrix(sol, {si, a});
 
         v_res0(v) = toComplexMatrix(v_res_in, {v});
-
+#ifdef CONCRETE_BOUNDS
+        args = {sol_, solution_map, ant1, ant2, model_, v_res_in, solution_index0};
+#else
         args = {sol_, solution_map, ant1, ant2, model_, v_res_in, solution_index0, n_dir_sol, n_vis, n_solutions, n_antennas};
+#endif
     }
 
     Func toComplex(Func f){
@@ -381,7 +390,7 @@ public:
 
     Func Step(){
         Func next_solutions("next_solutions");
-        Func next_solutions_("next_solutions_");
+        Func next_solutions_("next_solutions_0");
         Expr pi = Expr(M_PI);
         Func distance("distance");
 
@@ -400,7 +409,10 @@ public:
         next_solutions.bound(c,0,2).bound(i, 0, 2).bound(a, 0, n_antennas).bound(si, 0, n_solutions);
         set_bounds({{0, 2}, {0, 2}, {0, n_solutions}, {0, n_antennas}}, next_solutions.output_buffer());
         
-        next_solutions.specialize(phase_only).unroll(c);
+        next_solutions
+            // .specialize(phase_only)
+            .unroll(c)
+        ;
 
         return next_solutions;
     }
@@ -408,12 +420,7 @@ public:
     void compile(){
         try{
             Target target = get_target_from_environment();
-#ifdef Haliver
-            if(gpu){
-                target.set_feature(Target::OpenCL);
-                target.set_feature(Target::CLDoubles);
-            }
-#else
+#ifndef HAVE_HALIVER
             target.set_feature(Target::CUDA);
             target.set_feature(Target::CLDoubles);
 #endif
@@ -433,20 +440,29 @@ public:
             set_bounds({{0, 2}, {0, 2}, {0, 2}, {0, n_vis}}, v_sub_out_matrix.output_buffer());
 
             Func idFunc = matrixId(v_res_in);
+            set_bounds({{0, 2}, {0, 2}, {0, 2}, {0, n_vis}}, idFunc.output_buffer());
             Func testNumerator = TestNumerator(v_res0);
+            set_bounds({{0, 2}, {0, 2}, {0, n_vis}, {0, n_antennas}}, testNumerator.output_buffer());
+
             Func solve_out = SolveDirection(v_res0);
             Func step_out = Step();
+#ifdef CONCRETE_BOUNDS
+            std::vector<Argument> step_args = {phase_only, step_size, sol_, next_sol_};
+#else
             std::vector<Argument> step_args = {n_vis, n_solutions, n_antennas, phase_only, step_size, sol_, next_sol_};
+#endif
             
             // Bounds on input
-            #ifdef Haliver
+            #ifdef HAVE_HALIVER
             ant1.requires((ant1(_0) >= 0 && ant1(_0) < n_antennas));
             ant2.requires((ant2(_0) >= 0 && ant2(_0) < n_antennas));
             solution_map.requires((solution_map(_0) >= solution_index0 
                 && solution_map(_0) < solution_index0+n_dir_sol));
             Annotation bounds = context(solution_index0 >= 0 && n_dir_sol > 0 
                 && solution_index0 + n_dir_sol <= n_solutions
-                && n_antennas>0 && n_vis>0 && n_solutions>0);
+                && n_antennas>0 && n_vis>0 && n_solutions>0
+                && n_antennas == 50 && n_solutions == 8 && n_vis == 230930
+                );
             
 
             idFunc.compile_to_c("IdHalide.c", args, {bounds}, "IdHalide", target);
@@ -470,7 +486,7 @@ public:
             solve_out.compile_to_static_library("SolveDirectionHalide", args, "SolveDirection", target);
             step_out.compile_to_static_library("StepHalide", step_args, "StepHalide", target);
 
-            compile_standalone_runtime("HalideRuntime.o", target);
+            // compile_standalone_runtime("HalideRuntime.o", target);
         } catch (Halide::Error &e){
             std::cerr << "Halide Error: " << e.what() << std::endl;
             __throw_exception_again;

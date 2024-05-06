@@ -244,8 +244,21 @@ BOOST_FIXTURE_TEST_CASE(iterative_diagonal_halide_parts, SolverTester,
   
   BOOST_TEST_MESSAGE( "Testing initialization :" );
   dp3::ddecal::HalideTester tester(solver_check, solver, data, GetSolverSolutions());
+  int result;
+  result = tester.PerformFullIterationTest(0);
+  test_result(result);
 
-  int result = tester.IdTest();
+  result = tester.PerformFullIterationTest(1);
+  test_result(result);
+
+  result = tester.PerformFullIterationTest(-1);
+  test_result(result);
+
+  // Test gpu
+  result = tester.PerformFullIterationTest(-1, true);
+  test_result(result);
+
+  result = tester.IdTest();
   test_result(result);
 
   result = tester.AddTest();
@@ -276,9 +289,33 @@ BOOST_FIXTURE_TEST_CASE(iterative_diagonal_halide, SolverTester,
   TestIterativeDiagonal(*this, solver);
 }
 
+BOOST_FIXTURE_TEST_CASE(iterative_diagonal_halide_full, SolverTester,
+                        *boost::unit_test::label("slow")) {
+  dp3::ddecal::IterativeDiagonalSolverHalide solver(true, false);
+  TestIterativeDiagonal(*this, solver);
+}
+
+BOOST_FIXTURE_TEST_CASE(iterative_diagonal_halide_gpu, SolverTester,
+                        *boost::unit_test::label("slow")) {
+  dp3::ddecal::IterativeDiagonalSolverHalide solver(true, true);
+  TestIterativeDiagonal(*this, solver);
+}
+
 BOOST_FIXTURE_TEST_CASE(iterative_diagonal_halide_time, SolverTester,
                         *boost::unit_test::label("slow")) {
   dp3::ddecal::IterativeDiagonalSolverHalide solver;
+  TimeIterativeDiagonal(*this, solver, 5);
+}
+
+BOOST_FIXTURE_TEST_CASE(iterative_diagonal_halide_full_time, SolverTester,
+                        *boost::unit_test::label("slow")) {
+  dp3::ddecal::IterativeDiagonalSolverHalide solver(true, false);
+  TimeIterativeDiagonal(*this, solver, 5);
+}
+
+BOOST_FIXTURE_TEST_CASE(iterative_diagonal_halide_gpu_time, SolverTester,
+                        *boost::unit_test::label("slow")) {
+  dp3::ddecal::IterativeDiagonalSolverHalide solver(true, true);
   TimeIterativeDiagonal(*this, solver, 5);
 }
 #endif

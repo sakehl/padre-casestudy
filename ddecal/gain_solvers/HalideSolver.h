@@ -13,6 +13,12 @@ namespace ddecal {
 class IterativeDiagonalSolverHalide final : public SolverBase {
  public:
   friend class HalideTester;
+  bool use_full;
+  bool use_gpu;
+
+  IterativeDiagonalSolverHalide() : use_full(false), use_gpu(false) {}
+
+  IterativeDiagonalSolverHalide(bool use_full, bool use_gpu) : use_full(use_full), use_gpu(use_gpu) {}
 
   SolveResult Solve(const SolveData& data,
                     std::vector<std::vector<DComplex>>& solutions, double time,
@@ -29,6 +35,12 @@ class IterativeDiagonalSolverHalide final : public SolverBase {
       Halide::Runtime::Buffer<double, 5>& next_solutions_b,
       bool skip=false
       );
+  
+  int PerformAllIterations(
+      Halide::Runtime::Buffer<float, 5>& v_res,
+      Halide::Runtime::Buffer<double, 5>& solutions,
+      Halide::Runtime::Buffer<double, 5>& next_solutions
+      );
 
   template <bool Add>
   void AddOrSubtractDirection(size_t channel_block, size_t direction);
@@ -40,6 +52,7 @@ class IterativeDiagonalSolverHalide final : public SolverBase {
 
  private:
   void SetBuffers(const SolveData& data);
+  void SetFullBuffers(const SolveData& data);
 
   struct Buffers {
     std::vector<std::vector<Halide::Runtime::Buffer<float, 4>>>
@@ -51,6 +64,23 @@ class IterativeDiagonalSolverHalide final : public SolverBase {
     std::vector<std::vector<Halide::Runtime::Buffer<int32_t, 1>>>
         solution_map;  // <cb>[n_dir][n_vis] uint32_t
   } buffers_;
+
+  struct FullBuffers {
+    Halide::Runtime::Buffer<float, 6>
+        model;      // <cb>[dir][ndir][nvis], MC2x2F
+    Halide::Runtime::Buffer<int32_t, 3>
+        antenna;      // <cb>[nvis], uin32_t
+    Halide::Runtime::Buffer<int32_t, 3>
+        solution_map;  // <cb>[n_dir][n_vis] uint32_t
+
+    Halide::Runtime::Buffer<int32_t, 2> n_sol0_direction; // <1> [n_cb] uint32_t
+    Halide::Runtime::Buffer<int32_t, 2> n_sol_direction; // <2> [n_cb][dir] uint32_t
+    Halide::Runtime::Buffer<int32_t, 1> n_dir; // <1> [n_cb] uint32_t
+    Halide::Runtime::Buffer<int32_t, 1> n_vis; // <1> [n_cb] uint32_t
+    int max_n_direction_solutions;
+    int max_n_visibilities;
+    int max_n_directions;
+  } full_buffers_;
 };
 
 class HalideTester{
@@ -68,6 +98,7 @@ public:
     solver_check(solver_check), solver(solver), data(data), solutions(solutions){
     
     solver.SetBuffers(data);
+    solver.SetFullBuffers(data);
   }
 
   int IdTest();
@@ -77,6 +108,7 @@ public:
   int SolveDirectionTest();
   int PerformIterationTest();
   int PerformIterationAllBlocksTest();
+  int PerformFullIterationTest(int debug, bool gpu=false);
   int MultipleIterationsTest();
 
   std::tuple<

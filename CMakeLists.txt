@@ -49,6 +49,12 @@ else()
 endif()
 
 option(BUILD_WITH_HALIDE "Build with Halide support" OFF)
+option(BUILD_WITH_HALIVER "Build with Halide support" OFF)
+
+if(BUILD_WITH_HALIVER)
+  add_definitions(-DHAVE_HALIVER)
+  set(BUILD_WITH_HALIDE ON)
+endif()
 if(BUILD_WITH_HALIDE)
   add_definitions(-DHAVE_HALIDE)
 endif()
@@ -427,8 +433,12 @@ target_link_libraries(DDECal xsimd xtensor)
 if(BUILD_WITH_HALIDE)
   # set(CMAKE_PREFIX_PATH /home/lars/data/halide-master/halide-install/)
   # set(Halide_ROOT /home/lars/data/halide-master/halide-install/)
-  find_package(Halide 18.0.0 EXACT REQUIRED PATHS /home/lars/data/halide-master/halide-install/ NO_DEFAULT_PATH)
-  # find_package(Halide REQUIRED PATHS /home/lars/data/halide/install NO_DEFAULT_PATH)
+  
+  if(BUILD_WITH_HALIVER)
+    find_package(Halide 12.0.0 EXACT REQUIRED PATHS /home/lars/data/halide/install NO_DEFAULT_PATH)
+  else()
+    find_package(Halide 18.0.0 EXACT REQUIRED PATHS /home/lars/data/halide-master/halide-install/ NO_DEFAULT_PATH)
+  endif()
   # find_package(Halide 17.0.1 EXACT REQUIRED PATHS /home/lars/data/halide-master/halide-install-17.0.1/ NO_DEFAULT_PATH)
   find_package(OpenMP REQUIRED)
 
@@ -437,7 +447,7 @@ if(BUILD_WITH_HALIDE)
   target_link_libraries(GenerateHalideDiagonal PRIVATE Halide::Halide)
   target_link_libraries(GenerateHalideFull PRIVATE Halide::Halide)
 
-  if(HALIVER)
+  if(BUILD_WITH_HALIVER)
     add_custom_command(
       OUTPUT TestNumerator.c TestNumerator.h 
       IdHalide.c IdHalide.h IdHalide.a 
@@ -490,6 +500,7 @@ if(BUILD_WITH_HALIDE)
 
     add_custom_command(
       OUTPUT PerformIterationHalide.cc PerformIterationHalide.h PerformIterationHalide.a
+      PerformIterationHalideGPU.cc PerformIterationHalideGPU.h PerformIterationHalideGPU.a
       SubstractFull.cc SubstractFull.h SubstractFull.a
       VResIn.cc VResIn.h. VResIn.a
       COMMAND ./GenerateHalideFull
@@ -508,7 +519,7 @@ if(BUILD_WITH_HALIDE)
       ${CMAKE_BINARY_DIR}/TestNumerator.a
     )
   else()
-    if(HALIVER)
+    if(BUILD_WITH_HALIVER)
       add_library(DDCALHalide OBJECT
         ddecal/gain_solvers/HalideSolver.cc
         ${CMAKE_BINARY_DIR}/SubDirectionHalide.c
@@ -529,6 +540,7 @@ if(BUILD_WITH_HALIDE)
         ${CMAKE_BINARY_DIR}/IdHalide.cc
         ${CMAKE_BINARY_DIR}/TestNumerator.cc
         ${CMAKE_BINARY_DIR}/PerformIterationHalide.cc
+        ${CMAKE_BINARY_DIR}/PerformIterationHalideGPU.cc
         ${CMAKE_BINARY_DIR}/SubstractFull.cc
         ${CMAKE_BINARY_DIR}/VResIn.cc
       )
