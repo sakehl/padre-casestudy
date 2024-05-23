@@ -532,6 +532,9 @@ if(BUILD_WITH_HALIDE)
       ${CMAKE_BINARY_DIR}/SolveDirectionHalide.a
       ${CMAKE_BINARY_DIR}/IdHalide.a
       ${CMAKE_BINARY_DIR}/TestNumerator.a
+      ${CMAKE_BINARY_DIR}/PerformIterationHalide.a
+      ${CMAKE_BINARY_DIR}/SubstractFull.a
+      ${CMAKE_BINARY_DIR}/VResIn.a
     )
   else()
     if(BUILD_WITH_HALIVER)

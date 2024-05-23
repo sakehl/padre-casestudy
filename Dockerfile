@@ -136,16 +136,44 @@ RUN mkdir /haliver/install && cmake --install /haliver/build --prefix /haliver/i
 
 WORKDIR /padre
 
-ENV PADRE_VERSION=5d57e660c5b26c25a3a97b1f999533abbae3fd45
+# ENV PADRE_VERSION=0db3633c522f52e797e7b2b70b91e75200ef0b21
 
-RUN git clone -b 'HaliVer_V1' --single-branch --depth 1 https://github.com/sakehl/padre-casestudy.git /padre \
-    && (git checkout ${PADRE_VERSION} ) \
-    && git submodule update --init --recursive
+# RUN git clone -b 'HaliVer_V1' --single-branch --depth 1 https://github.com/sakehl/padre-casestudy.git /padre \
+#     && (git checkout ${PADRE_VERSION} ) \
+#     && git submodule update --init --recursive
 
-RUN cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON -DBUILD_WITH_HALIDE=ON -DBUILD_WITH_HALIVER=OFF \
-  -DBUILD_WITH_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES=70 -DBUILD_HALIDE_LLVM=OF -DHalide_ROOT=/halide/install \
+COPY CMake CMake
+COPY CPack CPack
+COPY antennaflagger antennaflagger
+COPY base base
+COPY benchmarks benchmarks
+COPY blob blob
+COPY ci ci
+COPY common common
+COPY ddecal ddecal
+COPY docker docker
+COPY docs docs
+COPY external external
+COPY include/dp3 include/dp3
+COPY parmdb parmdb
+COPY pythondp3 pythondp3
+COPY resources resources
+COPY scripts scripts
+COPY steps steps
+COPY verification_goals verification_goals
+COPY CMakeLists.txt CMakeLists.txt
+
+RUN cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON -DBUILD_WITH_HALIVER=OFF -DBUILD_WITH_HALIDE=ON \
+  -DBUILD_WITH_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES=70 -DHalide_ROOT=/halide/install \
    -B build -S . 
+
+RUN apt-get install -y xtensor-dev
 
 RUN cmake --build build -- -j8
 
-RUN export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda-12.4/compat
+# ENV LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/usr/local/cuda-12.4/compat
+RUN apt-get install nvidia-modprobe
+
+ENV PATH="${PATH}:/vercors/bin"
+
+RUN apt-get install -y clang

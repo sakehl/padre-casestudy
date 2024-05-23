@@ -1,0 +1,64 @@
+{
+  "version": 2,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 16,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "halide-debug",
+      "displayName": "Halide (Debug)",
+      "description": "Debug build using Ninja generator and GCC-compatible compiler",
+      "generator": "Unix Makefiles",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "BUILD_TESTING": "ON",
+        "BUILD_WITH_HALIDE": "ON",
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_CXX_FLAGS_RELEASE": "-O3",
+        "CMAKE_CXX_FLAGS_RELWITHDEBINFO": "-O2 -g",
+        "CMAKE_CXX_FLAGS_MINSIZEREL": "-Os"
+      }
+    },
+    {
+      "name": "halide-gpu-debug",
+      "inherits": "halide-debug",
+      "binaryDir": "${sourceDir}/build",
+      "displayName": "Halide GPU (Debug)",
+      "cacheVariables": {
+        "BUILD_WITH_CUDA": "ON",
+        "CMAKE_CUDA_ARCHITECTURES": "70"
+      }
+    },
+    {
+      "name": "haliver-debug",
+      "inherits": "halide-debug",
+      "binaryDir": "${sourceDir}/build",
+      "displayName": "HaliVer (Debug)",
+      "cacheVariables": {
+        "BUILD_WITH_HALIVER": "ON"
+      }
+    },
+    {
+      "name": "haliver-gpu-debug",
+      "inherits": "halide-gpu-debug",
+      "binaryDir": "${sourceDir}/build",
+      "displayName": "HaliVer GPU (Debug)",
+      "cacheVariables": {
+        "BUILD_WITH_HALIVER": "ON"
+      }
+    },
+    {
+      "name": "haliver-gpu-debug-release",
+      "description": "",
+      "displayName": "HaliVer GPU (Release)",
+      "inherits": [
+        "haliver-gpu-debug"
+      ],
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    }
+  ]
+}
