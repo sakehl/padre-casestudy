@@ -10,3 +10,5 @@ cmakestrap.sh
 CMakeFiles/
 
 _deps/
+
+**/.ipynb_checkpoints/

@@ -1,0 +1,18 @@
+
+  context_everywhere n > 0;
+  context_everywhere x0 != null ** x0.length == n ** (\forall* int i=0..n; Perm(x0[i], write));
+  context x1 != None && |x1.get| == n;
+  context x2 != None && |x2.get| == n;
+  context x3 != None && |x3.get| == n;
+  context x4 != None && |x4.get| == n;
+  context x5 != None && |x5.get| == n;
+  context x6 != None && |x6.get| == n;
+  context x7 != None && |x7.get| == n;
+  context x8 != None && |x8.get| == n;
+int main(int n, int[n] x0, option<seq<int>> x1, option<seq<int>> x2, option<seq<int>> x3, option<seq<int>> x4, option<seq<int>> x5, option<seq<int>> x6, option<seq<int>> x7, option<seq<int>> x8){
+    loop_invariant 0 <= i && i<= n;
+    //loop_invariant (\forall int j=0..i; x0[j] == 0+ x1.get[j]+ x2.get[j]+ x3.get[j]+ x4.get[j]+ x5.get[j]+ x6.get[j]+ x7.get[j]+ x8.get[j]);
+  for(int i=0; i<n;i++){
+    x0[i] = 0+ x1.get[i]+ x2.get[i]+ x3.get[i]+ x4.get[i]+ x5.get[i]+ x6.get[i]+ x7.get[i]+ x8.get[i];
+  }
+}

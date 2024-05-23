@@ -1,0 +1,23 @@
+
+  context_everywhere n > 0;
+  context_everywhere x0 != null ** x0.length == n ** (\forall* int i=0..n; Perm(x0[i], write));
+  context_everywhere x1 != null ** x1.length == n ** (\forall* int i=0..n; Value(x1[i]));
+  context_everywhere x2 != null ** x2.length == n ** (\forall* int i=0..n; Value(x2[i]));
+  context_everywhere x3 != null ** x3.length == n ** (\forall* int i=0..n; Value(x3[i]));
+  context_everywhere x4 != null ** x4.length == n ** (\forall* int i=0..n; Value(x4[i]));
+  context_everywhere x5 != null ** x5.length == n ** (\forall* int i=0..n; Value(x5[i]));
+  context_everywhere x6 != null ** x6.length == n ** (\forall* int i=0..n; Value(x6[i]));
+  context_everywhere x7 != null ** x7.length == n ** (\forall* int i=0..n; Value(x7[i]));
+  context_everywhere x8 != null ** x8.length == n ** (\forall* int i=0..n; Value(x8[i]));
+  context_everywhere x9 != null ** x9.length == n ** (\forall* int i=0..n; Value(x9[i]));
+  context_everywhere x10 != null ** x10.length == n ** (\forall* int i=0..n; Value(x10[i]));
+  context_everywhere x11 != null ** x11.length == n ** (\forall* int i=0..n; Value(x11[i]));
+  context_everywhere x12 != null ** x12.length == n ** (\forall* int i=0..n; Value(x12[i]));
+  context_everywhere x13 != null ** x13.length == n ** (\forall* int i=0..n; Value(x13[i]));
+int main(int n, int[n] x0, int[n] x1, int[n] x2, int[n] x3, int[n] x4, int[n] x5, int[n] x6, int[n] x7, int[n] x8, int[n] x9, int[n] x10, int[n] x11, int[n] x12, int[n] x13){
+    loop_invariant 0 <= i && i<= n;
+    loop_invariant (\forall int j=0..i; x0[j] == 0+ x1[j]+ x2[j]+ x3[j]+ x4[j]+ x5[j]+ x6[j]+ x7[j]+ x8[j]+ x9[j]+ x10[j]+ x11[j]+ x12[j]+ x13[j]);
+  for(int i=0; i<n;i++){
+    x0[i] = 0+ x1[i]+ x2[i]+ x3[i]+ x4[i]+ x5[i]+ x6[i]+ x7[i]+ x8[i]+ x9[i]+ x10[i]+ x11[i]+ x12[i]+ x13[i];
+  }
+}

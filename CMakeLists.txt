@@ -476,6 +476,13 @@ if(BUILD_WITH_HALIDE)
       COMMAND ./GenerateHalideFull
       DEPENDS GenerateHalideFull
     )
+
+    add_custom_target(GenerateHalideFull_output ALL
+      DEPENDS PerformIterationHalide.c PerformIterationHalide.h PerformIterationHalide.a
+      SubstractFull.c SubstractFull.h SubstractFull.a
+      VResIn.c VResIn.h. VResIn.a
+      GenerateHalideDiagonal_output
+    )
   else()
     add_custom_command(
       OUTPUT TestNumerator.cc TestNumerator.h 
@@ -505,6 +512,14 @@ if(BUILD_WITH_HALIDE)
       VResIn.cc VResIn.h. VResIn.a
       COMMAND ./GenerateHalideFull
       DEPENDS GenerateHalideFull
+    )
+
+    add_custom_target(GenerateHalideFull_output ALL
+      DEPENDS PerformIterationHalide.cc PerformIterationHalide.h PerformIterationHalide.a
+      PerformIterationHalideGPU.cc PerformIterationHalideGPU.h PerformIterationHalideGPU.a
+      SubstractFull.cc SubstractFull.h SubstractFull.a
+      VResIn.cc VResIn.h. VResIn.a
+      GenerateHalideDiagonal_output
     )
   endif()
 
@@ -550,10 +565,11 @@ if(BUILD_WITH_HALIDE)
   
 
   # target_link_libraries(DDCALHalide ${CMAKE_BINARY_DIR}/iterativeDiagionalHalide.a Halide::Halide)
+  add_dependencies(DDCALHalide GenerateHalideDiagonal_output GenerateHalideFull_output)
   target_link_libraries(DDCALHalide ${CMAKE_BINARY_DIR}/HalideRuntime.o Halide::Halide OpenMP::OpenMP_CXX)
   
   # target_link_libraries(DDCALHalide Halide::Halide)
-  add_dependencies(DDCALHalide GenerateHalideDiagonal_output)
+  
 
   set_target_properties(
     DDCALHalide

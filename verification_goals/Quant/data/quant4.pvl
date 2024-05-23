@@ -1,0 +1,14 @@
+
+  context_everywhere n > 0;
+  context_everywhere x0 != null ** x0.length == n ** (\forall* int i=0..n; Perm(x0[i], write));
+  context_everywhere x1 != null ** x1.length == n ** (\forall* int i=0..n; Perm(x1[i], 1\2));
+  context_everywhere x2 != null ** x2.length == n ** (\forall* int i=0..n; Perm(x2[i], 1\2));
+  context_everywhere x3 != null ** x3.length == n ** (\forall* int i=0..n; Perm(x3[i], 1\2));
+  context_everywhere x4 != null ** x4.length == n ** (\forall* int i=0..n; Perm(x4[i], 1\2));
+int main(int n, int[n] x0, int[n] x1, int[n] x2, int[n] x3, int[n] x4){
+    loop_invariant 0 <= i && i<= n;
+    loop_invariant (\forall int j=0..i; x0[j] == 0+ x1[j]+ x2[j]+ x3[j]+ x4[j]);
+  for(int i=0; i<n;i++){
+    x0[i] = 0+ x1[i]+ x2[i]+ x3[i]+ x4[i];
+  }
+}

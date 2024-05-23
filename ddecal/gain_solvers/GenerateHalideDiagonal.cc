@@ -25,7 +25,6 @@ public:
     ImageParam sol_;
     ImageParam next_sol_;
     Param<int> solution_index0;
-#define CONCRETE_BOUNDS 
 #ifdef CONCRETE_BOUNDS
     Expr n_dir_sol;
     Expr n_solutions;
@@ -74,7 +73,7 @@ public:
         antenna_1("antenna_1"), antenna_2("antenna_2"), solution_index("solution_index"),
         v_res0("v_res0"), sol_ann("sol_ann"), sol_ann_("sol_ann_"){
 
-        schedule = 0;
+        schedule = 1;
 
         // solution_index0 = _solution_index0;
         // n_dir_sol = _n_dir_sol;
@@ -486,7 +485,7 @@ public:
             solve_out.compile_to_static_library("SolveDirectionHalide", args, "SolveDirection", target);
             step_out.compile_to_static_library("StepHalide", step_args, "StepHalide", target);
 
-            // compile_standalone_runtime("HalideRuntime.o", target);
+            compile_standalone_runtime("HalideRuntime.o", target);
         } catch (Halide::Error &e){
             std::cerr << "Halide Error: " << e.what() << std::endl;
             __throw_exception_again;

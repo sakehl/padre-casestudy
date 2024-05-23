@@ -1,0 +1,105 @@
+
+domain Array  {
+  
+  function array_loc(a: Array, i: Int): Ref 
+  
+  function alen(a: Array): Int 
+  
+  function loc_inv_1(loc: Ref): Array 
+  
+  function loc_inv_2(loc: Ref): Int 
+  
+  axiom {
+    (forall a: Array, i: Int ::
+      { array_loc(a, i) }
+      loc_inv_1(array_loc(a, i)) == a && loc_inv_2(array_loc(a, i)) == i)
+  }
+  
+  axiom {
+    (forall a: Array :: { alen(a) } alen(a) >= 0)
+  }
+}
+
+field int: Int
+
+function aloc(a: Array, i: Int): Ref
+  requires 0 <= i
+  requires i < alen(a)
+  decreases 
+  ensures loc_inv_1(result) == a
+  ensures loc_inv_2(result) == i
+{
+  array_loc(a, i)
+}
+
+method main1(tid: Int, n: Int, x0: Array, x1: Seq[Int], x2: Seq[Int], x3: Seq[Int], x4: Seq[Int], x5: Seq[Int], x6: Seq[Int], x7: Seq[Int], x8: Seq[Int], x9: Seq[Int], x10: Seq[Int])
+  requires 0 < n
+  requires alen(x0) == n
+  requires (forall i: Int ::
+      { aloc(x0, i) }
+      0 <= i && i < n ==> acc(aloc(x0, i).int, write))
+  requires |x1| == n
+  requires |x2| == n
+  requires |x3| == n
+  requires |x4| == n
+  requires |x5| == n
+  requires |x6| == n
+  requires |x7| == n
+  requires |x8| == n
+  requires |x9| == n
+  requires |x10| == n
+  ensures 0 < n
+  ensures alen(x0) == n
+  ensures (forall i: Int ::
+      { aloc(x0, i) }
+      0 <= i && i < n ==> acc(aloc(x0, i).int, write))
+  ensures |x1| == n
+  ensures |x2| == n
+  ensures |x3| == n
+  ensures |x4| == n
+  ensures |x5| == n
+  ensures |x6| == n
+  ensures |x7| == n
+  ensures |x8| == n
+  ensures |x9| == n
+  ensures |x10| == n
+{
+  {
+    var exc: Ref
+    var i: Int
+    var excbeforeloop: Ref
+    exc := null
+    excbeforeloop := exc
+    i := 0
+    while (i < n)
+      invariant exc == excbeforeloop
+      invariant 0 < n
+  
+      invariant alen(x0) == n
+      invariant (forall i1: Int ::
+          { aloc(x0, i1) }
+          0 <= i1 && i1 < n ==> acc(aloc(x0, i1).int, write))
+  
+      
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      invariant 0 <= i
+      invariant i < n + 1
+      invariant (forall j: Int ::
+          { aloc(x0, j) }
+          0 <= j && j < i ==>
+          aloc(x0, j).int == 0 + x1[j] + x2[j] + x3[j] + x4[j] + x5[j] + x6[j] + x7[j] + x8[j] + x9[j] + x10[j])
+    {
+      aloc(x0, i).int :=  0 + x1[i] + x2[i] + x3[i] + x4[i] + x5[i] + x6[i] + x7[i] + x8[i] + x9[i] + x10[i]
+      i := i + 1
+    }
+    assert exc == null
+  }
+}

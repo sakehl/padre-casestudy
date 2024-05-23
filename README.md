@@ -1,3 +1,22 @@
+# Case Study Padre
+This is the accompanying code for the paper `Verifying a Radio Telescope Pipeline using HaliVer:  Solving Nonlinear and Quantifier Challenges`.
+
+## Installing
+We support running the code via the docker image
+[`Dockerfile`](Dockerfile). 
+
+Run:
+```cmd
+docker build -t padre .
+```
+to build the Dockerfile.
+
+With
+```
+docker run -it --entrypoint bash padre
+```
+You can run it.
+
 # DP3
 LOFAR preprocessing software, including averaging, flagging, various kinds of calibration and more.
 

@@ -1,0 +1,2908 @@
+domain WellFoundedOrder[T]  {
+  
+  function bounded(v: T): Bool 
+  
+  function decreasing(v1: T, v2: T): Bool 
+}
+
+domain IntOrder  {
+  
+  axiom {
+    (forall i: Int ::0 <= i == (bounded(i): Bool))
+  }
+  
+  axiom {
+    (forall i: Int ::(forall j: Int ::i < j == (decreasing(i, j): Bool)))
+  }
+}
+
+domain Void  {
+  
+  function unit(): Void 
+  
+  axiom {
+    (forall v: Void ::true ==> unit() == v)
+  }
+}
+
+domain $domain$unknown2  {
+  
+  function unknown2(unknown49: Perm, unknown50: Perm): Perm interpretation "^"
+}
+
+domain $domain$to_int  {
+  
+  function to_int(to_int1: Perm): Int interpretation "to_int"
+}
+
+domain $domain$unknown19  {
+  
+  function unknown19(unknown51: Perm): Bool interpretation "is_int"
+}
+
+domain Block  {
+  
+  function block_length(b: Block): Int 
+  
+  function loc(b: Block, i: Int): Ref 
+  
+  function loc_inv_1(r: Ref): Block 
+  
+  function loc_inv_2(r: Ref): Int 
+  
+  axiom {
+    (forall b: Block ::block_length(b) >= 0)
+  }
+  
+  axiom {
+    (forall b: Block, i: Int ::
+      { loc(b, i) }
+      loc_inv_1(loc(b, i)) == b && loc_inv_2(loc(b, i)) == i)
+  }
+}
+
+domain Pointer  {
+  
+  function pointer_of(b: Block, offset: Int): Pointer 
+  
+  function pointer_block(p: Pointer): Block 
+  
+  function pointer_offset(p: Pointer): Int 
+  
+  axiom {
+    (forall p: Pointer ::pointer_offset(p) >= 0 &&
+      pointer_offset(p) < block_length(pointer_block(p)))
+  }
+  
+  axiom {
+    (forall b: Block, offset: Int ::
+      { pointer_block(pointer_of(b, offset)), pointer_offset(pointer_of(b, offset)) }
+      pointer_block(pointer_of(b, offset)) == b &&
+      pointer_offset(pointer_of(b, offset)) == offset)
+  }
+}
+
+domain Any  {
+  
+  
+}
+
+domain Option[T1]  {
+  
+  function none1(): Option[T1] 
+  
+  function some(x: T1): Option[T1] 
+  
+  function option_get(opt: Option[T1]): T1 
+  
+  axiom {
+    (forall x: T1 ::
+      { (some(x): Option[T1]) }
+      (none1(): Option[T1]) != (some(x): Option[T1]))
+  }
+  
+  axiom {
+    (forall x: T1 ::
+      { (some(x): Option[T1]) }
+      (option_get((some(x): Option[T1])): T1) == x)
+  }
+  
+  axiom {
+    (forall opt: Option[T1] ::
+      { (some((option_get(opt): T1)): Option[T1]) }
+      (some((option_get(opt): T1)): Option[T1]) == opt)
+  }
+}
+
+domain Nothing  {
+  
+  
+}
+
+field host: Option[Pointer]
+
+field stride: Int
+
+field dim: Option[Pointer]
+
+field min: Int
+
+field dimensions: Int
+
+field ref: Ref
+
+field extent: Int
+
+field rat: Perm
+
+function mPi(): Perm
+  decreases 
+{
+  314159265358979323846 * write / 100000000000000000000
+}
+
+function unknown1(x: Perm): Perm
+  decreases 
+  ensures result == (0 * write / 1 <= x ? x : -x * write)
+
+
+function unknown3(x: Perm): Perm
+  requires 0 * write / 1 <= x
+  decreases 
+  ensures result == unknown2(x, 5 * write / 10)
+
+
+function unknown4(x: Perm): Perm
+  decreases 
+  ensures -1 * write / 1 <= result
+  ensures result <= 1 * write / 1
+
+
+function nondetfloat(): Perm
+  decreases 
+
+
+function unknown5(x: Perm): Perm
+  requires -1 * write / 1 <= x
+  requires x <= 1 * write / 1
+  decreases 
+  ensures (2 * write / 1 != 0 * write / 1 ?
+      -mPi() * write / (2 * write / 1) :
+      nondetfloat()) <=
+    result
+  ensures result <=
+    (2 * write / 1 != 0 * write / 1 ?
+      mPi() / (2 * write / 1) :
+      nondetfloat())
+
+
+function unknown6(x: Perm): Perm
+  decreases 
+  ensures -1 * write / 1 <= result
+  ensures result <= 1 * write / 1
+
+
+function unknown7(x: Perm): Perm
+  requires -1 * write / 1 <= x
+  requires x <= 1 * write / 1
+  decreases 
+  ensures 0 * write / 1 <= result
+  ensures result <= mPi()
+
+
+function unknown8(x: Perm): Perm
+  decreases 
+  ensures x == 0 * write / 1 ==> result == 0 * write / 1
+
+
+function unknown9(x: Perm): Perm
+  decreases 
+  ensures (2 * write / 1 != 0 * write / 1 ?
+      -mPi() * write / (2 * write / 1) :
+      nondetfloat()) <=
+    result
+  ensures result <=
+    (2 * write / 1 != 0 * write / 1 ?
+      mPi() / (2 * write / 1) :
+      nondetfloat())
+
+
+function unknown10(x: Perm, y: Perm): Perm
+  decreases 
+  ensures -mPi() * write <= result
+  ensures result <= mPi()
+
+
+function unknown11(x: Perm): Perm
+  decreases 
+  ensures result == (unknown15(x) - unknown15(-x * write)) / 2
+
+
+function unknown12(x: Perm): Perm
+  decreases 
+  ensures result == (unknown15(x) + unknown15(-x * write)) / 2
+
+
+function unknown13(x: Perm): Perm
+  decreases 
+  ensures result ==
+    (unknown15(x) - unknown15(-x * write)) /
+    (unknown15(x) + unknown15(-x * write))
+
+
+function unknown14(x: Perm, y: Perm): Perm
+  decreases 
+  ensures result == unknown17(x * x + y * y, 5 * write / 10)
+
+
+function unknown15(x: Perm): Perm
+  decreases 
+  ensures result == unknown17(27182818284 * write / 10000000000, x)
+
+
+function unknown16(x: Perm): Perm
+  decreases 
+
+
+function unknown17(x: Perm, y: Perm): Perm
+  decreases 
+  ensures result == unknown2(x, y)
+  ensures 0 * write / 1 < x ==> 0 * write / 1 < result
+
+
+function unknown18(x: Perm): Perm
+  decreases 
+  ensures result == to_int(x) * write / 1
+
+
+function unknown20(x: Perm): Perm
+  decreases 
+  ensures result == (unknown19(x) ? x : (to_int(x) + 1) * write / 1)
+
+
+function unknown21(x: Perm): Perm
+  decreases 
+  ensures !(x < 0 * write / 1 && unknown19(x - 5 * write / 10)) ==>
+    result == to_int(x + 5 * write / 10) * write / 1
+  ensures x < 0 * write / 1 && unknown19(x - 5 * write / 10) ==>
+    result == x - 5 * write / 10
+
+
+function unknown22(x: Perm): Perm
+  decreases 
+  ensures result == (0 * write / 1 <= x ? x : -x * write)
+
+
+function unknown23(x: Perm): Perm
+  requires 0 * write / 1 <= x
+  decreases 
+  ensures result == unknown37(x, 5 * write / 10)
+
+
+function unknown24(x: Perm): Perm
+  decreases 
+  ensures -1 * write / 1 <= result
+  ensures result <= 1 * write / 1
+
+
+function unknown25(x: Perm): Perm
+  requires -1 * write / 1 <= x
+  requires x <= 1 * write / 1
+  decreases 
+  ensures (2 * write / 1 != 0 * write / 1 ?
+      -mPi() * write / (2 * write / 1) :
+      nondetfloat()) <=
+    result
+  ensures result <=
+    (2 * write / 1 != 0 * write / 1 ?
+      mPi() / (2 * write / 1) :
+      nondetfloat())
+
+
+function unknown26(x: Perm): Perm
+  decreases 
+  ensures -1 * write / 1 <= result
+  ensures result <= 1 * write / 1
+
+
+function unknown27(x: Perm): Perm
+  requires -1 * write / 1 <= x
+  requires x <= 1 * write / 1
+  decreases 
+  ensures 0 * write / 1 <= result
+  ensures result <= mPi()
+
+
+function unknown28(x: Perm): Perm
+  decreases 
+  ensures x == 0 * write / 1 ==> result == 0 * write / 1
+
+
+function unknown29(x: Perm): Perm
+  decreases 
+  ensures (2 * write / 1 != 0 * write / 1 ?
+      -mPi() * write / (2 * write / 1) :
+      nondetfloat()) <=
+    result
+  ensures result <=
+    (2 * write / 1 != 0 * write / 1 ?
+      mPi() / (2 * write / 1) :
+      nondetfloat())
+
+
+function unknown30(x: Perm, y: Perm): Perm
+  decreases 
+  ensures -mPi() * write <= result
+  ensures result <= mPi()
+
+
+function unknown31(x: Perm): Perm
+  decreases 
+
+
+function unknown32(x: Perm): Perm
+  decreases 
+  ensures result == (unknown35(x) + unknown35(-x * write)) / 2
+
+
+function unknown33(x: Perm): Perm
+  decreases 
+  ensures result ==
+    (unknown35(x) - unknown35(-x * write)) /
+    (unknown35(x) + unknown35(-x * write))
+
+
+function unknown34(x: Perm, y: Perm): Perm
+  decreases 
+  ensures result == unknown37(x * x + y * y, 5 * write / 10)
+
+
+function unknown35(x: Perm): Perm
+  decreases 
+  ensures result == unknown37(27182818284 * write / 10000000000, x)
+
+
+function unknown36(x: Perm): Perm
+  decreases 
+
+
+function unknown37(x: Perm, y: Perm): Perm
+  decreases 
+  ensures result == unknown2(x, y)
+  ensures 0 * write / 1 < x ==> 0 * write / 1 < result
+
+
+function unknown38(x: Perm): Perm
+  decreases 
+  ensures result == to_int(x) * write / 1
+
+
+function unknown39(x: Perm): Perm
+  decreases 
+  ensures result == (unknown19(x) ? x : (to_int(x) + 1) * write / 1)
+
+
+function unknown40(x: Perm): Perm
+  decreases 
+  ensures !(x < 0 * write / 1 && unknown19(x - 5 * write / 10)) ==>
+    result == to_int(x + 5 * write / 10) * write / 1
+  ensures x < 0 * write / 1 && unknown19(x - 5 * write / 10) ==>
+    result == x - 5 * write / 10
+
+
+function ptrDeref(p: Pointer): Ref
+  decreases 
+{
+  loc(pointer_block(p), pointer_offset(p))
+}
+
+function ptrAdd(p: Pointer, offset: Int): Pointer
+  requires 0 <= pointer_offset(p) + offset
+  requires pointer_offset(p) + offset < block_length(pointer_block(p))
+  decreases 
+{
+  pointer_of(pointer_block(p), pointer_offset(p) + offset)
+}
+
+function anyAs(t: Any): Any
+  decreases 
+
+
+function asAny(t: Any): Any
+  decreases 
+  ensures anyAs(result) == t
+
+
+function optGet(opt: Option[Any]): Any
+  requires opt != (none1(): Option[Any])
+  decreases 
+  ensures (some(result): Option[Any]) == opt
+{
+  (option_get(opt): Any)
+}
+
+function optOrElse(opt: Option[Any], alt: Any): Any
+  decreases 
+  ensures opt == (none1(): Option[Any]) ==> result == alt
+  ensures opt != (none1(): Option[Any]) ==> result == optGet(opt)
+{
+  (opt == (none1(): Option[Any]) ? alt : optGet(opt))
+}
+
+function max(x: Int, y: Int): Int
+{
+  (y < x ? x : y)
+}
+
+function min1(x: Int, y: Int): Int
+{
+  (y < x ? y : x)
+}
+
+function max1(x: Perm, y: Perm): Perm
+{
+  (y < x ? x : y)
+}
+
+function min2(x: Perm, y: Perm): Perm
+{
+  (y < x ? y : x)
+}
+
+function abs(x: Int): Int
+{
+  (0 <= x ? x : -x)
+}
+
+function abs1(x: Perm): Perm
+{
+  (0 * write / 1 <= x ? x : -x * write)
+}
+
+function hdiv(x: Int, y: Int): Int
+{
+  (y == 0 ? 0 : x / y)
+}
+
+function hmod(x: Int, y: Int): Int
+{
+  (y == 0 ? 0 : x % y)
+}
+
+function truncdiv(a: Int, b: Int): Int
+  requires b != 0
+  decreases 
+{
+  (let i ==
+    (a / b) in
+    (let i1 ==
+      (a % b) in
+      (0 <= a || i1 == 0 ? i : i + (0 < b ? 1 : -1))))
+}
+
+function truncmod(a: Int, b: Int): Int
+  requires b != 0
+  decreases 
+{
+  (let i ==
+    (a % b) in
+    (0 <= a || i == 0 ? i : i - (0 < b ? b : -b)))
+}
+
+function pureSol(x: Int): Perm
+
+
+function pureNextSol(x: Int): Perm
+
+
+function pureNextSolutions1(x: Int): Perm
+
+
+function nothingAs(value: Nothing): Any
+  decreases 
+
+
+function nothingAs1(value: Nothing): Pointer
+  decreases 
+
+
+function optGet1(opt: Option[Nothing]): Nothing
+  requires opt != (none1(): Option[Nothing])
+  decreases 
+  ensures (some(result): Option[Nothing]) == opt
+{
+  (option_get(opt): Nothing)
+}
+
+function optGet2(opt: Option[Pointer]): Pointer
+  requires opt != (none1(): Option[Pointer])
+  decreases 
+  ensures (some(result): Option[Pointer]) == opt
+{
+  (option_get(opt): Pointer)
+}
+
+function type(type1: Ref): Int
+  decreases 
+  ensures result >= 0
+  ensures result <= 2
+  ensures type1 == null ==> result == 0
+  ensures type1 != null ==> result != 0
+
+
+function subtype(subtype1: Int, subtype2: Int): Bool
+  requires subtype1 >= 0
+  requires subtype1 <= 2
+  requires subtype2 >= 0
+  requires subtype2 <= 2
+  decreases 
+{
+  (subtype1 == 0 ==> true) &&
+  ((subtype1 == 2 ==> subtype2 == 2) && (subtype1 == 1 ==> subtype2 == 1))
+}
+
+method unknown(tid: Int, expression: Bool) returns (res: Void)
+  requires expression
+
+
+method unknown41(tid: Int, format: Option[Pointer]) returns (res: Int)
+
+
+method unknown42(tid: Int, size: Int) returns (res: Option[Pointer])
+
+
+method unknown43(tid: Int, ptr: Option[Pointer]) returns (res: Void)
+
+
+method unknown44(tid: Int, a: Int, b: Int, maxA: Int) returns (res: Void)
+  requires 0 <= a
+  requires 0 < b
+  requires a < maxA
+  decreases b
+  ensures a * b <= (maxA - 1) * b
+
+
+method unknown45(tid: Int, a: Int, minA: Int, strideA: Int, extentA: Int, b: Int,
+  minB: Int, strideB: Int, extentB: Int)
+  returns (res: Void)
+  requires minA <= a
+  requires a - minA < extentA
+  requires minB <= b
+  requires b - minB < extentB
+  requires 0 < strideA
+  requires 0 < strideB
+  requires extentA * strideA <= strideB
+  decreases 
+  ensures 0 <= (a - minA) * strideA + (b - minB) * strideB
+  ensures (a - minA) * strideA + (b - minB) * strideB < strideB * extentB
+
+
+method unknown46(tid: Int, a: Int, minA: Int, strideA: Int, extentA: Int, b: Int,
+  minB: Int, strideB: Int, extentB: Int, c: Int, minC: Int, strideC: Int, extentC: Int)
+  returns (res: Void)
+  requires minA <= a
+  requires a - minA < extentA
+  requires minB <= b
+  requires b - minB < extentB
+  requires minC <= c
+  requires c - minC < extentC
+  requires 0 < strideA
+  requires 0 < strideB
+  requires 0 < strideC
+  requires extentA * strideA <= strideB
+  requires extentB * strideB <= strideC
+  decreases 
+  ensures 0 <=
+    (a - minA) * strideA + (b - minB) * strideB + (c - minC) * strideC
+  ensures (a - minA) * strideA + (b - minB) * strideB +
+    (c - minC) * strideC <
+    strideC * extentC
+
+
+method unknown47(tid: Int, a: Int, minA: Int, strideA: Int, extentA: Int, b: Int,
+  minB: Int, strideB: Int, extentB: Int, c: Int, minC: Int, strideC: Int, extentC: Int,
+  d: Int, minD: Int, strideD: Int, extentD: Int)
+  returns (res: Void)
+  requires minA <= a
+  requires a - minA < extentA
+  requires minB <= b
+  requires b - minB < extentB
+  requires minC <= c
+  requires c - minC < extentC
+  requires minD <= d
+  requires d - minD < extentD
+  requires 0 < strideA
+  requires 0 < strideB
+  requires 0 < strideC
+  requires 0 < strideD
+  requires extentA * strideA <= strideB
+  requires extentB * strideB <= strideC
+  requires extentC * strideC <= strideD
+  decreases 
+  ensures 0 <=
+    (a - minA) * strideA + (b - minB) * strideB + (c - minC) * strideC +
+    (d - minD) * strideD
+  ensures (a - minA) * strideA + (b - minB) * strideB +
+    (c - minC) * strideC +
+    (d - minD) * strideD <
+    strideD * extentD
+
+
+method unknown48(tid: Int, a: Int, minA: Int, strideA: Int, extentA: Int, b: Int,
+  minB: Int, strideB: Int, extentB: Int, c: Int, minC: Int, strideC: Int, extentC: Int,
+  d: Int, minD: Int, strideD: Int, extentD: Int, e: Int, minE: Int, strideE: Int,
+  extentE: Int)
+  returns (res: Void)
+  requires minA <= a
+  requires a - minA < extentA
+  requires minB <= b
+  requires b - minB < extentB
+  requires minC <= c
+  requires c - minC < extentC
+  requires minD <= d
+  requires d - minD < extentD
+  requires minE <= e
+  requires e - minE < extentE
+  requires 0 < strideA
+  requires 0 < strideB
+  requires 0 < strideC
+  requires 0 < strideD
+  requires 0 < strideE
+  requires extentA * strideA <= strideB
+  requires extentB * strideB <= strideC
+  requires extentC * strideC <= strideD
+  requires extentD * strideD <= strideE
+  decreases 
+  ensures 0 <=
+    (a - minA) * strideA + (b - minB) * strideB + (c - minC) * strideC +
+    (d - minD) * strideD +
+    (e - minE) * strideE
+  ensures (a - minA) * strideA + (b - minB) * strideB +
+    (c - minC) * strideC +
+    (d - minD) * strideD +
+    (e - minE) * strideE <
+    strideE * extentE
+
+
+method make_pointer_array_float32(tid: Int, size: Int)
+  returns (res: Option[Pointer])
+  requires 0 <= size
+  ensures res !=
+    ((none1(): Option[Nothing]) == (none1(): Option[Nothing]) ?
+      (none1(): Option[Pointer]) :
+      (some(nothingAs1(optGet1((none1(): Option[Nothing])))): Option[Pointer]))
+  ensures block_length(pointer_block(optGet2(res))) == size
+  ensures pointer_offset(optGet2(res)) == 0
+  ensures (forall i: Int ::
+      { ptrDeref(ptrAdd(optGet2(res), i)).rat }
+      0 <= i && i < size ==>
+      acc(ptrDeref(optGet2((some(ptrAdd(optGet2(res), i)): Option[Pointer]))).rat, write))
+
+
+method stepHalide(tid: Int, nVis: Int, nSolutions: Int, nAntennas: Int, phaseOnly: Bool,
+  stepSize: Perm, solBuffer: Option[Pointer], nextSolBuffer: Option[Pointer],
+  nextSolutions1Buffer: Option[Pointer])
+  returns (res: Int)
+  requires nAntennas == 50
+  requires nSolutions == 8
+  requires nVis == 230930
+  requires (let buf ==
+      (solBuffer) in
+      (let p ==
+        (1 * write / 2) in
+        (let nDims ==
+          (4) in
+          buf !=
+          ((none1(): Option[Nothing]) == (none1(): Option[Nothing]) ?
+            (none1(): Option[Pointer]) :
+            (some(nothingAs1(optGet1((none1(): Option[Nothing])))): Option[Pointer])) &&
+          block_length(pointer_block(optGet2(buf))) -
+          pointer_offset(optGet2(buf)) ==
+          1 &&
+          acc(ptrDeref(optGet2(buf)).ref, p) &&
+          acc(ptrDeref(ptrAdd(optGet2(buf), 0)).ref.dim, p) &&
+          ptrDeref(ptrAdd(optGet2(buf), 0)).ref.dim !=
+          ((none1(): Option[Nothing]) == (none1(): Option[Nothing]) ?
+            (none1(): Option[Pointer]) :
+            (some(nothingAs1(optGet1((none1(): Option[Nothing])))): Option[Pointer])) &&
+          block_length(pointer_block(optGet2(ptrDeref(ptrAdd(optGet2(buf), 0)).ref.dim))) -
+          pointer_offset(optGet2(ptrDeref(ptrAdd(optGet2(buf), 0)).ref.dim)) ==
+          nDims &&
+          acc(ptrDeref(ptrAdd(optGet2(buf), 0)).ref.host, p) &&
+          ptrDeref(ptrAdd(optGet2(buf), 0)).ref.host !=
+          ((none1(): Option[Nothing]) == (none1(): Option[Nothing]) ?
+            (none1(): Option[Pointer]) :
+            (some(nothingAs1(optGet1((none1(): Option[Nothing])))): Option[Pointer])))))
+  requires (let dim1 ==
+      (ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.dim) in
+      (let p ==
+        (1 * write / 2) in
+        (let i ==
+          (0) in
+          acc(ptrDeref(optGet2((some(ptrAdd(optGet2(dim1), i)): Option[Pointer]))).ref, 1 *
+          write /
+          2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.min, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.stride, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.extent, 1 * write / 2))))
+  requires (let dim1 ==
+      (ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.dim) in
+      (let p ==
+        (1 * write / 2) in
+        (let i ==
+          (1) in
+          acc(ptrDeref(optGet2((some(ptrAdd(optGet2(dim1), i)): Option[Pointer]))).ref, 1 *
+          write /
+          2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.min, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.stride, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.extent, 1 * write / 2))))
+  requires (let dim1 ==
+      (ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.dim) in
+      (let p ==
+        (1 * write / 2) in
+        (let i ==
+          (2) in
+          acc(ptrDeref(optGet2((some(ptrAdd(optGet2(dim1), i)): Option[Pointer]))).ref, 1 *
+          write /
+          2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.min, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.stride, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.extent, 1 * write / 2))))
+  requires (let dim1 ==
+      (ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.dim) in
+      (let p ==
+        (1 * write / 2) in
+        (let i ==
+          (3) in
+          acc(ptrDeref(optGet2((some(ptrAdd(optGet2(dim1), i)): Option[Pointer]))).ref, 1 *
+          write /
+          2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.min, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.stride, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.extent, 1 * write / 2))))
+  requires block_length(pointer_block(optGet2(ptrDeref(ptrAdd(optGet2(solBuffer),
+    0)).ref.host))) -
+    pointer_offset(optGet2(ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.host)) ==
+    ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.dim),
+    3)).ref.extent *
+    ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.dim),
+    3)).ref.stride
+  requires (let buf ==
+      (nextSolBuffer) in
+      (let p ==
+        (1 * write / 2) in
+        (let nDims ==
+          (4) in
+          buf !=
+          ((none1(): Option[Nothing]) == (none1(): Option[Nothing]) ?
+            (none1(): Option[Pointer]) :
+            (some(nothingAs1(optGet1((none1(): Option[Nothing])))): Option[Pointer])) &&
+          block_length(pointer_block(optGet2(buf))) -
+          pointer_offset(optGet2(buf)) ==
+          1 &&
+          acc(ptrDeref(optGet2(buf)).ref, p) &&
+          acc(ptrDeref(ptrAdd(optGet2(buf), 0)).ref.dim, p) &&
+          ptrDeref(ptrAdd(optGet2(buf), 0)).ref.dim !=
+          ((none1(): Option[Nothing]) == (none1(): Option[Nothing]) ?
+            (none1(): Option[Pointer]) :
+            (some(nothingAs1(optGet1((none1(): Option[Nothing])))): Option[Pointer])) &&
+          block_length(pointer_block(optGet2(ptrDeref(ptrAdd(optGet2(buf), 0)).ref.dim))) -
+          pointer_offset(optGet2(ptrDeref(ptrAdd(optGet2(buf), 0)).ref.dim)) ==
+          nDims &&
+          acc(ptrDeref(ptrAdd(optGet2(buf), 0)).ref.host, p) &&
+          ptrDeref(ptrAdd(optGet2(buf), 0)).ref.host !=
+          ((none1(): Option[Nothing]) == (none1(): Option[Nothing]) ?
+            (none1(): Option[Pointer]) :
+            (some(nothingAs1(optGet1((none1(): Option[Nothing])))): Option[Pointer])))))
+  requires (let dim1 ==
+      (ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.dim) in
+      (let p ==
+        (1 * write / 2) in
+        (let i ==
+          (0) in
+          acc(ptrDeref(optGet2((some(ptrAdd(optGet2(dim1), i)): Option[Pointer]))).ref, 1 *
+          write /
+          2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.min, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.stride, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.extent, 1 * write / 2))))
+  requires (let dim1 ==
+      (ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.dim) in
+      (let p ==
+        (1 * write / 2) in
+        (let i ==
+          (1) in
+          acc(ptrDeref(optGet2((some(ptrAdd(optGet2(dim1), i)): Option[Pointer]))).ref, 1 *
+          write /
+          2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.min, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.stride, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.extent, 1 * write / 2))))
+  requires (let dim1 ==
+      (ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.dim) in
+      (let p ==
+        (1 * write / 2) in
+        (let i ==
+          (2) in
+          acc(ptrDeref(optGet2((some(ptrAdd(optGet2(dim1), i)): Option[Pointer]))).ref, 1 *
+          write /
+          2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.min, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.stride, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.extent, 1 * write / 2))))
+  requires (let dim1 ==
+      (ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.dim) in
+      (let p ==
+        (1 * write / 2) in
+        (let i ==
+          (3) in
+          acc(ptrDeref(optGet2((some(ptrAdd(optGet2(dim1), i)): Option[Pointer]))).ref, 1 *
+          write /
+          2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.min, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.stride, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.extent, 1 * write / 2))))
+  requires block_length(pointer_block(optGet2(ptrDeref(ptrAdd(optGet2(nextSolBuffer),
+    0)).ref.host))) -
+    pointer_offset(optGet2(ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.host)) ==
+    ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.dim),
+    3)).ref.extent *
+    ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.dim),
+    3)).ref.stride
+  requires (let buf ==
+      (nextSolutions1Buffer) in
+      (let p ==
+        (1 * write / 2) in
+        (let nDims ==
+          (4) in
+          buf !=
+          ((none1(): Option[Nothing]) == (none1(): Option[Nothing]) ?
+            (none1(): Option[Pointer]) :
+            (some(nothingAs1(optGet1((none1(): Option[Nothing])))): Option[Pointer])) &&
+          block_length(pointer_block(optGet2(buf))) -
+          pointer_offset(optGet2(buf)) ==
+          1 &&
+          acc(ptrDeref(optGet2(buf)).ref, p) &&
+          acc(ptrDeref(ptrAdd(optGet2(buf), 0)).ref.dim, p) &&
+          ptrDeref(ptrAdd(optGet2(buf), 0)).ref.dim !=
+          ((none1(): Option[Nothing]) == (none1(): Option[Nothing]) ?
+            (none1(): Option[Pointer]) :
+            (some(nothingAs1(optGet1((none1(): Option[Nothing])))): Option[Pointer])) &&
+          block_length(pointer_block(optGet2(ptrDeref(ptrAdd(optGet2(buf), 0)).ref.dim))) -
+          pointer_offset(optGet2(ptrDeref(ptrAdd(optGet2(buf), 0)).ref.dim)) ==
+          nDims &&
+          acc(ptrDeref(ptrAdd(optGet2(buf), 0)).ref.host, p) &&
+          ptrDeref(ptrAdd(optGet2(buf), 0)).ref.host !=
+          ((none1(): Option[Nothing]) == (none1(): Option[Nothing]) ?
+            (none1(): Option[Pointer]) :
+            (some(nothingAs1(optGet1((none1(): Option[Nothing])))): Option[Pointer])))))
+  requires (let dim1 ==
+      (ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer), 0)).ref.dim) in
+      (let p ==
+        (1 * write / 2) in
+        (let i ==
+          (0) in
+          acc(ptrDeref(optGet2((some(ptrAdd(optGet2(dim1), i)): Option[Pointer]))).ref, 1 *
+          write /
+          2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.min, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.stride, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.extent, 1 * write / 2))))
+  requires (let dim1 ==
+      (ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer), 0)).ref.dim) in
+      (let p ==
+        (1 * write / 2) in
+        (let i ==
+          (1) in
+          acc(ptrDeref(optGet2((some(ptrAdd(optGet2(dim1), i)): Option[Pointer]))).ref, 1 *
+          write /
+          2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.min, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.stride, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.extent, 1 * write / 2))))
+  requires (let dim1 ==
+      (ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer), 0)).ref.dim) in
+      (let p ==
+        (1 * write / 2) in
+        (let i ==
+          (2) in
+          acc(ptrDeref(optGet2((some(ptrAdd(optGet2(dim1), i)): Option[Pointer]))).ref, 1 *
+          write /
+          2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.min, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.stride, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.extent, 1 * write / 2))))
+  requires (let dim1 ==
+      (ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer), 0)).ref.dim) in
+      (let p ==
+        (1 * write / 2) in
+        (let i ==
+          (3) in
+          acc(ptrDeref(optGet2((some(ptrAdd(optGet2(dim1), i)): Option[Pointer]))).ref, 1 *
+          write /
+          2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.min, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.stride, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.extent, 1 * write / 2))))
+  requires block_length(pointer_block(optGet2(ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer),
+    0)).ref.host))) -
+    pointer_offset(optGet2(ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer), 0)).ref.host)) ==
+    ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer), 0)).ref.dim),
+    3)).ref.extent *
+    ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer), 0)).ref.dim),
+    3)).ref.stride
+  requires ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.host !=
+    ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.host
+  requires ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer), 0)).ref.host !=
+    ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.host
+  requires ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer), 0)).ref.host !=
+    ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.host
+  requires ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.dim),
+    0)).ref.min ==
+    0
+  requires ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.dim),
+    0)).ref.extent ==
+    2
+  requires ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.dim),
+    0)).ref.stride ==
+    1
+  requires ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.dim),
+    1)).ref.min ==
+    0
+  requires ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.dim),
+    1)).ref.extent ==
+    2
+  requires ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.dim),
+    1)).ref.stride ==
+    2
+  requires ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.dim),
+    2)).ref.min ==
+    0
+  requires ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.dim),
+    2)).ref.extent ==
+    nSolutions
+  requires ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.dim),
+    2)).ref.stride ==
+    4
+  requires ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.dim),
+    3)).ref.min ==
+    0
+  requires ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.dim),
+    3)).ref.extent ==
+    nAntennas
+  requires ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.dim),
+    3)).ref.stride ==
+    nSolutions * 4
+  requires (forall _0_1_2_3: Int ::
+      { ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.host),
+      _0_1_2_3)).rat }
+      0 <= _0_1_2_3 && _0_1_2_3 < 4 * nSolutions * 50 ==>
+      acc(ptrDeref(optGet2((some(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolBuffer),
+      0)).ref.host), _0_1_2_3)): Option[Pointer]))).rat, 1 * write / 2))
+  requires (forall _0_1_2_3: Int ::
+      { ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.host),
+      _0_1_2_3)).rat }
+      0 <= _0_1_2_3 && _0_1_2_3 < 4 * nSolutions * 50 ==>
+      ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.host),
+      _0_1_2_3)).rat ==
+      pureNextSol(_0_1_2_3))
+  requires ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.dim),
+    0)).ref.min ==
+    0
+  requires ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.dim),
+    0)).ref.extent ==
+    2
+  requires ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.dim),
+    0)).ref.stride ==
+    1
+  requires ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.dim),
+    1)).ref.min ==
+    0
+  requires ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.dim),
+    1)).ref.extent ==
+    2
+  requires ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.dim),
+    1)).ref.stride ==
+    2
+  requires ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.dim),
+    2)).ref.min ==
+    0
+  requires ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.dim),
+    2)).ref.extent ==
+    nSolutions
+  requires ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.dim),
+    2)).ref.stride ==
+    4
+  requires ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.dim),
+    3)).ref.min ==
+    0
+  requires ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.dim),
+    3)).ref.extent ==
+    nAntennas
+  requires ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.dim),
+    3)).ref.stride ==
+    nSolutions * 4
+  requires (forall _0_1_2_3: Int ::
+      { ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.host),
+      _0_1_2_3)).rat }
+      0 <= _0_1_2_3 && _0_1_2_3 < 4 * nSolutions * 50 ==>
+      acc(ptrDeref(optGet2((some(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(solBuffer),
+      0)).ref.host), _0_1_2_3)): Option[Pointer]))).rat, 1 * write / 2))
+  requires (forall _0_1_2_3: Int ::
+      { ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.host),
+      _0_1_2_3)).rat }
+      0 <= _0_1_2_3 && _0_1_2_3 < 4 * nSolutions * 50 ==>
+      ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.host),
+      _0_1_2_3)).rat ==
+      pureSol(_0_1_2_3))
+  requires ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer),
+    0)).ref.dim), 0)).ref.min ==
+    0
+  requires ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer),
+    0)).ref.dim), 0)).ref.extent ==
+    2
+  requires ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer),
+    0)).ref.dim), 0)).ref.stride ==
+    1
+  requires ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer),
+    0)).ref.dim), 1)).ref.min ==
+    0
+  requires ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer),
+    0)).ref.dim), 1)).ref.extent ==
+    2
+  requires ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer),
+    0)).ref.dim), 1)).ref.stride ==
+    2
+  requires ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer),
+    0)).ref.dim), 2)).ref.min ==
+    0
+  requires ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer),
+    0)).ref.dim), 2)).ref.extent ==
+    nSolutions
+  requires ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer),
+    0)).ref.dim), 2)).ref.stride ==
+    4
+  requires ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer),
+    0)).ref.dim), 3)).ref.min ==
+    0
+  requires ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer),
+    0)).ref.dim), 3)).ref.extent ==
+    nAntennas
+  requires ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer),
+    0)).ref.dim), 3)).ref.stride ==
+    nSolutions * 4
+  requires (forall _0_1_2_3: Int ::
+      { ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer),
+      0)).ref.host), _0_1_2_3)).rat }
+      0 <= _0_1_2_3 && _0_1_2_3 < 4 * nSolutions * 50 ==>
+      acc(ptrDeref(optGet2((some(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer),
+      0)).ref.host), _0_1_2_3)): Option[Pointer]))).rat, 1 * write))
+  requires 0 < min1(min1(nAntennas, nVis), nSolutions)
+  ensures nAntennas == 50
+  ensures nSolutions == 8
+  ensures nVis == 230930
+  ensures (let buf ==
+      (solBuffer) in
+      (let p ==
+        (1 * write / 2) in
+        (let nDims ==
+          (4) in
+          buf !=
+          ((none1(): Option[Nothing]) == (none1(): Option[Nothing]) ?
+            (none1(): Option[Pointer]) :
+            (some(nothingAs1(optGet1((none1(): Option[Nothing])))): Option[Pointer])) &&
+          block_length(pointer_block(optGet2(buf))) -
+          pointer_offset(optGet2(buf)) ==
+          1 &&
+          acc(ptrDeref(optGet2(buf)).ref, p) &&
+          acc(ptrDeref(ptrAdd(optGet2(buf), 0)).ref.dim, p) &&
+          ptrDeref(ptrAdd(optGet2(buf), 0)).ref.dim !=
+          ((none1(): Option[Nothing]) == (none1(): Option[Nothing]) ?
+            (none1(): Option[Pointer]) :
+            (some(nothingAs1(optGet1((none1(): Option[Nothing])))): Option[Pointer])) &&
+          block_length(pointer_block(optGet2(ptrDeref(ptrAdd(optGet2(buf), 0)).ref.dim))) -
+          pointer_offset(optGet2(ptrDeref(ptrAdd(optGet2(buf), 0)).ref.dim)) ==
+          nDims &&
+          acc(ptrDeref(ptrAdd(optGet2(buf), 0)).ref.host, p) &&
+          ptrDeref(ptrAdd(optGet2(buf), 0)).ref.host !=
+          ((none1(): Option[Nothing]) == (none1(): Option[Nothing]) ?
+            (none1(): Option[Pointer]) :
+            (some(nothingAs1(optGet1((none1(): Option[Nothing])))): Option[Pointer])))))
+  ensures (let dim1 ==
+      (ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.dim) in
+      (let p ==
+        (1 * write / 2) in
+        (let i ==
+          (0) in
+          acc(ptrDeref(optGet2((some(ptrAdd(optGet2(dim1), i)): Option[Pointer]))).ref, 1 *
+          write /
+          2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.min, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.stride, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.extent, 1 * write / 2))))
+  ensures (let dim1 ==
+      (ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.dim) in
+      (let p ==
+        (1 * write / 2) in
+        (let i ==
+          (1) in
+          acc(ptrDeref(optGet2((some(ptrAdd(optGet2(dim1), i)): Option[Pointer]))).ref, 1 *
+          write /
+          2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.min, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.stride, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.extent, 1 * write / 2))))
+  ensures (let dim1 ==
+      (ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.dim) in
+      (let p ==
+        (1 * write / 2) in
+        (let i ==
+          (2) in
+          acc(ptrDeref(optGet2((some(ptrAdd(optGet2(dim1), i)): Option[Pointer]))).ref, 1 *
+          write /
+          2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.min, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.stride, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.extent, 1 * write / 2))))
+  ensures (let dim1 ==
+      (ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.dim) in
+      (let p ==
+        (1 * write / 2) in
+        (let i ==
+          (3) in
+          acc(ptrDeref(optGet2((some(ptrAdd(optGet2(dim1), i)): Option[Pointer]))).ref, 1 *
+          write /
+          2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.min, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.stride, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.extent, 1 * write / 2))))
+  ensures block_length(pointer_block(optGet2(ptrDeref(ptrAdd(optGet2(solBuffer),
+    0)).ref.host))) -
+    pointer_offset(optGet2(ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.host)) ==
+    ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.dim),
+    3)).ref.extent *
+    ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.dim),
+    3)).ref.stride
+  ensures (let buf ==
+      (nextSolBuffer) in
+      (let p ==
+        (1 * write / 2) in
+        (let nDims ==
+          (4) in
+          buf !=
+          ((none1(): Option[Nothing]) == (none1(): Option[Nothing]) ?
+            (none1(): Option[Pointer]) :
+            (some(nothingAs1(optGet1((none1(): Option[Nothing])))): Option[Pointer])) &&
+          block_length(pointer_block(optGet2(buf))) -
+          pointer_offset(optGet2(buf)) ==
+          1 &&
+          acc(ptrDeref(optGet2(buf)).ref, p) &&
+          acc(ptrDeref(ptrAdd(optGet2(buf), 0)).ref.dim, p) &&
+          ptrDeref(ptrAdd(optGet2(buf), 0)).ref.dim !=
+          ((none1(): Option[Nothing]) == (none1(): Option[Nothing]) ?
+            (none1(): Option[Pointer]) :
+            (some(nothingAs1(optGet1((none1(): Option[Nothing])))): Option[Pointer])) &&
+          block_length(pointer_block(optGet2(ptrDeref(ptrAdd(optGet2(buf), 0)).ref.dim))) -
+          pointer_offset(optGet2(ptrDeref(ptrAdd(optGet2(buf), 0)).ref.dim)) ==
+          nDims &&
+          acc(ptrDeref(ptrAdd(optGet2(buf), 0)).ref.host, p) &&
+          ptrDeref(ptrAdd(optGet2(buf), 0)).ref.host !=
+          ((none1(): Option[Nothing]) == (none1(): Option[Nothing]) ?
+            (none1(): Option[Pointer]) :
+            (some(nothingAs1(optGet1((none1(): Option[Nothing])))): Option[Pointer])))))
+  ensures (let dim1 ==
+      (ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.dim) in
+      (let p ==
+        (1 * write / 2) in
+        (let i ==
+          (0) in
+          acc(ptrDeref(optGet2((some(ptrAdd(optGet2(dim1), i)): Option[Pointer]))).ref, 1 *
+          write /
+          2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.min, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.stride, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.extent, 1 * write / 2))))
+  ensures (let dim1 ==
+      (ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.dim) in
+      (let p ==
+        (1 * write / 2) in
+        (let i ==
+          (1) in
+          acc(ptrDeref(optGet2((some(ptrAdd(optGet2(dim1), i)): Option[Pointer]))).ref, 1 *
+          write /
+          2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.min, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.stride, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.extent, 1 * write / 2))))
+  ensures (let dim1 ==
+      (ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.dim) in
+      (let p ==
+        (1 * write / 2) in
+        (let i ==
+          (2) in
+          acc(ptrDeref(optGet2((some(ptrAdd(optGet2(dim1), i)): Option[Pointer]))).ref, 1 *
+          write /
+          2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.min, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.stride, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.extent, 1 * write / 2))))
+  ensures (let dim1 ==
+      (ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.dim) in
+      (let p ==
+        (1 * write / 2) in
+        (let i ==
+          (3) in
+          acc(ptrDeref(optGet2((some(ptrAdd(optGet2(dim1), i)): Option[Pointer]))).ref, 1 *
+          write /
+          2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.min, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.stride, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.extent, 1 * write / 2))))
+  ensures block_length(pointer_block(optGet2(ptrDeref(ptrAdd(optGet2(nextSolBuffer),
+    0)).ref.host))) -
+    pointer_offset(optGet2(ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.host)) ==
+    ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.dim),
+    3)).ref.extent *
+    ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.dim),
+    3)).ref.stride
+  ensures (let buf ==
+      (nextSolutions1Buffer) in
+      (let p ==
+        (1 * write / 2) in
+        (let nDims ==
+          (4) in
+          buf !=
+          ((none1(): Option[Nothing]) == (none1(): Option[Nothing]) ?
+            (none1(): Option[Pointer]) :
+            (some(nothingAs1(optGet1((none1(): Option[Nothing])))): Option[Pointer])) &&
+          block_length(pointer_block(optGet2(buf))) -
+          pointer_offset(optGet2(buf)) ==
+          1 &&
+          acc(ptrDeref(optGet2(buf)).ref, p) &&
+          acc(ptrDeref(ptrAdd(optGet2(buf), 0)).ref.dim, p) &&
+          ptrDeref(ptrAdd(optGet2(buf), 0)).ref.dim !=
+          ((none1(): Option[Nothing]) == (none1(): Option[Nothing]) ?
+            (none1(): Option[Pointer]) :
+            (some(nothingAs1(optGet1((none1(): Option[Nothing])))): Option[Pointer])) &&
+          block_length(pointer_block(optGet2(ptrDeref(ptrAdd(optGet2(buf), 0)).ref.dim))) -
+          pointer_offset(optGet2(ptrDeref(ptrAdd(optGet2(buf), 0)).ref.dim)) ==
+          nDims &&
+          acc(ptrDeref(ptrAdd(optGet2(buf), 0)).ref.host, p) &&
+          ptrDeref(ptrAdd(optGet2(buf), 0)).ref.host !=
+          ((none1(): Option[Nothing]) == (none1(): Option[Nothing]) ?
+            (none1(): Option[Pointer]) :
+            (some(nothingAs1(optGet1((none1(): Option[Nothing])))): Option[Pointer])))))
+  ensures (let dim1 ==
+      (ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer), 0)).ref.dim) in
+      (let p ==
+        (1 * write / 2) in
+        (let i ==
+          (0) in
+          acc(ptrDeref(optGet2((some(ptrAdd(optGet2(dim1), i)): Option[Pointer]))).ref, 1 *
+          write /
+          2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.min, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.stride, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.extent, 1 * write / 2))))
+  ensures (let dim1 ==
+      (ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer), 0)).ref.dim) in
+      (let p ==
+        (1 * write / 2) in
+        (let i ==
+          (1) in
+          acc(ptrDeref(optGet2((some(ptrAdd(optGet2(dim1), i)): Option[Pointer]))).ref, 1 *
+          write /
+          2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.min, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.stride, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.extent, 1 * write / 2))))
+  ensures (let dim1 ==
+      (ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer), 0)).ref.dim) in
+      (let p ==
+        (1 * write / 2) in
+        (let i ==
+          (2) in
+          acc(ptrDeref(optGet2((some(ptrAdd(optGet2(dim1), i)): Option[Pointer]))).ref, 1 *
+          write /
+          2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.min, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.stride, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.extent, 1 * write / 2))))
+  ensures (let dim1 ==
+      (ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer), 0)).ref.dim) in
+      (let p ==
+        (1 * write / 2) in
+        (let i ==
+          (3) in
+          acc(ptrDeref(optGet2((some(ptrAdd(optGet2(dim1), i)): Option[Pointer]))).ref, 1 *
+          write /
+          2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.min, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.stride, 1 * write / 2) &&
+          acc(ptrDeref(ptrAdd(optGet2(dim1), i)).ref.extent, 1 * write / 2))))
+  ensures block_length(pointer_block(optGet2(ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer),
+    0)).ref.host))) -
+    pointer_offset(optGet2(ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer), 0)).ref.host)) ==
+    ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer), 0)).ref.dim),
+    3)).ref.extent *
+    ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer), 0)).ref.dim),
+    3)).ref.stride
+  ensures ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.host !=
+    ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.host
+  ensures ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer), 0)).ref.host !=
+    ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.host
+  ensures ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer), 0)).ref.host !=
+    ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.host
+  ensures ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.dim),
+    0)).ref.min ==
+    0
+  ensures ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.dim),
+    0)).ref.extent ==
+    2
+  ensures ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.dim),
+    0)).ref.stride ==
+    1
+  ensures ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.dim),
+    1)).ref.min ==
+    0
+  ensures ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.dim),
+    1)).ref.extent ==
+    2
+  ensures ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.dim),
+    1)).ref.stride ==
+    2
+  ensures ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.dim),
+    2)).ref.min ==
+    0
+  ensures ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.dim),
+    2)).ref.extent ==
+    nSolutions
+  ensures ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.dim),
+    2)).ref.stride ==
+    4
+  ensures ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.dim),
+    3)).ref.min ==
+    0
+  ensures ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.dim),
+    3)).ref.extent ==
+    nAntennas
+  ensures ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.dim),
+    3)).ref.stride ==
+    nSolutions * 4
+  ensures (forall _0_1_2_3: Int ::
+      { ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.host),
+      _0_1_2_3)).rat }
+      0 <= _0_1_2_3 && _0_1_2_3 < 4 * nSolutions * 50 ==>
+      acc(ptrDeref(optGet2((some(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolBuffer),
+      0)).ref.host), _0_1_2_3)): Option[Pointer]))).rat, 1 * write / 2))
+  ensures (forall _0_1_2_3: Int ::
+      { ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.host),
+      _0_1_2_3)).rat }
+      0 <= _0_1_2_3 && _0_1_2_3 < 4 * nSolutions * 50 ==>
+      ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolBuffer), 0)).ref.host),
+      _0_1_2_3)).rat ==
+      pureNextSol(_0_1_2_3))
+  ensures ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.dim),
+    0)).ref.min ==
+    0
+  ensures ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.dim),
+    0)).ref.extent ==
+    2
+  ensures ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.dim),
+    0)).ref.stride ==
+    1
+  ensures ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.dim),
+    1)).ref.min ==
+    0
+  ensures ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.dim),
+    1)).ref.extent ==
+    2
+  ensures ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.dim),
+    1)).ref.stride ==
+    2
+  ensures ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.dim),
+    2)).ref.min ==
+    0
+  ensures ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.dim),
+    2)).ref.extent ==
+    nSolutions
+  ensures ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.dim),
+    2)).ref.stride ==
+    4
+  ensures ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.dim),
+    3)).ref.min ==
+    0
+  ensures ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.dim),
+    3)).ref.extent ==
+    nAntennas
+  ensures ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.dim),
+    3)).ref.stride ==
+    nSolutions * 4
+  ensures (forall _0_1_2_3: Int ::
+      { ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.host),
+      _0_1_2_3)).rat }
+      0 <= _0_1_2_3 && _0_1_2_3 < 4 * nSolutions * 50 ==>
+      acc(ptrDeref(optGet2((some(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(solBuffer),
+      0)).ref.host), _0_1_2_3)): Option[Pointer]))).rat, 1 * write / 2))
+  ensures (forall _0_1_2_3: Int ::
+      { ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.host),
+      _0_1_2_3)).rat }
+      0 <= _0_1_2_3 && _0_1_2_3 < 4 * nSolutions * 50 ==>
+      ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(solBuffer), 0)).ref.host),
+      _0_1_2_3)).rat ==
+      pureSol(_0_1_2_3))
+  ensures ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer),
+    0)).ref.dim), 0)).ref.min ==
+    0
+  ensures ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer),
+    0)).ref.dim), 0)).ref.extent ==
+    2
+  ensures ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer),
+    0)).ref.dim), 0)).ref.stride ==
+    1
+  ensures ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer),
+    0)).ref.dim), 1)).ref.min ==
+    0
+  ensures ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer),
+    0)).ref.dim), 1)).ref.extent ==
+    2
+  ensures ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer),
+    0)).ref.dim), 1)).ref.stride ==
+    2
+  ensures ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer),
+    0)).ref.dim), 2)).ref.min ==
+    0
+  ensures ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer),
+    0)).ref.dim), 2)).ref.extent ==
+    nSolutions
+  ensures ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer),
+    0)).ref.dim), 2)).ref.stride ==
+    4
+  ensures ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer),
+    0)).ref.dim), 3)).ref.min ==
+    0
+  ensures ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer),
+    0)).ref.dim), 3)).ref.extent ==
+    nAntennas
+  ensures ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer),
+    0)).ref.dim), 3)).ref.stride ==
+    nSolutions * 4
+  ensures (forall _0_1_2_3: Int ::
+      { ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer),
+      0)).ref.host), _0_1_2_3)).rat }
+      0 <= _0_1_2_3 && _0_1_2_3 < 4 * nSolutions * 50 ==>
+      acc(ptrDeref(optGet2((some(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(nextSolutions1Buffer),
+      0)).ref.host), _0_1_2_3)): Option[Pointer]))).rat, 1 * write))
+  ensures 0 < min1(min1(nAntennas, nVis), nSolutions)
+{
+  {
+    var exc: Ref
+    var return: Int
+    var nextSol: Option[Pointer]
+    var nextSolMin0: Int
+    var nextSolExtent0: Int
+    var nextSolStride0: Int
+    var nextSolMin1: Int
+    var nextSolExtent1: Int
+    var nextSolStride1: Int
+    var nextSolMin2: Int
+    var nextSolExtent2: Int
+    var nextSolStride2: Int
+    var nextSolMin3: Int
+    var nextSolExtent3: Int
+    var nextSolStride3: Int
+    var nextSolutions1: Option[Pointer]
+    var nextSolutions1Min0: Int
+    var nextSolutions1Extent0: Int
+    var nextSolutions1Stride0: Int
+    var nextSolutions1Min1: Int
+    var nextSolutions1Extent1: Int
+    var nextSolutions1Stride1: Int
+    var nextSolutions1Min2: Int
+    var nextSolutions1Extent2: Int
+    var nextSolutions1Stride2: Int
+    var nextSolutions1Min3: Int
+    var nextSolutions1Extent3: Int
+    var nextSolutions1Stride3: Int
+    var sol: Option[Pointer]
+    var solMin0: Int
+    var solExtent0: Int
+    var solStride0: Int
+    var solMin1: Int
+    var solExtent1: Int
+    var solStride1: Int
+    var solMin2: Int
+    var solExtent2: Int
+    var solStride2: Int
+    var solMin3: Int
+    var solExtent3: Int
+    var solStride3: Int
+    var nextSolutions1S0A: Int
+    var t389: Int
+    var t392: Int
+    var t390: Int
+    var nextSolutions1S0Si: Int
+    var t393: Int
+    var nextSolutions1S0I: Int
+    var distance: Option[Pointer]
+    var t380: Int
+    var t381: Int
+    var t382: Int
+    var _3: Perm
+    var _4: Perm
+    var _5: Perm
+    var _6: Perm
+    var _7: Perm
+    var t369: Perm
+    var _8: Perm
+    var t372: Perm
+    var t383: Int
+    var _9: Perm
+    var _10: Perm
+    var _11: Perm
+    var distance1: Option[Pointer]
+    var t384: Int
+    var t385: Int
+    var t386: Int
+    var _12: Perm
+    var _13: Perm
+    var _14: Perm
+    var _15: Perm
+    var _16: Perm
+    var t376: Perm
+    var _17: Perm
+    var t379: Perm
+    var t387: Int
+    var _18: Perm
+    var _19: Perm
+    var _20: Perm
+    var buf: Option[Pointer]
+    var unknown52: Option[Pointer]
+    var buf1: Option[Pointer]
+    var d: Int
+    var unknown53: Int
+    var buf2: Option[Pointer]
+    var d1: Int
+    var unknown54: Int
+    var buf3: Option[Pointer]
+    var d2: Int
+    var unknown55: Int
+    var buf4: Option[Pointer]
+    var d3: Int
+    var unknown56: Int
+    var buf5: Option[Pointer]
+    var d4: Int
+    var unknown57: Int
+    var buf6: Option[Pointer]
+    var d5: Int
+    var unknown58: Int
+    var buf7: Option[Pointer]
+    var d6: Int
+    var unknown59: Int
+    var buf8: Option[Pointer]
+    var d7: Int
+    var unknown60: Int
+    var buf9: Option[Pointer]
+    var d8: Int
+    var unknown61: Int
+    var buf10: Option[Pointer]
+    var d9: Int
+    var unknown62: Int
+    var buf11: Option[Pointer]
+    var d10: Int
+    var unknown63: Int
+    var buf12: Option[Pointer]
+    var d11: Int
+    var unknown64: Int
+    var buf13: Option[Pointer]
+    var unknown65: Option[Pointer]
+    var buf14: Option[Pointer]
+    var d12: Int
+    var unknown66: Int
+    var buf15: Option[Pointer]
+    var d13: Int
+    var unknown67: Int
+    var buf16: Option[Pointer]
+    var d14: Int
+    var unknown68: Int
+    var buf17: Option[Pointer]
+    var d15: Int
+    var unknown69: Int
+    var buf18: Option[Pointer]
+    var d16: Int
+    var unknown70: Int
+    var buf19: Option[Pointer]
+    var d17: Int
+    var unknown71: Int
+    var buf20: Option[Pointer]
+    var d18: Int
+    var unknown72: Int
+    var buf21: Option[Pointer]
+    var d19: Int
+    var unknown73: Int
+    var buf22: Option[Pointer]
+    var d20: Int
+    var unknown74: Int
+    var buf23: Option[Pointer]
+    var d21: Int
+    var unknown75: Int
+    var buf24: Option[Pointer]
+    var d22: Int
+    var unknown76: Int
+    var buf25: Option[Pointer]
+    var d23: Int
+    var unknown77: Int
+    var buf26: Option[Pointer]
+    var unknown78: Option[Pointer]
+    var buf27: Option[Pointer]
+    var d24: Int
+    var unknown79: Int
+    var buf28: Option[Pointer]
+    var d25: Int
+    var unknown80: Int
+    var buf29: Option[Pointer]
+    var d26: Int
+    var unknown81: Int
+    var buf30: Option[Pointer]
+    var d27: Int
+    var unknown82: Int
+    var buf31: Option[Pointer]
+    var d28: Int
+    var unknown83: Int
+    var buf32: Option[Pointer]
+    var d29: Int
+    var unknown84: Int
+    var buf33: Option[Pointer]
+    var d30: Int
+    var unknown85: Int
+    var buf34: Option[Pointer]
+    var d31: Int
+    var unknown86: Int
+    var buf35: Option[Pointer]
+    var d32: Int
+    var unknown87: Int
+    var buf36: Option[Pointer]
+    var d33: Int
+    var unknown88: Int
+    var buf37: Option[Pointer]
+    var d34: Int
+    var unknown89: Int
+    var buf38: Option[Pointer]
+    var d35: Int
+    var unknown90: Int
+    var tid1: Int
+    var e: Bool
+    var unknown91: Void
+    var tid2: Int
+    var e1: Bool
+    var unknown92: Void
+    var tid3: Int
+    var e2: Bool
+    var unknown93: Void
+    var tid4: Int
+    var e3: Bool
+    var unknown94: Void
+    var tid5: Int
+    var e4: Bool
+    var unknown95: Void
+    var tid6: Int
+    var e5: Bool
+    var unknown96: Void
+    var tid7: Int
+    var e6: Bool
+    var unknown97: Void
+    var tid8: Int
+    var e7: Bool
+    var unknown98: Void
+    var tid9: Int
+    var e8: Bool
+    var unknown99: Void
+    var tid10: Int
+    var e9: Bool
+    var unknown100: Void
+    var tid11: Int
+    var e10: Bool
+    var unknown101: Void
+    var tid12: Int
+    var e11: Bool
+    var unknown102: Void
+    var tid13: Int
+    var e12: Bool
+    var unknown103: Void
+    var tid14: Int
+    var e13: Bool
+    var unknown104: Void
+    var tid15: Int
+    var e14: Bool
+    var unknown105: Void
+    var tid16: Int
+    var e15: Bool
+    var unknown106: Void
+    var tid17: Int
+    var e16: Bool
+    var unknown107: Void
+    var tid18: Int
+    var e17: Bool
+    var unknown108: Void
+    var tid19: Int
+    var e18: Bool
+    var unknown109: Void
+    var tid20: Int
+    var e19: Bool
+    var unknown110: Void
+    var tid21: Int
+    var e20: Bool
+    var unknown111: Void
+    var tid22: Int
+    var e21: Bool
+    var unknown112: Void
+    var tid23: Int
+    var e22: Bool
+    var unknown113: Void
+    var tid24: Int
+    var e23: Bool
+    var unknown114: Void
+    var tid25: Int
+    var e24: Bool
+    var unknown115: Void
+    var tid26: Int
+    var e25: Bool
+    var unknown116: Void
+    var tid27: Int
+    var e26: Bool
+    var unknown117: Void
+    var tid28: Int
+    var e27: Bool
+    var unknown118: Void
+    var tid29: Int
+    var e28: Bool
+    var unknown119: Void
+    var tid30: Int
+    var e29: Bool
+    var unknown120: Void
+    var tid31: Int
+    var e30: Bool
+    var unknown121: Void
+    var tid32: Int
+    var e31: Bool
+    var unknown122: Void
+    var tid33: Int
+    var e32: Bool
+    var unknown123: Void
+    var tid34: Int
+    var e33: Bool
+    var unknown124: Void
+    var tid35: Int
+    var e34: Bool
+    var unknown125: Void
+    var tid36: Int
+    var e35: Bool
+    var unknown126: Void
+    var x: Perm
+    var y: Perm
+    var unknown127: Perm
+    var x1: Perm
+    var y1: Perm
+    var unknown128: Perm
+    var x2: Perm
+    var x3: Perm
+    var y2: Perm
+    var unknown129: Perm
+    var unknown130: Perm
+    var x4: Perm
+    var y3: Perm
+    var unknown131: Perm
+    var x5: Perm
+    var y4: Perm
+    var unknown132: Perm
+    var x6: Perm
+    var x7: Perm
+    var y5: Perm
+    var unknown133: Perm
+    var unknown134: Perm
+    var flatten: Option[Pointer]
+    var flatten1: Option[Pointer]
+    var flatten2: Int
+    var flatten3: Int
+    var flatten4: Int
+    var flatten5: Int
+    var flatten6: Int
+    var flatten7: Int
+    var flatten8: Int
+    var flatten9: Int
+    var flatten10: Int
+    var flatten11: Int
+    var flatten12: Int
+    var flatten13: Int
+    var flatten14: Int
+    var flatten15: Int
+    var flatten16: Int
+    var flatten17: Int
+    var flatten18: Int
+    var flatten19: Int
+    var flatten20: Int
+    var flatten21: Int
+    var flatten22: Int
+    var flatten23: Int
+    var flatten24: Int
+    var flatten25: Int
+    var flatten26: Int
+    var flatten27: Int
+    var flatten28: Int
+    var flatten29: Int
+    var flatten30: Int
+    var flatten31: Int
+    var flatten32: Int
+    var flatten33: Int
+    var flatten34: Int
+    var flatten35: Int
+    var flatten36: Int
+    var flatten37: Int
+    var flatten38: Option[Pointer]
+    var flatten39: Option[Pointer]
+    var flatten40: Int
+    var flatten41: Int
+    var flatten42: Int
+    var flatten43: Int
+    var flatten44: Int
+    var flatten45: Int
+    var flatten46: Int
+    var flatten47: Int
+    var flatten48: Int
+    var flatten49: Int
+    var flatten50: Int
+    var flatten51: Int
+    var flatten52: Int
+    var flatten53: Int
+    var flatten54: Int
+    var flatten55: Int
+    var flatten56: Int
+    var flatten57: Int
+    var flatten58: Int
+    var flatten59: Int
+    var flatten60: Int
+    var flatten61: Int
+    var flatten62: Int
+    var flatten63: Int
+    var flatten64: Int
+    var flatten65: Int
+    var flatten66: Int
+    var flatten67: Int
+    var flatten68: Int
+    var flatten69: Int
+    var flatten70: Int
+    var flatten71: Int
+    var flatten72: Int
+    var flatten73: Int
+    var flatten74: Int
+    var flatten75: Int
+    var flatten76: Option[Pointer]
+    var flatten77: Option[Pointer]
+    var flatten78: Int
+    var flatten79: Int
+    var flatten80: Int
+    var flatten81: Int
+    var flatten82: Int
+    var flatten83: Int
+    var flatten84: Int
+    var flatten85: Int
+    var flatten86: Int
+    var flatten87: Int
+    var flatten88: Int
+    var flatten89: Int
+    var flatten90: Int
+    var flatten91: Int
+    var flatten92: Int
+    var flatten93: Int
+    var flatten94: Int
+    var flatten95: Int
+    var flatten96: Int
+    var flatten97: Int
+    var flatten98: Int
+    var flatten99: Int
+    var flatten100: Int
+    var flatten101: Int
+    var flatten102: Int
+    var flatten103: Int
+    var flatten104: Int
+    var flatten105: Int
+    var flatten106: Int
+    var flatten107: Int
+    var flatten108: Int
+    var flatten109: Int
+    var flatten110: Int
+    var flatten111: Int
+    var flatten112: Int
+    var flatten113: Int
+    var flatten114: Bool
+    var flatten115: Bool
+    var flatten116: Bool
+    var flatten117: Bool
+    var flatten118: Bool
+    var flatten119: Bool
+    var flatten120: Bool
+    var flatten121: Bool
+    var flatten122: Bool
+    var flatten123: Bool
+    var flatten124: Bool
+    var flatten125: Bool
+    var flatten126: Bool
+    var flatten127: Bool
+    var flatten128: Bool
+    var flatten129: Bool
+    var flatten130: Bool
+    var flatten131: Bool
+    var flatten132: Bool
+    var flatten133: Bool
+    var flatten134: Bool
+    var flatten135: Bool
+    var flatten136: Bool
+    var flatten137: Bool
+    var flatten138: Bool
+    var flatten139: Bool
+    var flatten140: Bool
+    var flatten141: Bool
+    var flatten142: Bool
+    var flatten143: Bool
+    var flatten144: Bool
+    var flatten145: Bool
+    var flatten146: Bool
+    var flatten147: Bool
+    var flatten148: Bool
+    var flatten149: Bool
+    var flatten150: Int
+    var flatten151: Int
+    var flatten152: Int
+    var flatten153: Int
+    var flatten154: Int
+    var flatten155: Int
+    var flatten156: Int
+    var flatten157: Int
+    var flatten158: Int
+    var flatten159: Int
+    var res1: Option[Pointer]
+    var flatten160: Option[Pointer]
+    var flatten161: Int
+    var flatten162: Int
+    var flatten163: Int
+    var flatten164: Perm
+    var flatten165: Perm
+    var flatten166: Perm
+    var flatten167: Perm
+    var flatten168: Int
+    var flatten169: Perm
+    var flatten170: Perm
+    var flatten171: Perm
+    var flatten172: Perm
+    var flatten173: Perm
+    var flatten174: Int
+    var flatten175: Perm
+    var flatten176: Perm
+    var flatten177: Int
+    var flatten178: Perm
+    var flatten179: Perm
+    var flatten180: Perm
+    var flatten181: Int
+    var flatten182: Perm
+    var flatten183: Perm
+    var flatten184: Perm
+    var flatten185: Perm
+    var res2: Option[Pointer]
+    var flatten186: Option[Pointer]
+    var flatten187: Int
+    var flatten188: Int
+    var flatten189: Int
+    var flatten190: Perm
+    var flatten191: Perm
+    var flatten192: Perm
+    var flatten193: Perm
+    var flatten194: Int
+    var flatten195: Perm
+    var flatten196: Perm
+    var flatten197: Perm
+    var flatten198: Perm
+    var flatten199: Perm
+    var flatten200: Int
+    var flatten201: Perm
+    var flatten202: Perm
+    var flatten203: Int
+    var flatten204: Perm
+    var flatten205: Perm
+    var flatten206: Perm
+    var flatten207: Int
+    var flatten208: Perm
+    var flatten209: Perm
+    var flatten210: Perm
+    var flatten211: Perm
+    var flatten212: Int
+    var excbeforeloop: Ref
+    var excbeforeloop1: Ref
+    var excbeforeloop2: Ref
+    exc := null
+    buf := nextSolBuffer
+    flatten := ptrDeref(ptrAdd(optGet2(buf), 0)).ref.host
+    unknown52 := flatten
+    goto UNKNOWN
+    label UNKNOWN
+    flatten1 := unknown52
+    nextSol := flatten1
+    buf1 := nextSolBuffer
+    flatten2 := 0
+    d := flatten2
+    flatten3 := ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(buf1), 0)).ref.dim),
+      d)).ref.min
+    unknown53 := flatten3
+    goto UNKNOWN1
+    label UNKNOWN1
+    flatten4 := unknown53
+    nextSolMin0 := flatten4
+    buf2 := nextSolBuffer
+    flatten5 := 0
+    d1 := flatten5
+    flatten6 := ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(buf2), 0)).ref.dim),
+      d1)).ref.extent
+    unknown54 := flatten6
+    goto UNKNOWN2
+    label UNKNOWN2
+    flatten7 := unknown54
+    nextSolExtent0 := flatten7
+    buf3 := nextSolBuffer
+    flatten8 := 0
+    d2 := flatten8
+    flatten9 := ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(buf3), 0)).ref.dim),
+      d2)).ref.stride
+    unknown55 := flatten9
+    goto UNKNOWN3
+    label UNKNOWN3
+    flatten10 := unknown55
+    nextSolStride0 := flatten10
+    buf4 := nextSolBuffer
+    flatten11 := 1
+    d3 := flatten11
+    flatten12 := ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(buf4), 0)).ref.dim),
+      d3)).ref.min
+    unknown56 := flatten12
+    goto UNKNOWN4
+    label UNKNOWN4
+    flatten13 := unknown56
+    nextSolMin1 := flatten13
+    buf5 := nextSolBuffer
+    flatten14 := 1
+    d4 := flatten14
+    flatten15 := ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(buf5), 0)).ref.dim),
+      d4)).ref.extent
+    unknown57 := flatten15
+    goto UNKNOWN5
+    label UNKNOWN5
+    flatten16 := unknown57
+    nextSolExtent1 := flatten16
+    buf6 := nextSolBuffer
+    flatten17 := 1
+    d5 := flatten17
+    flatten18 := ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(buf6), 0)).ref.dim),
+      d5)).ref.stride
+    unknown58 := flatten18
+    goto UNKNOWN6
+    label UNKNOWN6
+    flatten19 := unknown58
+    nextSolStride1 := flatten19
+    buf7 := nextSolBuffer
+    flatten20 := 2
+    d6 := flatten20
+    flatten21 := ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(buf7), 0)).ref.dim),
+      d6)).ref.min
+    unknown59 := flatten21
+    goto UNKNOWN7
+    label UNKNOWN7
+    flatten22 := unknown59
+    nextSolMin2 := flatten22
+    buf8 := nextSolBuffer
+    flatten23 := 2
+    d7 := flatten23
+    flatten24 := ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(buf8), 0)).ref.dim),
+      d7)).ref.extent
+    unknown60 := flatten24
+    goto UNKNOWN8
+    label UNKNOWN8
+    flatten25 := unknown60
+    nextSolExtent2 := flatten25
+    buf9 := nextSolBuffer
+    flatten26 := 2
+    d8 := flatten26
+    flatten27 := ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(buf9), 0)).ref.dim),
+      d8)).ref.stride
+    unknown61 := flatten27
+    goto UNKNOWN9
+    label UNKNOWN9
+    flatten28 := unknown61
+    nextSolStride2 := flatten28
+    buf10 := nextSolBuffer
+    flatten29 := 3
+    d9 := flatten29
+    flatten30 := ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(buf10), 0)).ref.dim),
+      d9)).ref.min
+    unknown62 := flatten30
+    goto UNKNOWN10
+    label UNKNOWN10
+    flatten31 := unknown62
+    nextSolMin3 := flatten31
+    buf11 := nextSolBuffer
+    flatten32 := 3
+    d10 := flatten32
+    flatten33 := ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(buf11), 0)).ref.dim),
+      d10)).ref.extent
+    unknown63 := flatten33
+    goto UNKNOWN11
+    label UNKNOWN11
+    flatten34 := unknown63
+    nextSolExtent3 := flatten34
+    buf12 := nextSolBuffer
+    flatten35 := 3
+    d11 := flatten35
+    flatten36 := ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(buf12), 0)).ref.dim),
+      d11)).ref.stride
+    unknown64 := flatten36
+    goto UNKNOWN12
+    label UNKNOWN12
+    flatten37 := unknown64
+    nextSolStride3 := flatten37
+    buf13 := nextSolutions1Buffer
+    flatten38 := ptrDeref(ptrAdd(optGet2(buf13), 0)).ref.host
+    unknown65 := flatten38
+    goto UNKNOWN13
+    label UNKNOWN13
+    flatten39 := unknown65
+    nextSolutions1 := flatten39
+    buf14 := nextSolutions1Buffer
+    flatten40 := 0
+    d12 := flatten40
+    flatten41 := ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(buf14), 0)).ref.dim),
+      d12)).ref.min
+    unknown66 := flatten41
+    goto UNKNOWN14
+    label UNKNOWN14
+    flatten42 := unknown66
+    nextSolutions1Min0 := flatten42
+    buf15 := nextSolutions1Buffer
+    flatten43 := 0
+    d13 := flatten43
+    flatten44 := ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(buf15), 0)).ref.dim),
+      d13)).ref.extent
+    unknown67 := flatten44
+    goto UNKNOWN15
+    label UNKNOWN15
+    flatten45 := unknown67
+    nextSolutions1Extent0 := flatten45
+    buf16 := nextSolutions1Buffer
+    flatten46 := 0
+    d14 := flatten46
+    flatten47 := ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(buf16), 0)).ref.dim),
+      d14)).ref.stride
+    unknown68 := flatten47
+    goto UNKNOWN16
+    label UNKNOWN16
+    flatten48 := unknown68
+    nextSolutions1Stride0 := flatten48
+    buf17 := nextSolutions1Buffer
+    flatten49 := 1
+    d15 := flatten49
+    flatten50 := ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(buf17), 0)).ref.dim),
+      d15)).ref.min
+    unknown69 := flatten50
+    goto UNKNOWN17
+    label UNKNOWN17
+    flatten51 := unknown69
+    nextSolutions1Min1 := flatten51
+    buf18 := nextSolutions1Buffer
+    flatten52 := 1
+    d16 := flatten52
+    flatten53 := ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(buf18), 0)).ref.dim),
+      d16)).ref.extent
+    unknown70 := flatten53
+    goto UNKNOWN18
+    label UNKNOWN18
+    flatten54 := unknown70
+    nextSolutions1Extent1 := flatten54
+    buf19 := nextSolutions1Buffer
+    flatten55 := 1
+    d17 := flatten55
+    flatten56 := ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(buf19), 0)).ref.dim),
+      d17)).ref.stride
+    unknown71 := flatten56
+    goto UNKNOWN19
+    label UNKNOWN19
+    flatten57 := unknown71
+    nextSolutions1Stride1 := flatten57
+    buf20 := nextSolutions1Buffer
+    flatten58 := 2
+    d18 := flatten58
+    flatten59 := ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(buf20), 0)).ref.dim),
+      d18)).ref.min
+    unknown72 := flatten59
+    goto UNKNOWN20
+    label UNKNOWN20
+    flatten60 := unknown72
+    nextSolutions1Min2 := flatten60
+    buf21 := nextSolutions1Buffer
+    flatten61 := 2
+    d19 := flatten61
+    flatten62 := ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(buf21), 0)).ref.dim),
+      d19)).ref.extent
+    unknown73 := flatten62
+    goto UNKNOWN21
+    label UNKNOWN21
+    flatten63 := unknown73
+    nextSolutions1Extent2 := flatten63
+    buf22 := nextSolutions1Buffer
+    flatten64 := 2
+    d20 := flatten64
+    flatten65 := ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(buf22), 0)).ref.dim),
+      d20)).ref.stride
+    unknown74 := flatten65
+    goto UNKNOWN22
+    label UNKNOWN22
+    flatten66 := unknown74
+    nextSolutions1Stride2 := flatten66
+    buf23 := nextSolutions1Buffer
+    flatten67 := 3
+    d21 := flatten67
+    flatten68 := ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(buf23), 0)).ref.dim),
+      d21)).ref.min
+    unknown75 := flatten68
+    goto UNKNOWN23
+    label UNKNOWN23
+    flatten69 := unknown75
+    nextSolutions1Min3 := flatten69
+    buf24 := nextSolutions1Buffer
+    flatten70 := 3
+    d22 := flatten70
+    flatten71 := ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(buf24), 0)).ref.dim),
+      d22)).ref.extent
+    unknown76 := flatten71
+    goto UNKNOWN24
+    label UNKNOWN24
+    flatten72 := unknown76
+    nextSolutions1Extent3 := flatten72
+    buf25 := nextSolutions1Buffer
+    flatten73 := 3
+    d23 := flatten73
+    flatten74 := ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(buf25), 0)).ref.dim),
+      d23)).ref.stride
+    unknown77 := flatten74
+    goto UNKNOWN25
+    label UNKNOWN25
+    flatten75 := unknown77
+    nextSolutions1Stride3 := flatten75
+    buf26 := solBuffer
+    flatten76 := ptrDeref(ptrAdd(optGet2(buf26), 0)).ref.host
+    unknown78 := flatten76
+    goto UNKNOWN26
+    label UNKNOWN26
+    flatten77 := unknown78
+    sol := flatten77
+    buf27 := solBuffer
+    flatten78 := 0
+    d24 := flatten78
+    flatten79 := ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(buf27), 0)).ref.dim),
+      d24)).ref.min
+    unknown79 := flatten79
+    goto UNKNOWN27
+    label UNKNOWN27
+    flatten80 := unknown79
+    solMin0 := flatten80
+    buf28 := solBuffer
+    flatten81 := 0
+    d25 := flatten81
+    flatten82 := ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(buf28), 0)).ref.dim),
+      d25)).ref.extent
+    unknown80 := flatten82
+    goto UNKNOWN28
+    label UNKNOWN28
+    flatten83 := unknown80
+    solExtent0 := flatten83
+    buf29 := solBuffer
+    flatten84 := 0
+    d26 := flatten84
+    flatten85 := ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(buf29), 0)).ref.dim),
+      d26)).ref.stride
+    unknown81 := flatten85
+    goto UNKNOWN29
+    label UNKNOWN29
+    flatten86 := unknown81
+    solStride0 := flatten86
+    buf30 := solBuffer
+    flatten87 := 1
+    d27 := flatten87
+    flatten88 := ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(buf30), 0)).ref.dim),
+      d27)).ref.min
+    unknown82 := flatten88
+    goto UNKNOWN30
+    label UNKNOWN30
+    flatten89 := unknown82
+    solMin1 := flatten89
+    buf31 := solBuffer
+    flatten90 := 1
+    d28 := flatten90
+    flatten91 := ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(buf31), 0)).ref.dim),
+      d28)).ref.extent
+    unknown83 := flatten91
+    goto UNKNOWN31
+    label UNKNOWN31
+    flatten92 := unknown83
+    solExtent1 := flatten92
+    buf32 := solBuffer
+    flatten93 := 1
+    d29 := flatten93
+    flatten94 := ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(buf32), 0)).ref.dim),
+      d29)).ref.stride
+    unknown84 := flatten94
+    goto UNKNOWN32
+    label UNKNOWN32
+    flatten95 := unknown84
+    solStride1 := flatten95
+    buf33 := solBuffer
+    flatten96 := 2
+    d30 := flatten96
+    flatten97 := ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(buf33), 0)).ref.dim),
+      d30)).ref.min
+    unknown85 := flatten97
+    goto UNKNOWN33
+    label UNKNOWN33
+    flatten98 := unknown85
+    solMin2 := flatten98
+    buf34 := solBuffer
+    flatten99 := 2
+    d31 := flatten99
+    flatten100 := ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(buf34), 0)).ref.dim),
+      d31)).ref.extent
+    unknown86 := flatten100
+    goto UNKNOWN34
+    label UNKNOWN34
+    flatten101 := unknown86
+    solExtent2 := flatten101
+    buf35 := solBuffer
+    flatten102 := 2
+    d32 := flatten102
+    flatten103 := ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(buf35), 0)).ref.dim),
+      d32)).ref.stride
+    unknown87 := flatten103
+    goto UNKNOWN35
+    label UNKNOWN35
+    flatten104 := unknown87
+    solStride2 := flatten104
+    buf36 := solBuffer
+    flatten105 := 3
+    d33 := flatten105
+    flatten106 := ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(buf36), 0)).ref.dim),
+      d33)).ref.min
+    unknown88 := flatten106
+    goto UNKNOWN36
+    label UNKNOWN36
+    flatten107 := unknown88
+    solMin3 := flatten107
+    buf37 := solBuffer
+    flatten108 := 3
+    d34 := flatten108
+    flatten109 := ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(buf37), 0)).ref.dim),
+      d34)).ref.extent
+    unknown89 := flatten109
+    goto UNKNOWN37
+    label UNKNOWN37
+    flatten110 := unknown89
+    solExtent3 := flatten110
+    buf38 := solBuffer
+    flatten111 := 3
+    d35 := flatten111
+    flatten112 := ptrDeref(ptrAdd(optGet2(ptrDeref(ptrAdd(optGet2(buf38), 0)).ref.dim),
+      d35)).ref.stride
+    unknown90 := flatten112
+    goto UNKNOWN38
+    label UNKNOWN38
+    flatten113 := unknown90
+    solStride3 := flatten113
+    tid1 := tid
+    flatten114 := nextSolStride0 == 1
+    e := flatten114
+    label UNKNOWN39
+    tid2 := tid
+    flatten115 := nextSolMin0 == 0
+    e1 := flatten115
+    label UNKNOWN40
+    tid3 := tid
+    flatten116 := nextSolExtent0 == 2
+    e2 := flatten116
+    label UNKNOWN41
+    tid4 := tid
+    flatten117 := nextSolStride1 == 2
+    e3 := flatten117
+    label UNKNOWN42
+    tid5 := tid
+    flatten118 := nextSolMin1 == 0
+    e4 := flatten118
+    label UNKNOWN43
+    tid6 := tid
+    flatten119 := nextSolExtent1 == 2
+    e5 := flatten119
+    label UNKNOWN44
+    tid7 := tid
+    flatten120 := nextSolStride2 == 4
+    e6 := flatten120
+    label UNKNOWN45
+    tid8 := tid
+    flatten121 := nextSolMin2 == 0
+    e7 := flatten121
+    label UNKNOWN46
+    tid9 := tid
+    flatten122 := nextSolExtent2 == nSolutions
+    e8 := flatten122
+    label UNKNOWN47
+    tid10 := tid
+    flatten123 := nextSolStride3 == nSolutions * 4
+    e9 := flatten123
+    label UNKNOWN48
+    tid11 := tid
+    flatten124 := nextSolMin3 == 0
+    e10 := flatten124
+    label UNKNOWN49
+    tid12 := tid
+    flatten125 := nextSolExtent3 == nAntennas
+    e11 := flatten125
+    label UNKNOWN50
+    tid13 := tid
+    flatten126 := nextSolutions1Stride0 == 1
+    e12 := flatten126
+    label UNKNOWN51
+    tid14 := tid
+    flatten127 := nextSolutions1Min0 == 0
+    e13 := flatten127
+    label UNKNOWN52
+    tid15 := tid
+    flatten128 := nextSolutions1Extent0 == 2
+    e14 := flatten128
+    label UNKNOWN53
+    tid16 := tid
+    flatten129 := nextSolutions1Stride1 == 2
+    e15 := flatten129
+    label UNKNOWN54
+    tid17 := tid
+    flatten130 := nextSolutions1Min1 == 0
+    e16 := flatten130
+    label UNKNOWN55
+    tid18 := tid
+    flatten131 := nextSolutions1Extent1 == 2
+    e17 := flatten131
+    label UNKNOWN56
+    tid19 := tid
+    flatten132 := nextSolutions1Stride2 == 4
+    e18 := flatten132
+    label UNKNOWN57
+    tid20 := tid
+    flatten133 := nextSolutions1Min2 == 0
+    e19 := flatten133
+    label UNKNOWN58
+    tid21 := tid
+    flatten134 := nextSolutions1Extent2 == nSolutions
+    e20 := flatten134
+    label UNKNOWN59
+    tid22 := tid
+    flatten135 := nextSolutions1Stride3 == nSolutions * 4
+    e21 := flatten135
+    label UNKNOWN60
+    tid23 := tid
+    flatten136 := nextSolutions1Min3 == 0
+    e22 := flatten136
+    label UNKNOWN61
+    tid24 := tid
+    flatten137 := nextSolutions1Extent3 == nAntennas
+    e23 := flatten137
+    label UNKNOWN62
+    tid25 := tid
+    flatten138 := solStride0 == 1
+    e24 := flatten138
+    label UNKNOWN63
+    tid26 := tid
+    flatten139 := solMin0 == 0
+    e25 := flatten139
+    label UNKNOWN64
+    tid27 := tid
+    flatten140 := solExtent0 == 2
+    e26 := flatten140
+    label UNKNOWN65
+    tid28 := tid
+    flatten141 := solStride1 == 2
+    e27 := flatten141
+    label UNKNOWN66
+    tid29 := tid
+    flatten142 := solMin1 == 0
+    e28 := flatten142
+    label UNKNOWN67
+    tid30 := tid
+    flatten143 := solExtent1 == 2
+    e29 := flatten143
+    label UNKNOWN68
+    tid31 := tid
+    flatten144 := solStride2 == 4
+    e30 := flatten144
+    label UNKNOWN69
+    tid32 := tid
+    flatten145 := solMin2 == 0
+    e31 := flatten145
+    label UNKNOWN70
+    tid33 := tid
+    flatten146 := solExtent2 == nSolutions
+    e32 := flatten146
+    label UNKNOWN71
+    tid34 := tid
+    flatten147 := solStride3 == nSolutions * 4
+    e33 := flatten147
+    label UNKNOWN72
+    tid35 := tid
+    flatten148 := solMin3 == 0
+    e34 := flatten148
+    label UNKNOWN73
+    tid36 := tid
+    flatten149 := solExtent3 == nAntennas
+    e35 := flatten149
+    label UNKNOWN74
+    label LOOP
+    excbeforeloop := exc
+    flatten150 := 0
+    nextSolutions1S0A := flatten150
+    while (nextSolutions1S0A < nAntennas)
+      invariant exc == excbeforeloop
+      invariant nAntennas == 50
+      invariant nSolutions == 8
+      invariant nVis == 230930
+      invariant 0 <= nextSolutions1S0A
+      invariant nextSolutions1S0A < nAntennas + 1
+      invariant (forall _0_1_2_3: Int ::
+          { ptrDeref(ptrAdd(optGet2(nextSol), _0_1_2_3)).rat }
+          0 <= _0_1_2_3 && _0_1_2_3 < 2 * 2 * nSolutions * 50 ==>
+          acc(ptrDeref(optGet2((some(ptrAdd(optGet2(nextSol), _0_1_2_3)): Option[Pointer]))).rat, 1 *
+          write /
+          2))
+      invariant (forall _0_1_2_3: Int ::
+          { ptrDeref(ptrAdd(optGet2(nextSol), _0_1_2_3)).rat }
+          0 <= _0_1_2_3 && _0_1_2_3 < 2 * 2 * nSolutions * 50 ==>
+          ptrDeref(ptrAdd(optGet2(nextSol), _0_1_2_3)).rat ==
+          pureNextSol(_0_1_2_3))
+      invariant (forall _0_1_2_3: Int ::
+          { ptrDeref(ptrAdd(optGet2(sol), _0_1_2_3)).rat }
+          0 <= _0_1_2_3 && _0_1_2_3 < 2 * 2 * nSolutions * 50 ==>
+          acc(ptrDeref(optGet2((some(ptrAdd(optGet2(sol), _0_1_2_3)): Option[Pointer]))).rat, 1 *
+          write /
+          2))
+      invariant (forall _0_1_2_3: Int ::
+          { ptrDeref(ptrAdd(optGet2(sol), _0_1_2_3)).rat }
+          0 <= _0_1_2_3 && _0_1_2_3 < 2 * 2 * nSolutions * 50 ==>
+          ptrDeref(ptrAdd(optGet2(sol), _0_1_2_3)).rat == pureSol(_0_1_2_3))
+      invariant (forall nextsolutions1s0cforall_nextsolutions1s0iforall_nextsolutions1s0siforall_nextsolutions1s0aforall: Int ::
+          { ptrDeref(ptrAdd(optGet2(nextSolutions1), nextsolutions1s0cforall_nextsolutions1s0iforall_nextsolutions1s0siforall_nextsolutions1s0aforall)).rat }
+          0 <=
+          nextsolutions1s0cforall_nextsolutions1s0iforall_nextsolutions1s0siforall_nextsolutions1s0aforall &&
+          nextsolutions1s0cforall_nextsolutions1s0iforall_nextsolutions1s0siforall_nextsolutions1s0aforall <
+          4 * nSolutions * 50 ==>
+          acc(ptrDeref(optGet2((some(ptrAdd(optGet2(nextSolutions1), nextsolutions1s0cforall_nextsolutions1s0iforall_nextsolutions1s0siforall_nextsolutions1s0aforall)): Option[Pointer]))).rat, 1 *
+          write)) 
+    {
+      flatten152 := nextSolutions1S0A * solStride3
+      t389 := flatten152
+      flatten153 := nextSolutions1S0A * nextSolutions1Stride3
+      t392 := flatten153
+      flatten154 := nextSolStride3 * nextSolutions1S0A
+      t390 := flatten154
+      label LOOP1
+      excbeforeloop1 := exc
+      flatten155 := 0
+      nextSolutions1S0Si := flatten155
+      while (nextSolutions1S0Si < nSolutions)
+        invariant exc == excbeforeloop1
+        invariant nAntennas == 50
+        invariant nSolutions == 8
+        invariant nVis == 230930
+        invariant 0 <= nextSolutions1S0Si
+        invariant nextSolutions1S0Si < nSolutions + 1
+        invariant (forall _0_1_2_3: Int ::
+            { ptrDeref(ptrAdd(optGet2(nextSol), _0_1_2_3)).rat }
+            0 <= _0_1_2_3 && _0_1_2_3 < 2 * 2 * nSolutions * 50 ==>
+            acc(ptrDeref(optGet2((some(ptrAdd(optGet2(nextSol), _0_1_2_3)): Option[Pointer]))).rat, 1 *
+            write /
+            2))
+        invariant (forall _0_1_2_3: Int ::
+            { ptrDeref(ptrAdd(optGet2(nextSol), _0_1_2_3)).rat }
+            0 <= _0_1_2_3 && _0_1_2_3 < 2 * 2 * nSolutions * 50 ==>
+            ptrDeref(ptrAdd(optGet2(nextSol), _0_1_2_3)).rat ==
+            pureNextSol(_0_1_2_3))
+        invariant (forall _0_1_2_3: Int ::
+            { ptrDeref(ptrAdd(optGet2(sol), _0_1_2_3)).rat }
+            0 <= _0_1_2_3 && _0_1_2_3 < 2 * 2 * nSolutions * 50 ==>
+            acc(ptrDeref(optGet2((some(ptrAdd(optGet2(sol), _0_1_2_3)): Option[Pointer]))).rat, 1 *
+            write /
+            2))
+        invariant (forall _0_1_2_3: Int ::
+            { ptrDeref(ptrAdd(optGet2(sol), _0_1_2_3)).rat }
+            0 <= _0_1_2_3 && _0_1_2_3 < 2 * 2 * nSolutions * 50 ==>
+            ptrDeref(ptrAdd(optGet2(sol), _0_1_2_3)).rat ==
+            pureSol(_0_1_2_3))
+        invariant (forall nextsolutions1s0cforall_nextsolutions1s0iforall_nextsolutions1s0siforall: Int ::
+            { ptrDeref(ptrAdd(optGet2(nextSolutions1), nextsolutions1s0cforall_nextsolutions1s0iforall_nextsolutions1s0siforall)).rat }
+            0 <=
+            nextsolutions1s0cforall_nextsolutions1s0iforall_nextsolutions1s0siforall -
+            nextSolutions1S0A * nextSolutions1Stride3 &&
+            nextsolutions1s0cforall_nextsolutions1s0iforall_nextsolutions1s0siforall -
+            nextSolutions1S0A * nextSolutions1Stride3 <
+            2 * 2 * 8 ==>
+            acc(ptrDeref(optGet2((some(ptrAdd(optGet2(nextSolutions1), nextsolutions1s0cforall_nextsolutions1s0iforall_nextsolutions1s0siforall)): Option[Pointer]))).rat, 1 *
+            write)) 
+      {
+        flatten157 := nextSolutions1S0Si * 2
+        t393 := flatten157
+        label LOOP2
+        excbeforeloop2 := exc
+        flatten158 := 0
+        nextSolutions1S0I := flatten158
+        while (nextSolutions1S0I < 2)
+          invariant exc == excbeforeloop2
+          invariant nAntennas == 50
+          invariant nSolutions == 8
+          invariant nVis == 230930
+          invariant 0 <= nextSolutions1S0I
+          invariant nextSolutions1S0I < 2 + 1
+          invariant (forall _0_1_2_3: Int ::
+              { ptrDeref(ptrAdd(optGet2(nextSol), _0_1_2_3)).rat }
+              0 <= _0_1_2_3 && _0_1_2_3 < 2 * 2 * nSolutions * 50 ==>
+              acc(ptrDeref(optGet2((some(ptrAdd(optGet2(nextSol), _0_1_2_3)): Option[Pointer]))).rat, 1 *
+              write /
+              2))
+          invariant (forall _0_1_2_3: Int ::
+              { ptrDeref(ptrAdd(optGet2(nextSol), _0_1_2_3)).rat }
+              0 <= _0_1_2_3 && _0_1_2_3 < 2 * 2 * nSolutions * 50 ==>
+              ptrDeref(ptrAdd(optGet2(nextSol), _0_1_2_3)).rat ==
+              pureNextSol(_0_1_2_3))
+          invariant (forall _0_1_2_3: Int ::
+              { ptrDeref(ptrAdd(optGet2(sol), _0_1_2_3)).rat }
+              0 <= _0_1_2_3 && _0_1_2_3 < 2 * 2 * nSolutions * 50 ==>
+              acc(ptrDeref(optGet2((some(ptrAdd(optGet2(sol), _0_1_2_3)): Option[Pointer]))).rat, 1 *
+              write /
+              2))
+          invariant (forall _0_1_2_3: Int ::
+              { ptrDeref(ptrAdd(optGet2(sol), _0_1_2_3)).rat }
+              0 <= _0_1_2_3 && _0_1_2_3 < 2 * 2 * nSolutions * 50 ==>
+              ptrDeref(ptrAdd(optGet2(sol), _0_1_2_3)).rat ==
+              pureSol(_0_1_2_3))
+          invariant (forall nextsolutions1s0cforall_nextsolutions1s0iforall: Int ::
+              { ptrDeref(ptrAdd(optGet2(nextSolutions1), nextsolutions1s0cforall_nextsolutions1s0iforall)).rat }
+              0 <=
+              nextsolutions1s0cforall_nextsolutions1s0iforall -
+              (nextSolutions1S0Si * 4 +
+              nextSolutions1S0A * nextSolutions1Stride3) &&
+              nextsolutions1s0cforall_nextsolutions1s0iforall -
+              (nextSolutions1S0Si * 4 +
+              nextSolutions1S0A * nextSolutions1Stride3) <
+              2 * 2 ==>
+              acc(ptrDeref(optGet2((some(ptrAdd(optGet2(nextSolutions1), nextsolutions1s0cforall_nextsolutions1s0iforall)): Option[Pointer]))).rat, 1 *
+              write)) 
+        {
+          res1 := make_pointer_array_float32(tid, 1)
+          flatten160 := res1
+          distance := flatten160
+          flatten161 := nextSolutions1S0I + t393
+          t380 := flatten161
+          flatten162 := t380 * 2 + t389
+          t381 := flatten162
+          flatten163 := t380 * 2 + t390
+          t382 := flatten163
+          flatten164 := ptrDeref(ptrAdd(optGet2(sol), t381 + 1)).rat
+          _3 := flatten164
+          flatten165 := ptrDeref(ptrAdd(optGet2(sol), t381)).rat
+          _4 := flatten165
+          flatten166 := ptrDeref(ptrAdd(optGet2(nextSol), t382 + 1)).rat
+          _5 := flatten166
+          flatten167 := ptrDeref(ptrAdd(optGet2(nextSol), t382)).rat
+          _6 := flatten167
+          flatten168 := 0
+          x := _3
+          y := _4
+          flatten169 := unknown30(x, y)
+          unknown127 := flatten169
+          goto UNKNOWN75
+          label UNKNOWN75
+          flatten170 := unknown127
+          x1 := _5
+          y1 := _6
+          flatten171 := unknown30(x1, y1)
+          unknown128 := flatten171
+          goto UNKNOWN76
+          label UNKNOWN76
+          flatten172 := flatten170 - unknown128
+          ptrDeref(ptrAdd(optGet2(distance), flatten168)).rat := flatten172
+          flatten173 := ptrDeref(ptrAdd(optGet2(distance), 0)).rat
+          _7 := flatten173
+          t369 := _7
+          flatten174 := 0
+          flatten175 := (3141593 * write / 1000000 < t369 ?
+              -(6283185 * write / 1000000) * write :
+              6283185 * write / 1000000) +
+            t369
+          ptrDeref(ptrAdd(optGet2(distance), flatten174)).rat := flatten175
+          flatten176 := ptrDeref(ptrAdd(optGet2(sol), (nextSolutions1S0I +
+            t393) *
+            2 +
+            t389)).rat
+          _8 := flatten176
+          t372 := _8
+          flatten177 := nextSolutions1S0I + t393
+          t383 := flatten177
+          flatten178 := ptrDeref(ptrAdd(optGet2(sol), t383 * 2 + t389 + 1)).rat
+          _9 := flatten178
+          flatten179 := ptrDeref(ptrAdd(optGet2(distance), 0)).rat
+          _10 := flatten179
+          flatten180 := ptrDeref(ptrAdd(optGet2(nextSol), t383 * 2 + t390)).rat
+          _11 := flatten180
+          flatten181 := t383 * 2 + t392
+          if (phaseOnly) {
+            if (phaseOnly) {
+              if (phaseOnly) {
+                x3 := _9
+              }
+              if (phaseOnly) {
+                y2 := t372
+              }
+            }
+            if (phaseOnly) {
+              if (phaseOnly) {
+                flatten182 := unknown30(x3, y2)
+              }
+              if (phaseOnly) {
+                unknown129 := flatten182
+              }
+              goto UNKNOWN77
+              label UNKNOWN77
+            }
+            if (phaseOnly) {
+            }
+            if (phaseOnly) {
+              flatten183 := unknown129 + _10 * stepSize
+            }
+            if (phaseOnly) {
+              x2 := flatten183
+            }
+          }
+          if (phaseOnly) {
+            if (phaseOnly) {
+              flatten184 := unknown26(x2)
+            }
+            if (phaseOnly) {
+              unknown130 := flatten184
+            }
+            goto UNKNOWN78
+            label UNKNOWN78
+          }
+          if (phaseOnly) {
+          }
+          flatten185 := (phaseOnly ?
+              unknown130 :
+              (1 * write / 1 - stepSize) * t372 + _11 * stepSize)
+          ptrDeref(ptrAdd(optGet2(nextSolutions1), flatten181)).rat := flatten185
+          res2 := make_pointer_array_float32(tid, 1)
+          flatten186 := res2
+          distance1 := flatten186
+          flatten187 := nextSolutions1S0I + t393
+          t384 := flatten187
+          flatten188 := t384 * 2 + t389
+          t385 := flatten188
+          flatten189 := t384 * 2 + t390
+          t386 := flatten189
+          flatten190 := ptrDeref(ptrAdd(optGet2(sol), t385 + 1)).rat
+          _12 := flatten190
+          flatten191 := ptrDeref(ptrAdd(optGet2(sol), t385)).rat
+          _13 := flatten191
+          flatten192 := ptrDeref(ptrAdd(optGet2(nextSol), t386 + 1)).rat
+          _14 := flatten192
+          flatten193 := ptrDeref(ptrAdd(optGet2(nextSol), t386)).rat
+          _15 := flatten193
+          flatten194 := 0
+          x4 := _12
+          y3 := _13
+          flatten195 := unknown30(x4, y3)
+          unknown131 := flatten195
+          goto UNKNOWN79
+          label UNKNOWN79
+          flatten196 := unknown131
+          x5 := _14
+          y4 := _15
+          flatten197 := unknown30(x5, y4)
+          unknown132 := flatten197
+          goto UNKNOWN80
+          label UNKNOWN80
+          flatten198 := flatten196 - unknown132
+          ptrDeref(ptrAdd(optGet2(distance1), flatten194)).rat := flatten198
+          flatten199 := ptrDeref(ptrAdd(optGet2(distance1), 0)).rat
+          _16 := flatten199
+          t376 := _16
+          flatten200 := 0
+          flatten201 := (3141593 * write / 1000000 < t376 ?
+              -(6283185 * write / 1000000) * write :
+              6283185 * write / 1000000) +
+            t376
+          ptrDeref(ptrAdd(optGet2(distance1), flatten200)).rat := flatten201
+          flatten202 := ptrDeref(ptrAdd(optGet2(sol), (nextSolutions1S0I +
+            t393) *
+            2 +
+            t389 +
+            1)).rat
+          _17 := flatten202
+          t379 := _17
+          flatten203 := nextSolutions1S0I + t393
+          t387 := flatten203
+          flatten204 := ptrDeref(ptrAdd(optGet2(sol), t387 * 2 + t389)).rat
+          _18 := flatten204
+          flatten205 := ptrDeref(ptrAdd(optGet2(distance1), 0)).rat
+          _19 := flatten205
+          flatten206 := ptrDeref(ptrAdd(optGet2(nextSol), t387 * 2 + t390 +
+            1)).rat
+          _20 := flatten206
+          flatten207 := t387 * 2 + t392 + 1
+          if (phaseOnly) {
+            if (phaseOnly) {
+              if (phaseOnly) {
+                x7 := t379
+              }
+              if (phaseOnly) {
+                y5 := _18
+              }
+            }
+            if (phaseOnly) {
+              if (phaseOnly) {
+                flatten208 := unknown30(x7, y5)
+              }
+              if (phaseOnly) {
+                unknown133 := flatten208
+              }
+              goto UNKNOWN81
+              label UNKNOWN81
+            }
+            if (phaseOnly) {
+            }
+            if (phaseOnly) {
+              flatten209 := unknown133 + _19 * stepSize
+            }
+            if (phaseOnly) {
+              x6 := flatten209
+            }
+          }
+          if (phaseOnly) {
+            if (phaseOnly) {
+              flatten210 := unknown24(x6)
+            }
+            if (phaseOnly) {
+              unknown134 := flatten210
+            }
+            goto UNKNOWN82
+            label UNKNOWN82
+          }
+          if (phaseOnly) {
+          }
+          flatten211 := (phaseOnly ?
+              unknown134 :
+              (1 * write / 1 - stepSize) * t379 + _20 * stepSize)
+          ptrDeref(ptrAdd(optGet2(nextSolutions1), flatten207)).rat := flatten211
+          flatten159 := nextSolutions1S0I
+          nextSolutions1S0I := nextSolutions1S0I + 1
+        }
+        flatten156 := nextSolutions1S0Si
+        nextSolutions1S0Si := nextSolutions1S0Si + 1
+      }
+      flatten151 := nextSolutions1S0A
+      nextSolutions1S0A := nextSolutions1S0A + 1
+    }
+    flatten212 := 0
+    return := flatten212
+    goto END
+    label END
+    res := return
+    label BUBBLE
+    assert exc == null
+  }
+}

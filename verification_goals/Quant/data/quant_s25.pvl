@@ -1,0 +1,35 @@
+
+  context_everywhere n > 0;
+  context_everywhere x0 != null ** x0.length == n ** (\forall* int i=0..n; Perm(x0[i], write));
+  context x1 != None && |x1.get| == n;
+  context x2 != None && |x2.get| == n;
+  context x3 != None && |x3.get| == n;
+  context x4 != None && |x4.get| == n;
+  context x5 != None && |x5.get| == n;
+  context x6 != None && |x6.get| == n;
+  context x7 != None && |x7.get| == n;
+  context x8 != None && |x8.get| == n;
+  context x9 != None && |x9.get| == n;
+  context x10 != None && |x10.get| == n;
+  context x11 != None && |x11.get| == n;
+  context x12 != None && |x12.get| == n;
+  context x13 != None && |x13.get| == n;
+  context x14 != None && |x14.get| == n;
+  context x15 != None && |x15.get| == n;
+  context x16 != None && |x16.get| == n;
+  context x17 != None && |x17.get| == n;
+  context x18 != None && |x18.get| == n;
+  context x19 != None && |x19.get| == n;
+  context x20 != None && |x20.get| == n;
+  context x21 != None && |x21.get| == n;
+  context x22 != None && |x22.get| == n;
+  context x23 != None && |x23.get| == n;
+  context x24 != None && |x24.get| == n;
+  context x25 != None && |x25.get| == n;
+int main(int n, int[n] x0, option<seq<int>> x1, option<seq<int>> x2, option<seq<int>> x3, option<seq<int>> x4, option<seq<int>> x5, option<seq<int>> x6, option<seq<int>> x7, option<seq<int>> x8, option<seq<int>> x9, option<seq<int>> x10, option<seq<int>> x11, option<seq<int>> x12, option<seq<int>> x13, option<seq<int>> x14, option<seq<int>> x15, option<seq<int>> x16, option<seq<int>> x17, option<seq<int>> x18, option<seq<int>> x19, option<seq<int>> x20, option<seq<int>> x21, option<seq<int>> x22, option<seq<int>> x23, option<seq<int>> x24, option<seq<int>> x25){
+    loop_invariant 0 <= i && i<= n;
+    //loop_invariant (\forall int j=0..i; x0[j] == 0+ x1.get[j]+ x2.get[j]+ x3.get[j]+ x4.get[j]+ x5.get[j]+ x6.get[j]+ x7.get[j]+ x8.get[j]+ x9.get[j]+ x10.get[j]+ x11.get[j]+ x12.get[j]+ x13.get[j]+ x14.get[j]+ x15.get[j]+ x16.get[j]+ x17.get[j]+ x18.get[j]+ x19.get[j]+ x20.get[j]+ x21.get[j]+ x22.get[j]+ x23.get[j]+ x24.get[j]+ x25.get[j]);
+  for(int i=0; i<n;i++){
+    x0[i] = 0+ x1.get[i]+ x2.get[i]+ x3.get[i]+ x4.get[i]+ x5.get[i]+ x6.get[i]+ x7.get[i]+ x8.get[i]+ x9.get[i]+ x10.get[i]+ x11.get[i]+ x12.get[i]+ x13.get[i]+ x14.get[i]+ x15.get[i]+ x16.get[i]+ x17.get[i]+ x18.get[i]+ x19.get[i]+ x20.get[i]+ x21.get[i]+ x22.get[i]+ x23.get[i]+ x24.get[i]+ x25.get[i];
+  }
+}

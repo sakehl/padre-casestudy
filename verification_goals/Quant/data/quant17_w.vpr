@@ -1,0 +1,313 @@
+
+domain Array  {
+  
+  function array_loc(a: Array, i: Int): Ref 
+  
+  function alen(a: Array): Int 
+  
+  function loc_inv_1(loc: Ref): Array 
+  
+  function loc_inv_2(loc: Ref): Int 
+  
+  axiom {
+    (forall a: Array, i: Int ::
+      { array_loc(a, i) }
+      loc_inv_1(array_loc(a, i)) == a && loc_inv_2(array_loc(a, i)) == i)
+  }
+  
+  axiom {
+    (forall a: Array :: { alen(a) } alen(a) >= 0)
+  }
+}
+
+field int: Int
+
+function aloc(a: Array, i: Int): Ref
+  requires 0 <= i
+  requires i < alen(a)
+  decreases 
+  ensures loc_inv_1(result) == a
+  ensures loc_inv_2(result) == i
+{
+  array_loc(a, i)
+}
+
+method main1(tid: Int, n: Int, x0: Array, x1: Array, x2: Array, x3: Array, x4: Array, x5: Array, x6: Array, x7: Array, x8: Array, x9: Array, x10: Array, x11: Array, x12: Array, x13: Array, x14: Array, x15: Array, x16: Array, x17: Array)
+  requires 0 < n
+  requires alen(x0) == n
+  requires (forall i: Int ::
+      { aloc(x0, i) }
+      0 <= i && i < n ==> acc(aloc(x0, i).int, write))
+  requires alen(x1) == n
+  requires (forall i: Int ::
+      { aloc(x1, i) }
+      0 <= i && i < n ==> acc(aloc(x1, i).int, wildcard))
+  requires alen(x2) == n
+  requires (forall i: Int ::
+      { aloc(x2, i) }
+      0 <= i && i < n ==> acc(aloc(x2, i).int, wildcard))
+  requires alen(x3) == n
+  requires (forall i: Int ::
+      { aloc(x3, i) }
+      0 <= i && i < n ==> acc(aloc(x3, i).int, wildcard))
+  requires alen(x4) == n
+  requires (forall i: Int ::
+      { aloc(x4, i) }
+      0 <= i && i < n ==> acc(aloc(x4, i).int, wildcard))
+  requires alen(x5) == n
+  requires (forall i: Int ::
+      { aloc(x5, i) }
+      0 <= i && i < n ==> acc(aloc(x5, i).int, wildcard))
+  requires alen(x6) == n
+  requires (forall i: Int ::
+      { aloc(x6, i) }
+      0 <= i && i < n ==> acc(aloc(x6, i).int, wildcard))
+  requires alen(x7) == n
+  requires (forall i: Int ::
+      { aloc(x7, i) }
+      0 <= i && i < n ==> acc(aloc(x7, i).int, wildcard))
+  requires alen(x8) == n
+  requires (forall i: Int ::
+      { aloc(x8, i) }
+      0 <= i && i < n ==> acc(aloc(x8, i).int, wildcard))
+  requires alen(x9) == n
+  requires (forall i: Int ::
+      { aloc(x9, i) }
+      0 <= i && i < n ==> acc(aloc(x9, i).int, wildcard))
+  requires alen(x10) == n
+  requires (forall i: Int ::
+      { aloc(x10, i) }
+      0 <= i && i < n ==> acc(aloc(x10, i).int, wildcard))
+  requires alen(x11) == n
+  requires (forall i: Int ::
+      { aloc(x11, i) }
+      0 <= i && i < n ==> acc(aloc(x11, i).int, wildcard))
+  requires alen(x12) == n
+  requires (forall i: Int ::
+      { aloc(x12, i) }
+      0 <= i && i < n ==> acc(aloc(x12, i).int, wildcard))
+  requires alen(x13) == n
+  requires (forall i: Int ::
+      { aloc(x13, i) }
+      0 <= i && i < n ==> acc(aloc(x13, i).int, wildcard))
+  requires alen(x14) == n
+  requires (forall i: Int ::
+      { aloc(x14, i) }
+      0 <= i && i < n ==> acc(aloc(x14, i).int, wildcard))
+  requires alen(x15) == n
+  requires (forall i: Int ::
+      { aloc(x15, i) }
+      0 <= i && i < n ==> acc(aloc(x15, i).int, wildcard))
+  requires alen(x16) == n
+  requires (forall i: Int ::
+      { aloc(x16, i) }
+      0 <= i && i < n ==> acc(aloc(x16, i).int, wildcard))
+  requires alen(x17) == n
+  requires (forall i: Int ::
+      { aloc(x17, i) }
+      0 <= i && i < n ==> acc(aloc(x17, i).int, wildcard))
+  ensures 0 < n
+  ensures alen(x0) == n
+  ensures (forall i: Int ::
+      { aloc(x0, i) }
+      0 <= i && i < n ==> acc(aloc(x0, i).int, write))
+  ensures alen(x1) == n
+  ensures (forall i: Int ::
+      { aloc(x1, i) }
+      0 <= i && i < n ==> acc(aloc(x1, i).int, wildcard))
+  ensures alen(x2) == n
+  ensures (forall i: Int ::
+      { aloc(x2, i) }
+      0 <= i && i < n ==> acc(aloc(x2, i).int, wildcard))
+  ensures alen(x3) == n
+  ensures (forall i: Int ::
+      { aloc(x3, i) }
+      0 <= i && i < n ==> acc(aloc(x3, i).int, wildcard))
+  ensures alen(x4) == n
+  ensures (forall i: Int ::
+      { aloc(x4, i) }
+      0 <= i && i < n ==> acc(aloc(x4, i).int, wildcard))
+  ensures alen(x5) == n
+  ensures (forall i: Int ::
+      { aloc(x5, i) }
+      0 <= i && i < n ==> acc(aloc(x5, i).int, wildcard))
+  ensures alen(x6) == n
+  ensures (forall i: Int ::
+      { aloc(x6, i) }
+      0 <= i && i < n ==> acc(aloc(x6, i).int, wildcard))
+  ensures alen(x7) == n
+  ensures (forall i: Int ::
+      { aloc(x7, i) }
+      0 <= i && i < n ==> acc(aloc(x7, i).int, wildcard))
+  ensures alen(x8) == n
+  ensures (forall i: Int ::
+      { aloc(x8, i) }
+      0 <= i && i < n ==> acc(aloc(x8, i).int, wildcard))
+  ensures alen(x9) == n
+  ensures (forall i: Int ::
+      { aloc(x9, i) }
+      0 <= i && i < n ==> acc(aloc(x9, i).int, wildcard))
+  ensures alen(x10) == n
+  ensures (forall i: Int ::
+      { aloc(x10, i) }
+      0 <= i && i < n ==> acc(aloc(x10, i).int, wildcard))
+  ensures alen(x11) == n
+  ensures (forall i: Int ::
+      { aloc(x11, i) }
+      0 <= i && i < n ==> acc(aloc(x11, i).int, wildcard))
+  ensures alen(x12) == n
+  ensures (forall i: Int ::
+      { aloc(x12, i) }
+      0 <= i && i < n ==> acc(aloc(x12, i).int, wildcard))
+  ensures alen(x13) == n
+  ensures (forall i: Int ::
+      { aloc(x13, i) }
+      0 <= i && i < n ==> acc(aloc(x13, i).int, wildcard))
+  ensures alen(x14) == n
+  ensures (forall i: Int ::
+      { aloc(x14, i) }
+      0 <= i && i < n ==> acc(aloc(x14, i).int, wildcard))
+  ensures alen(x15) == n
+  ensures (forall i: Int ::
+      { aloc(x15, i) }
+      0 <= i && i < n ==> acc(aloc(x15, i).int, wildcard))
+  ensures alen(x16) == n
+  ensures (forall i: Int ::
+      { aloc(x16, i) }
+      0 <= i && i < n ==> acc(aloc(x16, i).int, wildcard))
+  ensures alen(x17) == n
+  ensures (forall i: Int ::
+      { aloc(x17, i) }
+      0 <= i && i < n ==> acc(aloc(x17, i).int, wildcard))
+{
+  {
+    var exc: Ref
+    var i: Int
+    var excbeforeloop: Ref
+    exc := null
+    excbeforeloop := exc
+    i := 0
+    while (i < n)
+      invariant exc == excbeforeloop
+      invariant 0 < n
+  
+      invariant alen(x0) == n
+      invariant (forall i1: Int ::
+          { aloc(x0, i1) }
+          0 <= i1 && i1 < n ==> acc(aloc(x0, i1).int, write))
+  
+      invariant alen(x1) == n
+      invariant (forall i1: Int ::
+          { aloc(x1, i1) }
+          0 <= i1 && i1 < n ==>
+          acc(aloc(x1, i1).int, wildcard))
+
+    invariant alen(x2) == n
+      invariant (forall i1: Int ::
+          { aloc(x2, i1) }
+          0 <= i1 && i1 < n ==>
+          acc(aloc(x2, i1).int, wildcard))
+
+    invariant alen(x3) == n
+      invariant (forall i1: Int ::
+          { aloc(x3, i1) }
+          0 <= i1 && i1 < n ==>
+          acc(aloc(x3, i1).int, wildcard))
+
+    invariant alen(x4) == n
+      invariant (forall i1: Int ::
+          { aloc(x4, i1) }
+          0 <= i1 && i1 < n ==>
+          acc(aloc(x4, i1).int, wildcard))
+
+    invariant alen(x5) == n
+      invariant (forall i1: Int ::
+          { aloc(x5, i1) }
+          0 <= i1 && i1 < n ==>
+          acc(aloc(x5, i1).int, wildcard))
+
+    invariant alen(x6) == n
+      invariant (forall i1: Int ::
+          { aloc(x6, i1) }
+          0 <= i1 && i1 < n ==>
+          acc(aloc(x6, i1).int, wildcard))
+
+    invariant alen(x7) == n
+      invariant (forall i1: Int ::
+          { aloc(x7, i1) }
+          0 <= i1 && i1 < n ==>
+          acc(aloc(x7, i1).int, wildcard))
+
+    invariant alen(x8) == n
+      invariant (forall i1: Int ::
+          { aloc(x8, i1) }
+          0 <= i1 && i1 < n ==>
+          acc(aloc(x8, i1).int, wildcard))
+
+    invariant alen(x9) == n
+      invariant (forall i1: Int ::
+          { aloc(x9, i1) }
+          0 <= i1 && i1 < n ==>
+          acc(aloc(x9, i1).int, wildcard))
+
+    invariant alen(x10) == n
+      invariant (forall i1: Int ::
+          { aloc(x10, i1) }
+          0 <= i1 && i1 < n ==>
+          acc(aloc(x10, i1).int, wildcard))
+
+    invariant alen(x11) == n
+      invariant (forall i1: Int ::
+          { aloc(x11, i1) }
+          0 <= i1 && i1 < n ==>
+          acc(aloc(x11, i1).int, wildcard))
+
+    invariant alen(x12) == n
+      invariant (forall i1: Int ::
+          { aloc(x12, i1) }
+          0 <= i1 && i1 < n ==>
+          acc(aloc(x12, i1).int, wildcard))
+
+    invariant alen(x13) == n
+      invariant (forall i1: Int ::
+          { aloc(x13, i1) }
+          0 <= i1 && i1 < n ==>
+          acc(aloc(x13, i1).int, wildcard))
+
+    invariant alen(x14) == n
+      invariant (forall i1: Int ::
+          { aloc(x14, i1) }
+          0 <= i1 && i1 < n ==>
+          acc(aloc(x14, i1).int, wildcard))
+
+    invariant alen(x15) == n
+      invariant (forall i1: Int ::
+          { aloc(x15, i1) }
+          0 <= i1 && i1 < n ==>
+          acc(aloc(x15, i1).int, wildcard))
+
+    invariant alen(x16) == n
+      invariant (forall i1: Int ::
+          { aloc(x16, i1) }
+          0 <= i1 && i1 < n ==>
+          acc(aloc(x16, i1).int, wildcard))
+
+    invariant alen(x17) == n
+      invariant (forall i1: Int ::
+          { aloc(x17, i1) }
+          0 <= i1 && i1 < n ==>
+          acc(aloc(x17, i1).int, wildcard))
+
+      invariant 0 <= i
+      invariant i < n + 1
+      invariant (forall j: Int ::
+          { aloc(x0, j) }
+          0 <= j && j < i ==>
+          aloc(x0, j).int == 0 + aloc(x1, j).int + aloc(x2, j).int + aloc(x3, j).int + aloc(x4, j).int + aloc(x5, j).int + aloc(x6, j).int + aloc(x7, j).int + aloc(x8, j).int + aloc(x9, j).int + aloc(x10, j).int + aloc(x11, j).int + aloc(x12, j).int + aloc(x13, j).int + aloc(x14, j).int + aloc(x15, j).int + aloc(x16, j).int + aloc(x17, j).int)
+    {
+      aloc(x0, i).int :=  0 + aloc(x1, i).int + aloc(x2, i).int + aloc(x3, i).int + aloc(x4, i).int + aloc(x5, i).int + aloc(x6, i).int + aloc(x7, i).int + aloc(x8, i).int + aloc(x9, i).int + aloc(x10, i).int + aloc(x11, i).int + aloc(x12, i).int + aloc(x13, i).int + aloc(x14, i).int + aloc(x15, i).int + aloc(x16, i).int + aloc(x17, i).int
+      i := i + 1
+    }
+    assert exc == null
+  }
+}

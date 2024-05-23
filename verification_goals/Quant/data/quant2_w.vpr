@@ -1,0 +1,103 @@
+
+domain Array  {
+  
+  function array_loc(a: Array, i: Int): Ref 
+  
+  function alen(a: Array): Int 
+  
+  function loc_inv_1(loc: Ref): Array 
+  
+  function loc_inv_2(loc: Ref): Int 
+  
+  axiom {
+    (forall a: Array, i: Int ::
+      { array_loc(a, i) }
+      loc_inv_1(array_loc(a, i)) == a && loc_inv_2(array_loc(a, i)) == i)
+  }
+  
+  axiom {
+    (forall a: Array :: { alen(a) } alen(a) >= 0)
+  }
+}
+
+field int: Int
+
+function aloc(a: Array, i: Int): Ref
+  requires 0 <= i
+  requires i < alen(a)
+  decreases 
+  ensures loc_inv_1(result) == a
+  ensures loc_inv_2(result) == i
+{
+  array_loc(a, i)
+}
+
+method main1(tid: Int, n: Int, x0: Array, x1: Array, x2: Array)
+  requires 0 < n
+  requires alen(x0) == n
+  requires (forall i: Int ::
+      { aloc(x0, i) }
+      0 <= i && i < n ==> acc(aloc(x0, i).int, write))
+  requires alen(x1) == n
+  requires (forall i: Int ::
+      { aloc(x1, i) }
+      0 <= i && i < n ==> acc(aloc(x1, i).int, wildcard))
+  requires alen(x2) == n
+  requires (forall i: Int ::
+      { aloc(x2, i) }
+      0 <= i && i < n ==> acc(aloc(x2, i).int, wildcard))
+  ensures 0 < n
+  ensures alen(x0) == n
+  ensures (forall i: Int ::
+      { aloc(x0, i) }
+      0 <= i && i < n ==> acc(aloc(x0, i).int, write))
+  ensures alen(x1) == n
+  ensures (forall i: Int ::
+      { aloc(x1, i) }
+      0 <= i && i < n ==> acc(aloc(x1, i).int, wildcard))
+  ensures alen(x2) == n
+  ensures (forall i: Int ::
+      { aloc(x2, i) }
+      0 <= i && i < n ==> acc(aloc(x2, i).int, wildcard))
+{
+  {
+    var exc: Ref
+    var i: Int
+    var excbeforeloop: Ref
+    exc := null
+    excbeforeloop := exc
+    i := 0
+    while (i < n)
+      invariant exc == excbeforeloop
+      invariant 0 < n
+  
+      invariant alen(x0) == n
+      invariant (forall i1: Int ::
+          { aloc(x0, i1) }
+          0 <= i1 && i1 < n ==> acc(aloc(x0, i1).int, write))
+  
+      invariant alen(x1) == n
+      invariant (forall i1: Int ::
+          { aloc(x1, i1) }
+          0 <= i1 && i1 < n ==>
+          acc(aloc(x1, i1).int, wildcard))
+
+    invariant alen(x2) == n
+      invariant (forall i1: Int ::
+          { aloc(x2, i1) }
+          0 <= i1 && i1 < n ==>
+          acc(aloc(x2, i1).int, wildcard))
+
+      invariant 0 <= i
+      invariant i < n + 1
+      invariant (forall j: Int ::
+          { aloc(x0, j) }
+          0 <= j && j < i ==>
+          aloc(x0, j).int == 0 + aloc(x1, j).int + aloc(x2, j).int)
+    {
+      aloc(x0, i).int :=  0 + aloc(x1, i).int + aloc(x2, i).int
+      i := i + 1
+    }
+    assert exc == null
+  }
+}
