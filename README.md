@@ -1,6 +1,10 @@
 # Case Study Padre
 This is the accompanying code for the paper `Verifying a Radio Telescope Pipeline using HaliVer:  Solving Nonlinear and Quantifier Challenges`.
 
+## Halide implementation
+The _full_ Halide implementation can be found at [ddecal/gain_solvers/GenerateHalideFull.cc](ddecal/gain_solvers/GenerateHalideFull.cc).
+The implementation of Halide, which is split in multiple functions is found at [ddecal/gain_solvers/GenerateHalideDiagonal.cc](ddecal/gain_solvers/GenerateHalideDiagonal.cc).
+
 ## Installing
 We support running the code via the docker image [`Dockerfile`](Dockerfile). 
 
